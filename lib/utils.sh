@@ -3,6 +3,10 @@ get_active_win_name() {
     echo $(xdotool getwindowfocus getwindowname)
 }
 
+get-window-name-by-id () {
+  xprop -id "$1" | awk -F '"' '/^WM_NAME/{$2; print $2}'
+}
+
 get_active_win_id() {
     id_dec=$(xdotool getactivewindow)
     # hex
@@ -61,4 +65,26 @@ is_active_window_full_screen() {
 
 number_of_windows_in_workspace() {
 	echo $(wmctrl -d | awk '{print $NF}' | grep -Po '\d+' | head -n 1 | xargs -I{} wmctrl -l | awk -v id=$(xdotool get_desktop) '$2==id {print $0}' | wc -l)
+}
+
+
+newest_process_winid() {
+	# Get the list of window IDs in the current workspace
+	window_ids=$(xdotool search --desktop $(xdotool get_desktop) "" 2>/dev/null)
+
+	# Initialize the largest PID and window ID variables
+	largest_pid=0
+	largest_window=""
+
+	# Loop through the window IDs and find the one with the largest PID
+	for window_id in $window_ids; do
+	  pid=$(xdotool getwindowpid $window_id 2>/dev/null)
+	  if [ $pid -gt $largest_pid ]; then
+		largest_pid=$pid
+		largest_window=$window_id
+	  fi
+	done
+
+	# Print the largest window ID
+	echo $(printf 0x%08x $largest_window)
 }

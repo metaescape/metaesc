@@ -9,7 +9,7 @@
 #   - 如果当前窗口是 nil （说明是当前的空的 workspace, 那么就在当前窗口启动）
 #   - 如果当前窗口是有其他进程的 app，则先和该窗口里的 app 交换，然后 kill 掉交换的 app
 
-
+_cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
 focus_win_class=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'"' -f2)
 focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) | cut -d'"' -f2)
 focus_wid=$(printf 0x%08x $(xdotool getactivewindow))
@@ -42,6 +42,5 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 9)))
 	# echo $x_corner $y_corner >> /tmp/testout
-	emacsclient -a "" -n -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) (alpha . (98 . 90)) (minibuffer . only))" --eval "(progn (let ((debug-file \"/tmp/ivy-xwish.el\")) (when (file-exists-p debug-file) (load-file debug-file))) (list-xwindows-ivy \"$focus_wid\"))" 
+	emacsclient -a "" -n -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) (alpha . (98 . 90)) (minibuffer . only))" --eval "(let ((ivy-xwish \"$_cur_dir/ivy-xwish.el\")) (when (file-exists-p ivy-xwish) (load-file ivy-xwish) (list-xwindows-ivy \"$focus_wid\"))))" 
 fi
-
