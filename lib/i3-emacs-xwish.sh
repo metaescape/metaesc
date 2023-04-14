@@ -22,7 +22,7 @@ else
 	~/metaesc/lib/restore_fullscreen.sh
 
 	width=72
-	height=28
+	height=12
 	window_id=$(xdotool getactivewindow)
 
 	# Get the position and size of the window
@@ -42,6 +42,6 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 9)))
 	# echo $x_corner $y_corner >> /tmp/testout
-	emacsclient -a "" -n -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) ) (alpha . (98 . 90))" --eval "(progn (let ((debug-file \"/tmp/ivy-xwish.el\")) (when (file-exists-p debug-file) (load-file debug-file))) (list-xwindows-ivy \"$focus_wid\"))" 
+	emacsclient -a "" -n -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) (alpha . (98 . 90)) (minibuffer . only))" --eval "(progn (let ((debug-file \"/tmp/ivy-xwish.el\")) (when (file-exists-p debug-file) (load-file debug-file))) (list-xwindows-ivy \"$focus_wid\"))" 
 fi
 
