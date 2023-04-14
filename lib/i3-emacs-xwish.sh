@@ -15,6 +15,8 @@ focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) |
 focus_wid=$(printf 0x%08x $(xdotool getactivewindow))
 
 if [[ $focus_win_name =~ 'EmacsAnywhere' ]]; then
+	# emacsclient --eval "(minibuffer-keyboard-quit)"
+	xdotool key Escape #send ESC to 
 	i3-msg kill
 else
 	~/metaesc/lib/restore_fullscreen.sh
