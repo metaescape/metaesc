@@ -4,7 +4,7 @@
 # - enter 直接切换到目标窗口
 # - M-o x 结束当前窗口
 # - M-o k kill -9 当前进程
-# - M-o s 弹出新的 ivy 选择窗口进行交换 swap
+# - M-o s 当前窗口与 ivy 选择窗口进行交换 swap
 # - M-o e 弹出新的 ivy 选择一个 app 启动到当前窗口
 #   - 如果当前窗口是 nil （说明是当前的空的 workspace, 那么就在当前窗口启动）
 #   - 如果当前窗口是有其他进程的 app，则先和该窗口里的 app 交换，然后 kill 掉交换的 app
