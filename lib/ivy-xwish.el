@@ -1,3 +1,12 @@
+;; 会影响 app launcher, 因为会退出一次
+;; (add-hook 'minibuffer-exit-hook 'delete-frame)
+(global-set-key (kbd "<escape>") 'delete-frame)
+
+;; (defun my-minibuffer-setup-hook ()
+;;   (setq-local keyboard-escape-quit 'delete-frame))
+
+;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
+
 (defun search-key-in-nested-list (lst item idx)
   (if (null lst)
       nil
@@ -8,10 +17,20 @@
 (defun list-xwindows-ivy (&optional last-win-id)
   (interactive)
   (let* ((lines (split-string (shell-command-to-string "wmctrl -l") "\n" t))
+         ;; (windows (mapcar (lambda (line)
+         ;;                    (when (string-match "^\\(0x[0-9a-f]+\\) +[^ ]+ +\\([^ ]+\\) +\\(.*\\)" line)
+         ;;                      (list (match-string 3 line) (match-string 1 line))))
+         ;;                  lines))
          (windows (mapcar (lambda (line)
-                            (when (string-match "^\\(0x[0-9a-f]+\\) +[^ ]+ +\\([^ ]+\\) +\\(.*\\)" line)
-                              (list (match-string 3 line) (match-string 1 line))))
+                            (when (string-match "^\\(0x[0-9a-f]+\\) +\\([0-9]+\\) +[^ ]+ +\\(.*\\)" line)
+                              (list (format "%s: %s (%s) "
+                                            (1+ (string-to-number (match-string 2 line)))
+                                            (match-string 3 line)
+                                            (match-string 1 line)
+                                            )
+                                    (match-string 1 line))))
                           lines))
+
          (filtered-windows (delq nil windows))
          (preselect (if last-win-id
                         (search-key-in-nested-list filtered-windows last-win-id 1) nil))
