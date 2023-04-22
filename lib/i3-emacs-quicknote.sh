@@ -62,7 +62,8 @@ else
 
 	# x 是从屏幕左侧开始，y 是从屏幕上边缘开始
 	center_x=$(($window_x + ($window_width / 2)))
-	center_y=$(($window_y + ($window_height / 2)))
+	# 放在稍微靠下的位置
+	center_y=$(($window_y + ($window_height * 2 /3)))
 	
 	# 单位转换，width 和 height 是按字符个数的，而 x，y 是像素坐标
 	# 因为电脑设置的字体大小大约是 10 磅，12 px， 因此要乘以 6 但现实发现乘以 5 比较准
@@ -70,14 +71,14 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 5)))
 	# echo $x_corner $y_corner >> /tmp/testout
-	if [[ $focus_win_class =~ 'google-chrome' ]]; then
-		xdotool key Escape "Y"
-		sleep 0.01
-		emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state))"
-	else
+	# if [[ $focus_win_class =~ 'google-chrome' ]]; then
+	# 	xdotool key Escape "Y"
+	# 	sleep 0.01
+	# 	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
+	# else
 		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-		emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (evil-insert-state))"
-	fi
+		emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (evil-insert-state) (insert-time))"
+	# fi
 
 fi
 
