@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# 打开不同 配置 的 emacs 方式, 但基本只用默认的
+em=emacs #
+if [ "$1" == 'default' ]; then
+	# if [ "$orgfile" -nt "$initfile" ]; then
+	# 	emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "~/myconf/emacs/emacs_conf.org" "~/myconf/emacs/init.el")'
+	# 	# emacs --batch --eval '(byte-compile-file "~/.emacs.conf/init.el")'
+	# fi
+	export MANPATH=/usr/local/texlive/2023/texmf-dist/doc/man:$MANPATH
+	export INFOPATH=/usr/local/texlive/2023/texmf-dist/doc/info:$INFOPATH.
+	export PATH=/usr/local/texlive/2023/bin/x86_64-linux:$PATH.
+    if [ ! -z $2 ]; then
+        $em --with-profile default --name "$2"
+    else
+        $em --with-profile default
+    fi
+	#systemctl restart --user emacsanywhere.service
+elif [ "$1" == 'test' ]; then
+	$em --with-profile 'test'
+else 
+	$em --with-profile "default"
+fi
