@@ -8,6 +8,28 @@ function install_scheme() {
 	local distro
 	distro=$(whichdistro)
 	if [[ $distro == "debian" ]]; then
+		print_info "安装 racket 和 mit-scheme"
+
+        if ! command -v raco &> /dev/null
+        then
+            pushd /data/installer/
+		    print_info "从 https://download.racket-lang.org/ 中下载脚本安装 racket, 指定安装在 ~/.local/ 中能够保证用户权限，会自动在该目录下创建 unistall 脚本"
+            print_info "考虑开启"
+
+            VERSION=8.9 # 修改此处
+            RACKET=racket-$VERSION-x86_64-linux-cs.sh
+            if [ ! -e ./$RACKET ]; then
+                wget https://download.racket-lang.org/installers/$VERSION/$RACKET 
+            fi
+            bash ./$RACKET --unix-style --dest ~/.local/
+            print_success "racket 安装完毕，继续安装 iracket 和 sicp"
+            raco pkg install iracket sicp
+            raco iracket install 
+            print_success "racket 安装完毕"
+            popd
+        fi
+
+		print_success "racket iracket 安装完毕， 通过 drracket 启动 IDE"
 		print_info "采用编译的方式来安装 mit-scheme"
         sudo apt install build-essential -y
 
