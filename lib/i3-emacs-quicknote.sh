@@ -77,8 +77,6 @@ else
 	# 	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
 	# else
 		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-		emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (evil-insert-state) (insert-time))"
+	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t nil t) 'string>))) (end-of-buffer) (evil-insert-state) (insert-time))"
 	# fi
-
 fi
-
