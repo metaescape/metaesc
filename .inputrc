@@ -1,0 +1,11 @@
+set mark-symlinked-directories on
+set colored-completion-prefix on
+set blink-matching-paren on
+
+"\C-v\C-p": "vi /etc/inputrc\C-M"
+"\C-x\C-r": re-read-init-file
+"\C-xu": "\eb\eu"
+"\C-xl": "\eb\el"
+"\C-gr": "rga-fzf "
+"\C-ga": "git add "
+"\C-h": backward-kill-word
