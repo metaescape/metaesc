@@ -21,9 +21,21 @@ function install_wps() {
 			for file in "${wps[@]}"; do
 				sudo apt install "./$file"
 			done
+			print_success "wps 安装完毕"
             popd
+		else 
+			print_success "wps 已安装"
         fi
-        print_success "wps 安装完毕"
+
+        if ! command -v masterpdfeditor5 &> /dev/null
+        then
+			print_info "安装 master-pdf-editor 用于编辑 outline"
+			sudo apt install ./master-pdf-editor-5.9.40-qt5.9.x86_64.deb
+			print_success "master-pdf-editor 安装完毕"
+		else 
+			print_success "master-pdf-editor 已安装"
+        fi
+        
 	elif [[ $distro == "redhat" ]]; then
 		:
 	elif [[ $distro == "arch" ]]; then
