@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: shell_src
+# key: ,sh
+# --
+
+```bash
+$0
+```

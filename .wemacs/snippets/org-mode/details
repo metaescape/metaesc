@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: details
+# key: ,d
+# --
+
+#+begin_details 
+#+BEGIN_summary
+修改历史
+#+END_summary
+$0
+#+end_details

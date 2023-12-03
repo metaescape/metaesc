@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: js_src
+# key: ,js
+# --
+
+```js
+$0
+```

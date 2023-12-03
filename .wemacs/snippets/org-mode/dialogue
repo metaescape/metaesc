@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: dialogue
+# key: ,d1
+# --
+
+#+begin_dialogue
+$0
+#+end_dialogue

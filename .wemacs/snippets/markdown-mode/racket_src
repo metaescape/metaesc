@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: racket_src
+# key: ,rk
+# --
+
+```racket
+$0
+```

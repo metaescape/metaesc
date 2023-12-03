@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: solidity_src
+# key: ,s
+# --
+
+#+begin_src solidity
+$0
+#+end_src

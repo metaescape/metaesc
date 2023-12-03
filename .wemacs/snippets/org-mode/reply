@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: reply
+# key: ,d2
+# --
+
+#+begin_reply
+$0
+#+end_reply

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: comment
+# key: ,c
+# --
+
+#+begin_comment
+$0
+#+end_comment

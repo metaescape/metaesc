@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: blog
+# key: ,bl
+# --
+
+
+:PROPERTIES:
+:ID:       
+:END:
+#+TITLE: $0
+#+DATE: 
+#+CREATED: 
+#+OPTIONS: num:nil

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: dot_src
+# key: ,dt
+# --
+
+#+begin_src dot :file /tmp/$1.png :cmdline -Tpng -Gsize=4,8 -Gdpi=200
+$0
+#+end_src

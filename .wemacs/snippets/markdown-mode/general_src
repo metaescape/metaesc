@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: general_src
+# key: ,sr
+# --
+
+```$1
+$0
+```

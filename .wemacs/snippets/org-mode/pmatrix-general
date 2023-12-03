@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# key: ,pm
+# name: pmatrix general
+# group: math
+# --
+\\begin{pmatrix}
+${1:A} & ${2:0} & \dots & ${3:0} \\\\
+${4:0} & ${5:0} & \dots & ${6:0} \\\\
+\vdots & \vdots & \ddots & \vdots \\\\
+${7:0} & ${8:0} & \dots & ${9:0} \\\\
+\\end{pmatrix}

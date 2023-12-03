@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: debug_try
+# key: ,tr
+# --
+
+try:
+    $1
+except:
+    $0
+    raise Exception()
