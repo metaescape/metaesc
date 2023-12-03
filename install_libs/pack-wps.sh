@@ -2,6 +2,7 @@
 set -ue
 
 source $(dirname "${BASH_SOURCE[0]:-$0}")/utilfuncs.sh
+source $(dirname "${BASH_SOURCE[0]:-$0}")/../user_env.sh
 
 function install_wps() {
 	local distro
@@ -11,20 +12,21 @@ function install_wps() {
         if ! command -v wps &> /dev/null
         then
 			print_info "安装 wps"
-            pushd /data/installer/
-			wps=$(ls wps-office*.deb 2>/dev/null)
-			if  [ ! ${wps[@]} -gt 0 ]; then
+            pushd $INSTALLERS
+			wps=$(find . -maxdepth 1 -name "wps-office*.deb" -print 2>/dev/null)
+			if  [ -z $wps ]; then
 		        print_info "请手动从 https://www.wps.com/office/linux/ 中下载 deb 包"
                 exit
             fi
 			# 安装.deb文件
-			for file in "${wps[@]}"; do
-				sudo apt install "./$file"
-			done
+			sudo apt install "./$wps"
 			print_success "wps 安装完毕"
             popd
 		else 
 			print_success "wps 已安装"
+			print_info "如需重装，请先 apt remove wps 卸载 wps"
+			print_info "再手动从 https://www.wps.com/office/linux/ 中下载 deb 包到 $INSTALLS 目录中"
+		    print_info "重新执行 ./metaesc.sh -i wps"
         fi
 
         if ! command -v masterpdfeditor5 &> /dev/null
