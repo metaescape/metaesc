@@ -8,9 +8,9 @@ function install_conda() {
 	local distro
 	distro=$(whichdistro)
 	if [[ $distro == "debian" ]]; then
-		print_info "下载 bash 脚本直接安装 miniconda3"
         if [ ! -e ~/miniconda3 ]; then
             pushd ~
+			print_info "下载 bash 脚本直接安装 miniconda3"
             print_notice "下载 miniconda 3"
 			wget https://mirrors.aliyun.com/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
 			bash Miniconda3-latest-Linux-x86_64.sh -b
@@ -49,7 +49,8 @@ function setup_conda {
 	print_info "使得 conda 和 pip 使用国内源"
 	if [[ $distro == "debian" ]]; then
         set -uex
-        ln -sfT $conf_dir/.pip $HOME/.pip
+		[ ! -d $HOME/.config/pip ] && mkdir $HOME/.config/pip
+        ln -sf $conf_dir/.config/pip/pip.conf $HOME/.config/pip/pip.conf
         ln -sf $conf_dir/.condarc $HOME/.condarc
         set -ue
 		print_notice "设置使用国内源成功"

@@ -29,8 +29,8 @@ function install_i3() {
 function setup_i3() {
 	local distro
 	distro=$(whichdistro)
-    _cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
-    conf_dir="$(builtin cd "$_cur_dir" && git rev-parse --show-toplevel)"
+        _cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
+        conf_dir="$(builtin cd "$_cur_dir" && git rev-parse --show-toplevel)"
 
 	if [[ $distro == "debian" ]]; then
 

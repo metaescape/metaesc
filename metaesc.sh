@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-export CODES=~/codes
 set -ue
 
 #--------------------------------------------------------------#
@@ -33,6 +32,16 @@ function main() {
 	current_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
 	main_dir=$(dirname "$current_dir")
 	source $main_dir/install_libs/utilfuncs.sh
+
+    print_info "请确保 $main_dir/user_env.sh 中环境变量是正确的："
+    cat "$main_dir/user_env.sh"
+    print_info "其中 CODE 为源码项目路径，INSTALLERS 为 deb, appimg 等文件下载路径"
+	source $main_dir/user_env.sh
+
+    print_info ""
+    print_info "---------------------------------"
+    print_info ""
+
 
 	while [ $# -gt 0 ]; do
 		case ${1} in
