@@ -24,9 +24,10 @@ function install_wps() {
             popd
 		else 
 			print_success "wps 已安装"
-			print_info "如需重装，请先 apt remove wps 卸载 wps"
-			print_info "再手动从 https://www.wps.com/office/linux/ 中下载 deb 包到 $INSTALLS 目录中"
-		    print_info "重新执行 ./metaesc.sh -i wps"
+			print_info "如需重装，请先用 sudo apt remove wps-office 卸载 wps"
+			print_info "再手动从 https://www.wps.com/office/linux/ 中下载 deb 包到 $INSTALLERS 目录中"
+			print_info "并保持 $INSTALLERS 中只有一个最新的 deb 文件"
+		    print_info "然后重新执行 ./metaesc.sh -i wps"
         fi
 
         if ! command -v masterpdfeditor5 &> /dev/null
