@@ -1,0 +1,324 @@
+# # [[id:c219e39d-1ea9-4bc2-ab04-334ccecdfb77][主配置:1]]
+# i3 config file (v4)
+# # [[id:20231220T213028.817277][set-global-font]]
+font pango:monospace 10
+# # set-global-font ends here
+# # [[id:20231220T213028.691047][set-modifier]]
+set $super Mod4
+set $alt Mod1
+# # set-modifier ends here
+# # [[id:20231220T213028.693457][focus-window-with-super-arrow]]
+  bindsym $super+Left focus left
+  bindsym $super+Down focus down
+  bindsym $super+Up focus up
+  bindsym $super+Right focus right
+# # focus-window-with-super-arrow ends here
+# # [[id:4b0600a7-0c71-4288-aec3-cf86c5377977][ivy-select-window]]
+bindsym F3 --release exec ~/metaesc/lib/i3-emacs-xwish.sh
+# # ivy-select-window ends here
+# # [[id:2b196ad1-30ec-40e4-b051-ae37b8eebc6c][focus-next-window]]
+bindsym $alt+Control+Shift+i exec ~/metaesc/lib/restore_fullscreen.sh && exec ~/metaesc/lib/focus_next_win.sh
+# # focus-next-window ends here
+# # [[id:20231220T213028.714579][toggle-fullscreen]]
+bindsym $super+m fullscreen toggle
+# # toggle-fullscreen ends here
+# # [[id:20231220T213028.717444][set-workspace-name]]
+set $ws1 "1⚓"
+set $ws2 "2⚕"
+set $ws3 "3☯"
+set $ws4 "4⚑"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7office"
+set $ws8 "8noter"
+set $ws9 "9"
+set $ws10 "zero"
+set $wst "t"
+set $wsy "y"
+set $wsu "u"
+# # set-workspace-name ends here
+# # [[id:20231220T213028.720470][focus-workspace-with-super-number]]
+bindsym $super+1 workspace $ws1
+bindsym $super+2 workspace $ws2
+bindsym $super+3 workspace $ws3
+bindsym $super+4 workspace $ws4
+bindsym $super+5 workspace $ws5
+bindsym $super+6 workspace $ws6
+bindsym $super+7 workspace $ws7
+bindsym $super+8 workspace $ws8
+bindsym $super+9 workspace $ws9
+bindsym $super+0 workspace $ws10
+bindsym $super+t workspace $wst
+bindsym $super+y workspace $wsy
+bindsym $super+u workspace $wsu
+# # focus-workspace-with-super-number ends here
+# # [[id:9de6a388-9165-489c-9da8-c18e54483175][assign-app-to-workspace]]
+assign [class="Wpsoffice"] $ws7
+assign [class="Evince"] $ws7 #system pdf reader, default pdf read use wpsoffice
+# for org noter
+assign [title="^Emacs Org-noter.*"] $ws8
+assign [title="^V2Ray Desktop.*"] $ws10
+assign [title="^Clash .* Windows$"] $ws10
+assign [title="^EasyConnect"] $ws10
+assign [class="Zotero"] $ws10 
+# # assign-app-to-workspace ends here
+# # [[id:20231220T213028.726342][move-window-to-workspace]]
+bindsym $super+Shift+1 move container to workspace $ws1
+bindsym $super+Shift+2 move container to workspace $ws2
+bindsym $super+Shift+3 move container to workspace $ws3
+bindsym $super+Shift+4 move container to workspace $ws4
+bindsym $super+Shift+5 move container to workspace $ws5
+bindsym $super+Shift+6 move container to workspace $ws6
+bindsym $super+Shift+7 move container to workspace $ws7
+bindsym $super+Shift+8 move container to workspace $ws8
+bindsym $super+Shift+9 move container to workspace $ws9
+bindsym $super+Shift+0 move container to workspace $ws10
+bindsym $super+Shift+t move container to workspace $wst
+bindsym $super+Shift+y move container to workspace $wsy
+bindsym $super+Shift+u move container to workspace $wsu
+# # move-window-to-workspace ends here
+# # [[id:20231220T213028.720470][switch-to-last-workspace]]
+# last activate workspace
+workspace_auto_back_and_forth yes
+bindsym $alt+Tab workspace back_and_forth 
+# # switch-to-last-workspace ends here
+# # [[id:20231220T213028.729563][close-window-mode]]
+set $close "Close the window? (y/n)"
+mode $close {
+    bindsym y kill, mode default
+    bindsym Return kill, mode default
+    bindsym q kill, mode default
+    bindsym n mode default
+    bindsym Escape mode default
+}
+bindsym $super+q mode $close
+# # close-window-mode ends here
+# # [[id:20231220T213028.745514][window-layout-mode]]
+  set $splith-note zenity --notification --window-icon="info" --text=" | split" --timeout=1
+  set $splitv-note zenity --notification --window-icon="info" --text="-- split" --timeout=1
+  
+  set $layout_mode "container layout stack[s] tabbed[t] other split[o] parent[p] child[c]"
+  mode $layout_mode {
+    # change container layout (stacked, tabbed, toggle split)
+    bindsym s layout stacking
+    bindsym t layout tabbed
+    # bindsym o layout toggle split
+    bindsym o layout toggle
+  
+    bindsym p focus parent
+    bindsym c focus child
+  
+    bindsym backslash split h, exec $splith-note
+    bindsym minus split v, exec $splitv-note
+    bindsym Escape mode default
+    bindsym Return mode "default"
+  }
+# # window-layout-mode ends here
+# # [[id:20231220T213028.781789][open-split-termial]]
+bindsym $super+backslash split h; exec urxvt
+bindsym $super+minus split v; exec urxvt
+# # open-split-termial ends here
+# # [[id:8dafcc3f-87ad-4762-bfa9-bb9924c75e08][ibus-rime]]
+exec --no-startup-id ibus-daemon --xim -d -r
+bindsym --release $alt+Control+Shift+l exec ~/metaesc/lib/switch_input_method.sh
+# # ibus-rime ends here
+
+# # [[id:20220921T115232.004345][network-manager]]
+# NetworkManager is the most popular way to manage wireless networks on Linux,
+# and nm-applet is a desktop environment-independent system tray GUI for it.
+exec --no-startup-id nm-applet
+exec --no-startup-id sleep 1.5; i3-msg "workspace $ws10; layout tabbed"
+exec --no-startup-id sleep 1.5; i3-msg "workspace $ws10"; ~/.local/Clash/cfw
+exec --no-startup-id sleep 1.5; i3-msg "workspace $ws10"; /usr/share/sangfor/EasyConnect/EasyConnect
+# # network-manager ends here
+# # [[id:ac76ce41-3ccd-420d-b266-73e079fd55f7][set-monitor-and-wallpaper]]
+exec ~/metaesc/lib/monitor.sh
+exec_always --no-startup-id compton --conf ~/.config/compton.conf -b
+exec_always --no-startup-id ~/metaesc/lib/wallpaper.sh
+# # set-monitor-and-wallpaper ends here
+# # [[id:77b2ded7-a40f-4fb2-9e53-6fa9192fff14][clock-notify]]
+exec_always --no-startup-id ~/metaesc/lib/clock_notify.sh
+# # clock-notify ends here
+# # [[id:ac76ce41-3ccd-420d-b266-73e079fd55f7][assign-workspace-to-monitor]]
+workspace $ws1 output primary
+workspace $ws2 output primary
+workspace $ws3 output primary
+# workspace $ws4 output VGA-1-1
+# # assign-workspace-to-monitor ends here
+# # [[id:ac76ce41-3ccd-420d-b266-73e079fd55f7][switch-to-last-monitor]]
+bindsym $super+Tab focus output right
+# # switch-to-last-monitor ends here
+# # [[id:d9213a49-0806-4453-81c3-a0805cf82020][set-keymap]]
+exec_always --no-startup-id exec ~/metaesc/lib/code01s1.sh
+
+set $keymap-switch-mode "which keymap to change? s1(1), 过渡(2), 仅 capslock(3), s4(4), 默认(0) "
+mode $keymap-switch-mode {
+    bindsym 0 exec ~/metaesc/lib/code01default.sh, mode default
+    bindsym 1 exec ~/metaesc/lib/code01s1.sh, mode default
+    bindsym 2 exec ~/metaesc/lib/code01s2.sh, mode default
+    bindsym 3 exec ~/metaesc/lib/code01s3.sh, mode default
+    bindsym 4 exec ~/metaesc/lib/code01s4.sh, mode default
+    bindsym Return default
+    bindsym n mode default
+    bindsym Escape mode default
+}
+# # set-keymap ends here
+# # [[id:20231220T213028.778818][workspace-initialize]]
+exec --no-startup-id sleep 1; i3-msg "workspace $ws1"; urxvt --title "shell"
+exec --no-startup-id sleep 2; i3-msg "workspace $ws2; append_layout ~/metaesc/lib/workspace-2.json"
+exec --no-startup-id sleep 2; ~/metaesc/lib/open_emacs 'default' 'emacs-jkl'
+exec --no-startup-id sleep 2; google-chrome --new-window \
+         https://brilliant.org/courses/ \
+         https://huggingface.co/course/chapter1/1 \
+# exec --no-startup-id sleep 2; i3-msg "workspace $ws3; layout tabbed"; exec typora
+# # workspace-initialize ends here
+
+# # [[id:0175e1f2-ac68-4872-8893-73f7535e1c8f][fn-audio-control]]
+set $audio_note ~/metaesc/lib/show_audio.sh
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $audio_note
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $audio_note
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $audio_note
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $audio_note
+# # fn-audio-control ends here
+# # [[id:03f8fd2a-463d-4d67-8577-dbc3485cc5c2][fn-bright-control]]
+bindsym XF86MonBrightnessUp exec bash ~/metaesc/lib/brightness_code01.sh 20
+bindsym XF86MonBrightnessDown exec bash ~/metaesc/lib/brightness_code01.sh -20
+# # fn-bright-control ends here
+
+# # [[id:20231220T213029.008383][i3-main-mode]]
+set $main_mode pkill[s-p] logout[s-o] emacs[e] swap/resize[[S]-hjkl] keymaps[s-k]
+mode "$main_mode" {
+
+    # # [[id:20231220T213028.693457][focus-window-with-super-arrow]]
+      bindsym $super+Left focus left
+      bindsym $super+Down focus down
+      bindsym $super+Up focus up
+      bindsym $super+Right focus right
+    # # focus-window-with-super-arrow ends here
+
+    # # [[id:20231220T213028.750613][i3-reload-restart-quit]]
+    # reload the configuration file
+    bindsym r reload, mode "default"
+    # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+    bindsym Shift+r restart, mode "default"
+    bindsym $super+r restart, mode "default"
+    
+    bindsym $super+q exec "i3-nagbar -t warning -m 'Exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+    # # i3-reload-restart-quit ends here
+
+    # # [[id:20231220T213028.739187][resize-window-with-hjkl]]
+    bindsym h resize shrink width 2 px or 2 ppt
+    bindsym j resize grow height 2 px or 2 ppt
+    bindsym k resize shrink height 2 px or 2 ppt
+    bindsym l resize grow width 2 px or 2 ppt
+    # # resize-window-with-hjkl ends here
+
+    # # [[id:20231220T213028.733119][swap-window-with-shift-hjkl]]
+      bindsym Shift+h move left
+      bindsym Shift+j move down
+      bindsym Shift+k move up
+      bindsym Shift+l move right
+    # # swap-window-with-shift-hjkl ends here
+
+    bindsym $super+l mode $layout_mode
+    bindsym $super+k mode $keymap-switch-mode
+
+    # 绑定 t 直接跳转到 test
+    bindsym t workspace $ws1 exec tmux select-window -t 0:9, mode "default"
+
+    # # [[id:20231220T213028.788781][quick-start-apps]]
+    bindsym e exec ~/metaesc/lib/open_emacs 'default', mode "default"
+    bindsym $super+p exec ~/metaesc/lib/dmkill, mode "default"
+    bindsym $super+o exec ~/metaesc/lib/dmlogout, mode "default"
+    bindsym $super+g exec google-chrome, mode "default"
+    bindsym $super+f exec nautilus, mode "default"
+    # start dmenu with dacula
+    # for binary
+    bindsym $super+b exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'dmenu%'", mode "default"
+    # for desktop
+    bindsym $super+d exec "i3-dmenu-desktop", mode "default"
+    # # quick-start-apps ends here
+
+    # # [[id:20231220T213029.005396][transset-up-down]]
+    bindsym $super+equal exec /usr/bin/transset --dec 0.1 -a 
+    bindsym $super+minus exec /usr/bin/transset --inc 0.1 -a 
+    # # transset-up-down ends here
+
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym q mode "default"
+
+}
+
+bindsym $super+semicolon mode "$main_mode"
+# # i3-main-mode ends here
+# # [[id:093c753b-8940-4136-9a4c-78be1a88ae20][addy-bar]]
+bar {
+    id bar-0
+    # output primary
+    # mode hide
+    hidden_state hide
+    modifier none
+    # strip_workspace_numbers yes
+    # binding_mode_indicator yes
+    # tray_output primary
+    position top
+        colors {
+        background #2f343f
+        statusline #2f343f
+        separator #4b5262
+
+        # colour of border, background, and text
+        focused_workspace      #2f343f #bf616a #d8dee8
+        active_workspace       #2f343f #2f343f #d8dee8
+        inactive_workspace     #2f343f #2f343f #d8dee8
+        urgent_workspace       #2f343f #ebcb8b #2f343f
+    }
+    status_command i3status
+}
+# # addy-bar ends here
+# # [[id:093c753b-8940-4136-9a4c-78be1a88ae20][addy-theme]]
+# colour of border, background, text, indicator, and child_border
+client.focused              #bf616a #2f343f #d8dee8 #bf616a #6272A4
+client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.unfocused            #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.urgent               #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.placeholder          #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.background           #2f343f
+# # addy-theme ends here
+# # [[id:20231220T213029.003104][vertical-monitor-bar]]
+bar {
+	id bar-1
+	output VGA-1-1
+	status_command exec ~/myconf/i3/second_bar.sh
+    colors {
+        background $transparent
+        # … and the rest
+    }
+	position bottom
+}
+# # vertical-monitor-bar ends here
+# # [[id:20231220T213028.823039][border-setting]]
+for_window [class=".*"] border pixel 3
+# # border-setting ends here
+
+# # [[id:20231220T213028.814519][float-window-setting]]
+# Use Mouse+$super to drag floating windows to their wanted position
+floating_modifier $super
+# toggle tiling / floating
+bindsym $super+Shift+b floating toggle
+
+for_window [title="^EmacsAnywhere$"] floating enable
+# # float-window-setting ends here
+
+# # [[id:20231220T213028.791258][screen-capture-like-mac]]
+bindsym $alt+Control+4 exec gnome-screenshot -ai
+# # screen-capture-like-mac ends here
+# # [[id:20220720T093338.821369][copy-paste-with-super-cv]]
+bindsym $super+c exec ~/metaesc/lib/paste.sh c
+bindsym $super+v exec ~/metaesc/lib/paste.sh v
+# # copy-paste-with-super-cv ends here
+# # [[id:20231220T213029.116092][scripts]]
+bindsym F10 --release exec ~/metaesc/lib/i3-emacs-quicknote.sh
+# # scripts ends here
+# # 主配置:1 ends here

@@ -26,3 +26,13 @@
         -s 是 --setup 的简写
         对 conda 和 pip 进行配置, 主要建立 pip.conf 和 .condarc 软链接
 ```
+
+## 具体文件
+i3 相关文件：
+```bash
+.config/i3/config
+.config/i3status/config
+.config/compton.conf
+.config/dunst/dunstrc
+```
+
