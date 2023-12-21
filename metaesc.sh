@@ -53,17 +53,14 @@ function main() {
 				shift
                 source $main_dir/install_libs/_install-pkgs.sh
                 # source $current_dir/lib/_install-pkgs.sh
-                exit 1
                 ;;
 			update|-u|--update)
 				shift
                 source $main_dir/install_libs/_install-pkgs.sh
-                exit 1
                 ;;
 			setup|-s|--setup)
 				shift
                 source $main_dir/install_libs/_setup-pkgs.sh
-                exit 1
 				;;
             *) ;;
 
