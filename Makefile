@@ -53,11 +53,18 @@ vimrc-tangle:
 	sed '/:tangle/{/metaesc\/.vim\/vimrc/!d}' ~/org/logical/vim.org > /tmp/vimrc.org
 	emacs --batch -l ~/metaesc/make_tangle.el --eval "(tangle-config-file \"vimrc\")"
 
-test-eaf:
-	emacs --batch -l ~/metaesc/make_tangle.el --eval "(tangle-config-file \"eaf\")"
-	ln -s /tmp/eaf-test.el ~/.wemacs/init.el
-	emacs
-	ln -s ~/metaesc/.wemacs/init.el ~/.wemacs/init.el
+update-org-ids:
+	emacs --batch \
+	      --eval '(setq org-directory "~/org")' \
+	      --eval '(setq org-id-locations-file "~/.wemacs/.org-id-locations")' \
+	      --eval '(require (quote org-id))' \
+	      --eval '(org-id-update-id-locations (directory-files-recursively org-directory "\\.\\(org\\|gtd\\)"))'
+
+backup-emacs-org:
+	mkdir -p /data/resource/emacs_org_backup
+	tar -czvf /data/resource/emacs_org_backup/$$(date +'%Y%m%d')-wemacs.tar.gz ~/.wemacs
+	tar -czvf /data/resource/emacs_org_backup/$$(date +'%Y%m%d')-org.tar.gz ~/org
+	@echo "Backup completed."
 
 # 帮助信息
 help:
