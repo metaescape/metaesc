@@ -1,0 +1,5 @@
+[Unit]
+Description="backup up important gtd files"
+
+[Service]
+ExecStart=/usr/bin/python /home/pipz/myconf/utils/bin/gtd_backup.py

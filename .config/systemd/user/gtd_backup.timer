@@ -1,0 +1,9 @@
+[Unit]
+Description="backup up important gtd files everyday"
+
+[Timer]
+OnCalendar=*-*-* 08:00:00
+Unit=gtd_backup.service
+
+[Install]
+WantedBy=default.target

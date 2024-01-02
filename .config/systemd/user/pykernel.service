@@ -1,0 +1,11 @@
+[Unit]
+Description=tmp juypter kernel service
+
+[Service]
+Type=simple
+ExecStart=/home/pipz/miniconda3/envs/zshot/bin/python3 -m ipykernel_launcher -f /tmp/kernel.json
+Restart=always
+ExecReload=/bin/kill -2 $MAINPID
+
+[Install]
+WantedBy=default.target

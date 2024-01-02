@@ -1,0 +1,9 @@
+[Unit]
+Description=emacs anywhere
+StartLimitIntervalSec=1
+StartLimitBurst=10
+
+[Service]
+ExecStart=/home/pipz/myconf/i3/switch_pyim_or_start_ea.sh 1
+Restart=always
+RestartSec=0.3
