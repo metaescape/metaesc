@@ -9,7 +9,8 @@ if [ $nums == "1" ]; then
 		# 只专注于当前窗口下的 emacs 
         xdotool key --clearmodifiers ctrl+x o
 		# emacsclient -e "(other-window 1)"
-	elif [[ $(get_active_win_name) =~ "urxvt" ]]; then
+    # "main-tmux" is set in i3 config
+	elif [[ $(get_active_win_name) =~ "main-tmux" ]]; then
 		# 切换 tmux pane
 		tmux select-pane -t :.+
     fi

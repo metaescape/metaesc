@@ -11,7 +11,7 @@
 3. 编写脚本判断是否在 chrome, 是则发送 Y 按键
 4. 发送完后调用 emacsclient 打开特定 org 文件，跳到最后一行，调用粘贴
 5. 绑定 i3 按键 F10 激活该脚
-   bindsym F10 --release exec ~/myconf/i3/mark_agenda.sh
+   bindsym F10 --release exec current_script
    需要 release 否则会无法释放掉
 6. emacs 中新增 switch-to-agenda-or-cycle 函数绑定成 s-F10, 防止 xdotool 发按键给 i3 无限循环
 7. 把 rime 设置成默认英文

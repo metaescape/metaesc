@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# # [[id:03f8fd2a-463d-4d67-8577-dbc3485cc5c2][亮度配置:2]]
 # Description: Adjusts the screen brightness on systems with AMD GPUs by modifying system files.
 # It takes a single argument specifying the amount to change the brightness (positive or negative).
 # If no argument is provided, the default change is set to 0.
