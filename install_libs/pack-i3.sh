@@ -14,7 +14,7 @@ function install_i3() {
         print_info "arandr compton 设置透明度"
         print_info "scrot 是截取动态图需要, emacs 中也会用到"
 		sudo apt update
-        pkgs="i3 feh dunst zenity wmctrl arandr compton rxvt-unicode xcape xdotool scrot"
+        pkgs="i3 feh dunst zenity wmctrl arandr compton rxvt-unicode xcape xdotool scrot gnome-screenshot"
         echo $pkgs | xargs sudo apt-get install -y
         print_success "i3 生态安装完毕"
 	elif [[ $distro == "redhat" ]]; then

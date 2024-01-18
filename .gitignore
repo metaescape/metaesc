@@ -1,0 +1,8 @@
+.vim/plugged/*
+.vim/autoload/*
+.vim/view
+rime/extended.userdb.txt
+*~
+.netrwhist
+rime/build/
+rime/extended.userdb/

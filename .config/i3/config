@@ -16,6 +16,7 @@ bindsym $super+Up focus up
 bindsym $super+Right focus right
 # # switch-window-in-workspace ends here
 # # [[id:4b0600a7-0c71-4288-aec3-cf86c5377977][emacs-popups]]
+bindsym F2 --release exec ~/metaesc/lib/i3-emacs-publish.sh
 bindsym F3 --release exec ~/metaesc/lib/i3-emacs-xwish.sh
 bindsym F10 --release exec ~/metaesc/lib/i3-emacs-quicknote.sh
 # # emacs-popups ends here
@@ -26,15 +27,15 @@ bindsym Redo exec ~/metaesc/lib/restore_fullscreen.sh && exec ~/metaesc/lib/focu
 bindsym $super+m fullscreen toggle
 # # toggle-fullscreen ends here
 # # [[id:20231220T213028.717444][set-workspace-name]]
-set $ws1 "1:1⚓"
-set $ws2 "2:2⚕"
-set $ws3 "3:3☯"
-set $ws4 "4:4⚑"
-set $ws5 "5:5"
-set $ws6 "6:6"
-set $ws7 "7:7office"
-set $ws8 "8:8"
-set $ws9 "9:9"
+set $ws1 "1⚓"
+set $ws2 "2⚕"
+set $ws3 "3☯"
+set $ws4 "4⚑"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7office"
+set $ws8 "8"
+set $ws9 "9"
 set $ws10 "zero"
 set $wst "t"
 set $wsy "y"
@@ -100,7 +101,9 @@ mode $layout_mode {
   bindsym p focus parent
   bindsym c focus child
 
+  # 用 \ 切换左右布局
   bindsym backslash split h, exec $splith-note
+  # 用 - 切换为上下布局
   bindsym minus split v, exec $splitv-note
   bindsym Escape mode default
   bindsym Return mode "default"
@@ -219,7 +222,8 @@ mode "$main_mode" {
     bindsym t workspace $ws1 exec tmux select-window -t 0:9, mode "default"
 
     # # [[id:20231220T213028.788781][quick-start-apps]]
-    bindsym e exec ~/metaesc/lib/open_emacs 'default', mode "default"
+    bindsym Shift+e exec ~/metaesc/lib/open_emacs 'default', mode "default"
+    bindsym e exec emacsclient -c, mode "default"
     bindsym $super+p exec ~/metaesc/lib/dmkill, mode "default"
     bindsym $super+o exec ~/metaesc/lib/dmlogout, mode "default"
     bindsym $super+g exec google-chrome, mode "default"
@@ -250,7 +254,7 @@ bar {
     # mode hide
     hidden_state hide
     modifier none
-    strip_workspace_numbers yes
+    # strip_workspace_numbers yes
     # binding_mode_indicator yes
     # tray_output primary
     position top
@@ -259,16 +263,17 @@ bar {
         statusline #2f343f
         separator #4b5262
 
-        # colour of border, background, and text
+        # colour of            border  backgr.  text
         focused_workspace      #2f343f #bf616a #d8dee8
         active_workspace       #2f343f #2f343f #d8dee8
         inactive_workspace     #2f343f #2f343f #d8dee8
         urgent_workspace       #2f343f #ebcb8b #2f343f
     }
+    # i3bar_command i3bar --transparency
     status_command i3status
 }
 # # addy-bar ends here
-# # [[id:093c753b-8940-4136-9a4c-78be1a88ae20][addy-theme]]
+# # [[id:20231220T213028.817277][addy-theme]]
 # class                 border  backgr. text    indicator child_border
 client.focused          #2f343f #2f343f #d8dee8 #bf616a   #6272A4
 client.focused_inactive #2f343f #2f343f #d8dee8 #2f343f   #2f343f

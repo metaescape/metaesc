@@ -25,7 +25,6 @@ if [[ "$var1" == 'c' ]]; then
     # dump to a note file
 	# echo "${content} \"$timestamp : ${from}\"" >> ~/braindump/lib/vocab.org
 	# could use xprop to get WM_NAME for source refile
-#WM_NAME(UTF8_STRING) = "ubuntu clipboard manager with i3wm - Google 搜索 - Google Chrome"
 elif [[ "$var1" == 'v' ]]; then
 	sleep 0.1
 	if [[ $focus_win =~ code|gnome-terminal ]]; then
