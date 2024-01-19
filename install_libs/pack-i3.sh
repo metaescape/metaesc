@@ -13,7 +13,7 @@ function install_i3() {
         print_info "例如 feh 设置壁纸，dunst 通知系统，wmctrl,xdotool,xcape 与改建相关"
         print_info "arandr compton 设置透明度"
         print_info "scrot 是截取动态图需要, emacs 中也会用到"
-		sudo apt update
+	sudo apt update
         pkgs="i3 feh dunst zenity wmctrl arandr compton xcape xdotool scrot gnome-screenshot"
         echo $pkgs | xargs sudo apt-get install -y
         print_success "i3 生态安装完毕"
@@ -21,8 +21,6 @@ function install_i3() {
         :
 	elif [[ $distro == "arch" ]]; then
         :
-	elif [[ $distro == "alpine" ]]; then
-		:
 	fi
 }
 
@@ -51,7 +49,5 @@ function setup_i3() {
         :
 	elif [[ $distro == "arch" ]]; then
         :
-	elif [[ $distro == "alpine" ]]; then
-		:
 	fi
 }

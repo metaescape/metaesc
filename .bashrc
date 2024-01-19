@@ -1,5 +1,5 @@
 # # [[id:20230413T164119.017243][最终导出:1]]
-# # [[id:583194c1-3be0-4c3f-aef1-6cd973edea83][basic]]
+# # [[id:20240120T012603.922091][basic]]
 #!/usr/bin/env bash
 myconf_dir=$HOME/metaesc/
 export CONF_DIR=$myconf_dir
@@ -8,29 +8,18 @@ export VISUAL=vim
 #export TERM=screen-256color
 export EDITOR="$VISUAL"
 
-# {{{ shortcut key bindings
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-#覆盖alt-c,需要注释掉fzf.bash中的配置，再添以下语句
-# add -x mean press enter
 
 if [ -t 1 ]; then # avoid bash bind warning: line editing not enabled.
 bind -m emacs-standard '"\C-g\C-g": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
-bind -m emacs-standard -x '"\C-j\C-i": fzf-reminder-widget git'
-# bind -m emacs-standard -x '"\C-j\C-p": push'
-#bind '"\C-j\C-p": "push\C-m"'
 bind -m emacs-standard '"\C-j\C-l": "**\e\e"'
 
-# bind -m emacs-standard '"\C-g\C-s": "git status\C-m"'
 bind -m emacs-standard '"\C-gs": "git status\C-m"'
 
-# bind -m emacs-standard '"\C-g\C-d": "git diff\C-m"'
 bind -m emacs-standard '"\C-gd": "git diff "'
 fi
-#}}}
-
 # # basic ends here
-# # [[id:1e9a9022-4965-4a5f-9a05-3eb5ba888dd0][colors]]
-# color for bash {{{
+# # [[id:20240120T012708.744588][colors-prompt]]
 function showcolors {
     for i in 00{2..8} {0{3,4,9},10}{0..7}; do
         echo -e "$i \e[0;${i}mcolor test \e[00m  \e[1;${i}mSubdermatoglyphic text\e[00m"
@@ -42,6 +31,7 @@ function showcolors {
         done
     done
 }
+
 #color for tmux, vim
 pcolor() {
     for i in {0..255} ; do
@@ -63,36 +53,18 @@ LRED='\033[01;31m'
 YELLOW='\033[01;32m'
 BLUE='\033[01;34m'
 NC='\033[00m'
-#}}}
-# # colors ends here
-# # [[id:6b444577-ac2b-4b02-b4fd-0ad0e3246472][prompt]]
-# PS1 for MACOS and Linux {{{
-export GIT_PS1_SHOWDIRTYSTATE=1
-if [[ $(uname) != 'Linux' ]]; then
-    if [ -f /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash ]; then
-        . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
-    fi
-    source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
-    alias ec=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
-    alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
-    # export PS1="[ \$? \w ] [\$CROSS_COMPILE]\$(__git_ps1)\n >_ "
-    export PS1="[ \$? \w ] []\$(__git_ps1)\n >_ "
-    export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
-    export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:${MANPATH}"
-else
-    if [ -f /usr/lib/git-core/git-sh-prompt ]; then
-        . /usr/lib/git-core/git-sh-prompt
-    fi
-    u_name=$(basename $HOME);
-    if [ "${u_name}" == "root" ]; then
-        export PS1="[ \$? ${LRED} \w ${NC}] []\$(__git_ps1)\n >_ ";
-    else
-        export PS1="[ \$? ${YELLOW}\u@\h${NC}:${BLUE}\w${NC} ] []\$(__git_ps1)\n >_ "
-    fi
+
+if [ -f /usr/lib/git-core/git-sh-prompt ]; then
+    . /usr/lib/git-core/git-sh-prompt
 fi
-# # prompt ends here
-# # [[id:53664718-3b4e-4759-ac0e-0dc8873e490f][alias]]
-# alias group {{{
+u_name=$(basename $HOME);
+if [ "${u_name}" == "root" ]; then
+    export PS1="[ \$? ${LRED} \w ${NC}] []\$(__git_ps1)\n >_ ";
+else
+    export PS1="[ \$? ${YELLOW}\u@\h${NC}:${BLUE}\w${NC} ] []\$(__git_ps1)\n >_ "
+fi
+# # colors-prompt ends here
+# # [[id:20240120T012727.081695][alias]]
 alias ls='ls --color=always'
 alias ll='ls -l -h -a'
 alias la='ls -a'
@@ -104,13 +76,10 @@ alias .3='cd ../../..'
 #For Dirs and files
 alias fhere='find . -iname '
 alias disk='df -Th --total | less'
-alias web='cd /var/www/html'
-
 alias dsize="du -hs * | sort -hr"
 alias dus="du -hs * | sort -hr"
 alias ds='df -h | head -n 1;df -h | sort | grep -v "tmpfs\|loop"'
 alias fs="find -type f -exec du -Sh {} + | sort -rh | head -n 5"
-
 alias tree='tree -A -N'
 
 if [[ $(uname) == 'Linux' ]]; then
@@ -118,11 +87,21 @@ if [[ $(uname) == 'Linux' ]]; then
     alias wallp='find /data/resource/pictures/wallpaper-dark | fzf --bind "ctrl-l:execute(feh --bg-fill {})"'
 fi
 
-# fuction / alias for myconf{{{
-
 ec () {
    nohup ~/metaesc/lib/popup-emacsclient.sh $@ > /dev/null 2>&1 &
 }
+
+
+tmp() {
+    [[ ! -d /tmp/test	]] && mkdir /tmp/test
+    push /tmp/test
+}
+
+ts() { #往右侧tmux pane发命令
+    args=$@
+    tmux send-keys -t right "$args" C-m
+}
+
 
 # quick conf #
 alias vsh='vim ~/.bashrc'
@@ -132,29 +111,10 @@ alias vmx='vim ~/.tmux.conf'
 alias conf='push ${myconf_dir}'
 alias vi3='vim ~/.config/i3/config'
 alias vtip='vim ~/org/historical/entry.org'
-
-#push function add related alias/quick dirs {{{
-tmp() {
-    [[ ! -d /tmp/test	]] && mkdir /tmp/test
-    push /tmp/test
-}
-#}}}
-
-ts() { #往右侧tmux pane发命令
-    args=$@
-    tmux send-keys -t right "$args" C-m
-}
-
-# User specific aliases and functions
-deep() {
-sudo mount -t ecryptfs -o key=passphrase:passphrase_passwd=123,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=yes ~/org/self/.deep ~/org/self/.deep
-}
-
-undeep() {
-    sudo umount ~/org/self/.deep
-}
+alias sshall='$CONF_DIR/utils/bin/conn_server.sh ssh'
+alias sharewifi='sudo iptables -t nat -A POSTROUTING -o wlp1s0 -j MASQUERADE'
 # # alias ends here
-# # [[id:3f1b8bd1-3c2f-4f68-9c60-a9ee40164118][fzf-pushd]]
+# # [[id:b97b7ca0-48e6-49da-b8b0-16b3682db416][fzf-pushd]]
 fzf-down() {
     fzf --height 50% "$@" --border
 }
@@ -207,8 +167,7 @@ vi() {
     fi
 }
 # # fzf-pushd ends here
-# # [[id:9406a016-836b-4953-a7ba-1fb39f5a92b1][conda]]
-# conda shortcuts {{{
+# # [[id:20240120T012818.286398][conda]]
 _conda_activate() {
     local target=$(conda env list | grep -v "^#" \
             | fzf-down -0 --reverse --ansi \
@@ -217,7 +176,6 @@ _conda_activate() {
 }
 alias cona='_conda_activate'
 alias conls='conda list | fzf --reverse -0 --ansi'
-#}}}
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -331,8 +289,33 @@ gpull() {
 	_grsync $sorted_args
 }
 
-alias hug="rsync -avz --delete ~/codes/hugchangelife/ root@tc:/var/www/html"
-alias sshall='$CONF_DIR/utils/bin/conn_server.sh ssh'
-alias sharewifi='sudo iptables -t nat -A POSTROUTING -o wlp1s0 -j MASQUERADE'
+# User specific aliases and functions
+deep() {
+sudo mount -t ecryptfs -o key=passphrase:passphrase_passwd=123,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=yes ~/org/self/.deep ~/org/self/.deep
+}
+
+undeep() {
+    sudo umount ~/org/self/.deep
+}
+
+port=7890
+proxy(){
+    echo export https_proxy=https://127.0.0.1:$port
+    echo export http_proxy=http://127.0.0.1:$port
+    echo export all_proxy=http://127.0.0.1:$port
+    export https_proxy=https://127.0.0.1:$port
+    export http_proxy=http://127.0.0.1:$port
+    export all_proxy=https://127.0.0.1:$port
+}
+
+unproxy(){
+    echo export https_proxy=""
+    echo export http_proxy=""
+    echo export all_proxy=""
+    export https_proxy=""
+    export http_proxy=""
+    export all_proxy=""
+}
+unproxy > /dev/null
 # # rsync ends here
 # # 最终导出:1 ends here
