@@ -108,3 +108,15 @@ function mkdir_not_exist() {
 		mkdir -p "$1"
 	fi
 }
+
+function countdown_warning() {
+    local duration=$1
+    local software_name=$2
+    local script_path=$3
+
+    for ((i=duration; i>0; i--)); do
+        print_info "注意：这将可能覆盖您的 ${software_name} 原始配置。您有 ${i} 秒时间考虑，使用 Ctrl+C 取消操作。"
+        print_info "请查看脚本以了解更多详情：${script_path}"
+        sleep 1
+    done
+}
