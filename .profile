@@ -16,26 +16,6 @@
 #     fi
 # fi
 
-port=7890
-proxy(){
-    echo export https_proxy=https://127.0.0.1:$port
-    echo export http_proxy=http://127.0.0.1:$port
-    echo export all_proxy=http://127.0.0.1:$port
-    export https_proxy=https://127.0.0.1:$port
-    export http_proxy=http://127.0.0.1:$port
-    export all_proxy=https://127.0.0.1:$port
-}
-
-unproxy(){
-    echo export https_proxy=""
-    echo export http_proxy=""
-    echo export all_proxy=""
-    export https_proxy=""
-    export http_proxy=""
-    export all_proxy=""
-}
-unproxy > /dev/null
-
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
@@ -73,4 +53,4 @@ DISTRO=linux-x64
 export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 
 # for personal scripts
-PATH="$HOME/metaesc/bin:$PATH"
+export PATH="$HOME/metaesc/bin:$PATH"

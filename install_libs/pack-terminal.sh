@@ -8,7 +8,7 @@ function install_terminal() {
 	local distro
 	distro=$(whichdistro)
 	if [[ $distro == "debian" ]]; then
-        pkgs="fzf tmux curl ripgrep neovim"
+        pkgs="rxvt-unicode fzf tmux curl ripgrep neovim"
 		print_info "termial 是对终端生态的一个集合，主要是 $pkgs ，这里些套件是标配了"
 		sudo apt update
         echo $pkgs | xargs sudo apt-get install -y

@@ -46,17 +46,6 @@ function install_wps() {
 	fi
 }
 
-function setup_zotero() {
-	local distro
-	distro=$(whichdistro)
-    _cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
-    conf_dir="$(builtin cd "$_cur_dir" && git rev-parse --show-toplevel)"
-	if [[ $distro == "debian" ]]; then
-		print_info "基本不需要手动配置"
-
-	elif [[ $distro == "redhat" ]]; then
-		:
-	elif [[ $distro == "arch" ]]; then
-		:
-	fi
+function setup_wps() {
+    print_info "基本不需要手动配置"
 }

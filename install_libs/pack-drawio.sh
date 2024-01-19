@@ -24,15 +24,5 @@ function install_drawio() {
 
 
 function setup_drawio() {
-	local distro
-	distro=$(whichdistro)
-    _cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
-    conf_dir="$(builtin cd "$current_dir" && git rev-parse --show-toplevel)"
-	if [[ $distro == "debian" ]]; then
-		print_success "当前无额外配置"
-	elif [[ $distro == "redhat" ]]; then
-		:
-	elif [[ $distro == "arch" ]]; then
-		:
-	fi
+    print_success "当前无额外配置"
 }
