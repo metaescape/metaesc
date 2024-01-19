@@ -1,0 +1,8 @@
+distribution_code_name: "ibus-rime"
+distribution_name: Rime
+distribution_version: 1.0.1
+install_time: "Tue Apr  4 16:30:03 2023"
+installation_id: ibus
+rime_version: 1.7.3
+sync_dir: "/data/resource/rime"
+update_time: "Thu Jan 18 10:11:10 2024"

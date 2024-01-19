@@ -1,0 +1,23 @@
+patch:
+  schema_list:
+    - schema: rime_ice
+  switcher/caption: "[方案菜单]"
+  switcher/hotkeys:
+    - F2
+  switcher/save_options:
+    - full_shape
+    - ascii_punct
+  menu/page_size: 9 # 候选项数
+  ascii_composer/good_old_caps_lock: false
+  ascii_composer/switch_key:
+    Shift_L: noop
+    Shift_R: commit_code 
+    Control_L: noop
+    Control_R: noop
+    Caps_Lock: commit_code
+    Eisu_toggle: clear
+  # 取消 url 识别,以使用 , 和 . 翻页
+  recognizer/patterns/url: null
+  key_binder/bindings: # 设置哪些键可以翻页，需要哪个取消注释即可
+    - { accept: comma, send: Page_Up, when: composing} # 逗号向上翻页
+    - { accept: period, send: Page_Down, when: composing}

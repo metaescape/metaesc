@@ -1,8 +1,5 @@
 .vim/plugged/*
 .vim/autoload/*
 .vim/view
-rime/
 *~
 .netrwhist
-rime/build/
-rime/extended.userdb/
