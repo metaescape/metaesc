@@ -7,7 +7,8 @@ comment
 focus_win=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'"' -f4)
  if [[ $focus_win =~ 'Emacs' ]]; then
 	 # emacsclient --eval 切换不到
-	 xdotool key --clearmodifiers alt+plus #switch in emacs
+	 # xdotool key --clearmodifiers alt+plus #switch in emacs
+	 xdotool key --clearmodifiers ctrl+backslash #switch in emacs
  else
 	current_engine=$(ibus engine)
 	# Check if the current engine is rime
