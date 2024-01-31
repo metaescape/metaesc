@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 # 打开不同 配置 的 emacs 方式, 但基本只用默认的
-em=emacs #
+
+export PATH=$HOME/miniconda3/envs/usr/bin:$PATH
+version=${version:-29.2}
+em=~/codes/emacs-${version}/src/emacs
+emc=~/codes/emacs-${version}/lib-src/emacsclient
 if [ "$1" == 'default' ]; then
-	# export MANPATH=/usr/local/texlive/2023/texmf-dist/doc/man:$MANPATH
-	# export INFOPATH=/usr/local/texlive/2023/texmf-dist/doc/info:$INFOPATH.
-	# export PATH=/usr/local/texlive/2023/bin/x86_64-linux:$PATH.
     if [ ! -z $2 ]; then
-        $em --with-profile default --name "$2"
+        $em --name "$2"
     else
-        $em --with-profile default
+        $em
     fi
 	#systemctl restart --user emacsanywhere.service
+elif [ "$1" == 'client' ]; then
+    $emc -c
 elif [ "$1" == 'test' ]; then
-	$em --with-profile 'test'
+	$em --init-directory ~/.wemacs_test/
 else 
-	$em --with-profile "default"
+	$em
 fi

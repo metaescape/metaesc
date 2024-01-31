@@ -223,7 +223,7 @@ mode "$main_mode" {
 
     # # [[id:20231220T213028.788781][quick-start-apps]]
     bindsym Shift+e exec ~/metaesc/lib/open_emacs 'default', mode "default"
-    bindsym e exec emacsclient -c, mode "default"
+    bindsym e exec ~/metaesc/lib/open_emacs "client", mode "default"
     bindsym $super+p exec ~/metaesc/lib/dmkill, mode "default"
     bindsym $super+o exec ~/metaesc/lib/dmlogout, mode "default"
     bindsym $super+g exec google-chrome, mode "default"

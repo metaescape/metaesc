@@ -1,19 +1,25 @@
-(require 'package)
-(setq package-user-dir "~/.wemacs/elpa")
-(package-initialize)
+;; (require 'package)
+;; (setq package-user-dir "~/.wemacs/elpa")
+;; (package-initialize)
+(require 'find-lisp)
+(require 'org)
+(require 'org-id)
+(require 'ob-tangle)
 (setq org-id-locations-file "~/.wemacs/.org-id-locations")
 (setq org-confirm-babel-evaluate nil
       org-src-preserve-indentation t)
 (org-babel-do-load-languages
  'org-babel-load-languages '((org . t) (shell . t))
  )
-(require 'find-lisp)
-(require 'org)
-(require 'org-id)
-(require 'ob-tangle)
 (setq org-babel-default-header-args '((:comments . "noweb")))
+
 ;; 会对每个 tangle src block 所在 subtree 生成 id(如果没有）
+;; not work after org9.5, so the comments is always file link, not ids
 (setq org-id-link-to-org-use-id t) 
+
+;; 用绝对路径，因为相对路径经常算错
+(setq org-babel-tangle-use-relative-file-links nil)
+
 
 (defun my/org-babel-comment-out-link-lines ()
   "Comment out all lines starting with # [[."
@@ -38,9 +44,9 @@
   "Modify link format in the tangled FILE."
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "\\[\\[\\[\\[id:\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]\\]\\[\\([^]]+\\)\\]\\]"
+    (while (re-search-forward "\\[\\[\\[\\[\\(id:\\|file:\\)\\([^]]+\\)\\]\\[\\([^]]+\\)\\]\\]\\]\\[\\([^]]+\\)\\]\\]"
                               nil t)
-      (replace-match "[[id:\\1][\\3]]"))
+      (replace-match "[[\\1\\2][\\4]]"))
     (save-buffer)))
 
 (add-hook 'org-babel-post-tangle-hook #'my/org-babel-comment-out-link-lines)
@@ -56,6 +62,18 @@
                  ("inputrc" "/tmp/inputrc.org")
                  ("bashrc" "~/org/logical/bash.org")))
 
+(defun my/count-org-ids ()
+  "Count the number of IDs in the org-id-locations-file."
+  (if (and (file-exists-p org-id-locations-file)
+           (require 'org-id nil t))
+      (with-temp-buffer
+        (insert-file-contents org-id-locations-file)
+        (goto-char (point-min))
+        (let ((ids-list (read (current-buffer))))
+          (message "Total org IDs: %d"
+                   (apply '+ (mapcar (lambda (x) (- (length x) 1)) ids-list)))))
+    (message "org-id-locations-file does not exist or org-id not loaded.")))
+
 (defun tangle-config-file (name)
   "Tangle only specific language blocks from org file based on file extension."
   (let ((prog-mode-hook nil)  ; Avoid running hooks when tangling
@@ -67,4 +85,6 @@
       (apply #'org-babel-tangle-file args)
       ;; 恢复原始的 org-babel-tangle-lang-exts
       (setq org-babel-tangle-lang-exts original-lang-exts))
-    (message (format "Tangled %s completed." name))))
+    (message (format "Tangled %s completed with org version %s"
+                     name
+                     org-version))))
