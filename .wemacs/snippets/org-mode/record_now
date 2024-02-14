@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: record now
+# key: ,rnow
+# group: time
+# --
+
+`(format-time-string "[%Y-%m-%d %a %H:%M] ")`

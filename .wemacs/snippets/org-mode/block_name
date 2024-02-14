@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: org block name
+# key: ,name
+# group: org block
+# --
+
+#+name: $0

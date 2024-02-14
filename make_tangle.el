@@ -13,9 +13,9 @@
  )
 (setq org-babel-default-header-args '((:comments . "noweb")))
 
-;; 会对每个 tangle src block 所在 subtree 生成 id(如果没有）
+;; org-id-link-to-org-use-id 为 t 会对每个 tangle src block 所在 subtree 生成 id(如果没有）
 ;; not work after org9.5, so the comments is always file link, not ids
-(setq org-id-link-to-org-use-id t) 
+(setq org-id-link-to-org-use-id nil) 
 
 ;; 用绝对路径，因为相对路径经常算错
 (setq org-babel-tangle-use-relative-file-links nil)
@@ -27,8 +27,7 @@
     (goto-char (point-min))
     (while (re-search-forward "^[[:space:]]*# \\[\\[" nil t)
       (comment-region (line-beginning-position) (line-end-position))))
-  (save-buffer)
-  )
+  (save-buffer))
 
 
 (defun my/org-babel-comment-out-ends-here-lines ()
@@ -37,8 +36,7 @@
     (goto-char (point-min))
     (while (re-search-forward "^[[:space:]]*#.*ends here$" nil t)
       (comment-region (line-beginning-position) (line-end-position))))
-  (save-buffer)
-  )
+  (save-buffer))
 
 (defun my/fix-nested-link-format ()
   "Modify link format in the tangled FILE."

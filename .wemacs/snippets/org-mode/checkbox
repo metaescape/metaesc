@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: check box
-# key: ,-
+# key: --
 # --
     
 - [ ] $0

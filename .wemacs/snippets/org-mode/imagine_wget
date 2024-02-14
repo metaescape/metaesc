@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: imagine wget
+# key: ,imget
+# group: imagine
+# --
+
+#+IMAGINE: wget -O %{%o.png} %f

@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: blog
+# name: blog options
 # key: ,bl
 # --
 
@@ -11,3 +11,5 @@
 #+DATE: 
 #+CREATED: 
 #+OPTIONS: num:nil
+#+bibliography: ~/org/lib/zotero.bib
+#+cite_export: csl ~/org/lib/acl.csl f

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: attr html
+# key: ,attr
+# group: org block
+# --
+
+#+ATTR_HTML: :width ${0:800} :align center

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: imagine pdf
+# key: ,imgp
+# group: imagine
+# --
+
+#+IMAGINE: ${0:pdfsnap.py} -s 300

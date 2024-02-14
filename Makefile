@@ -26,6 +26,7 @@ wemacs-tangle:
 	emacs --batch -l ~/metaesc/make_tangle.el --eval "(tangle-config-file \"init\")"
 	emacs
 
+
 xwish-tangle:
 	emacs --batch -l ~/metaesc/make_tangle.el --eval "(tangle-config-file \"xwish\")"
 

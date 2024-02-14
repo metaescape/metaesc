@@ -37,6 +37,7 @@
 ;; 取消工具栏， 左右边距, 放在 init 会加载包导致速度更慢
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
+;; hide scroll bar
 (push '(vertical-scroll-bars) default-frame-alist)
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
