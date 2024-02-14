@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: inactivate datetime now
+# key: ,ianow
+# group: time
+# --
+
+`(format-time-string "[%Y-%m-%d %a %H:%M] ")`
