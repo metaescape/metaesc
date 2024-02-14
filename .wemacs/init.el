@@ -2533,9 +2533,6 @@ FILENAME defaults to current buffer."
   (use-package yasnippet-snippets)
   (setq yas-snippet-dirs '("~/.wemacs/snippets"))
   :general
-  (defun get-current-week ()
-    (org-days-to-iso-week (org-today)))
-
   (defun my/insert-time ()
     (interactive)
     (insert (format-time-string "=%H:%M= ")))
@@ -2604,7 +2601,7 @@ FILENAME defaults to current buffer."
            :unnarrowed t)))
   :general
   (:keymaps 'normal 
-            "s-r b" 'org-roam-buffer-toggle
+            "s-r s-r" 'org-roam-buffer-toggle
             "s-r f"  'org-roam-find-file
             "s-r g"  'org-roam-node-find ;; graph node find
             )

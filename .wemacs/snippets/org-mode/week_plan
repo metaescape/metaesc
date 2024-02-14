@@ -2,12 +2,13 @@
 # name: week plan
 # key: ,wk
 # group: org block
+# --
 
-* 第 `(get-current-week)` 周事项跟踪
+* 第 `(org-days-to-iso-week (org-today))` 周事项跟踪
 ** 周总结
-- `(get-current-week)` 周总结
-  ,#+BEGIN: clocktable :maxlevel 1 :emphasize nil :scope (lambda () (get-gtd-files-by-year `(format-time-string "%Y")`)) :block `(format-time-string "%Y")`-W`(get-current-week)`$0
+- `(org-days-to-iso-week (org-today))` 周总结
+  #+BEGIN: clocktable :maxlevel 1 :emphasize nil :scope (lambda () (get-gtd-files-by-year `(format-time-string "%Y")`)) :block `(format-time-string "%Y")`-W`(org-days-to-iso-week (org-today))`$0
 
   #+END: clocktable
 
-** `(get-current-week)` 周运动安定
+** `(org-days-to-iso-week (org-today))` 周运动安定

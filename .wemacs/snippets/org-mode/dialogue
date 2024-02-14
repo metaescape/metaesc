@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: dialogue
 # key: ,d1
+# group: org block
 # --
 
 #+begin_dialogue

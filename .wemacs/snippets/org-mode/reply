@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: reply
 # key: ,d2
+# group: org block
 # --
 
 #+begin_reply

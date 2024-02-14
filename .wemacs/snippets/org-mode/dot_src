@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: dot_src
 # key: ,dt
+# group: org block
 # --
 
 #+begin_src dot :file /tmp/$1.png :cmdline -Tpng -Gsize=4,8 -Gdpi=200

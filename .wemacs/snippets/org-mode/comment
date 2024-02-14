@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: comment
 # key: ,c
+# group: org block
 # --
 
 #+begin_comment

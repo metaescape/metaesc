@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: example_src
 # key: ,ex
+# group: org block
 # --
 
 #+begin_example

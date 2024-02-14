@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: conf_src
 # key: ,cf
+# group: org block
 # --
 
 #+begin_src conf

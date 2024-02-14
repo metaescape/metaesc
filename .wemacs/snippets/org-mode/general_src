@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: general_src
 # key: ,sr
+# group: org block
 # --
 
 #+begin_src $1

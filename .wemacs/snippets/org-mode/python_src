@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: python_src
 # key: ,p
+# group: org block
 # --
 
 #+begin_src python

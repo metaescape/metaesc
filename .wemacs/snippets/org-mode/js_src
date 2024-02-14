@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: js_src
 # key: ,js
+# group: org block
 # --
 
 #+begin_src js

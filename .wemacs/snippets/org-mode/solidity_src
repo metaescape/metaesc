@@ -1,6 +1,7 @@
  -*- mode: snippet -*-
 # name: solidity_src
 # key: ,s
+# group: org block
 # --
 
 #+begin_src solidity

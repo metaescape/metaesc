@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: quote
 # key: ,q
+# group: org block
 # --
 
 #+begin_quote

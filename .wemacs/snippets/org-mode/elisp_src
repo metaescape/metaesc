@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: elisp_src
 # key: ,el
+# group: org block
 # --
 
 #+begin_src emacs-lisp :results none

@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: chat-gpt
 # key: ,g
+# group: org block
 # --
 
 #+begin_gpt

@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: details
 # key: ,d
+# group: org block
 # --
 
 #+begin_details 

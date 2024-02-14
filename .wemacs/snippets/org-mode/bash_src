@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: bash_src
 # key: ,b
+# group: org block
 # --
 
 #+begin_src bash
