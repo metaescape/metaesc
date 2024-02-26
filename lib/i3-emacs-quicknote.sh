@@ -44,7 +44,7 @@ elif [[ $focus_win_class =~ 'emacs' ]]; then
 	# echo "Processing F10 key... 检测死循环" >> /tmp/testout
 	# xdotool key F10 #send F10 to emacs window to cycle agenda，触发了死循环
 	# 必须修改 emacs 中 agenda cycle 按键
-	xdotool key super+F10 #send F10 to emacs window to cycle agenda，触发了死循环
+	xdotool key super+F10
 else
 	sleep 0.01
 	~/metaesc/lib/restore_fullscreen.sh
@@ -77,6 +77,6 @@ else
 	# 	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
 	# else
 		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t nil t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
+	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
 	# fi
 fi
