@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: now: <datetime>
+# key: ,anow
+# group: time
+# --
+
+`(format-time-string "<%Y-%m-%d %a %H:%M> ")`

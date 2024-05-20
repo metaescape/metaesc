@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: elisp_src_no_eval
+# key: ,en
+# group: org block
+# --
+
+#+begin_src emacs-lisp :eval no
+$0
+#+end_src
