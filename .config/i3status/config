@@ -8,15 +8,17 @@ general {
 		color_bad = '#ba5e57'
 }
 
+order += "tztime local"
+# order += "memory"
 order += "load"
-order += "cpu_temperature 0"
-#order += "disk /"
 order += "disk /home"
+order += "cpu_temperature 0"
+order += "battery 0"
+
+#order += "disk /"
 #order += "ethernet enp1s0"
 #order += "wireless wlp2s0"
 # order += "volume master"
-order += "battery 0"
-order += "tztime local"
 
 
 load {
@@ -54,6 +56,13 @@ volume master {
         mixer_idx = 0
 }
 
+memory {
+        format = "<span background='#88c0d0'> %free 💾 </span>"
+		#format = "<span background='#88c0d0'> 💾%used/%free </span>"
+        threshold_degraded = "10%"
+        format_degraded = "MEMORY: %free"
+}
+
 battery 0 {
 	last_full_capacity = true
 	integer_battery_capacity = true
@@ -69,6 +78,6 @@ battery 0 {
 
 tztime local {
 		format = "<span background='#81a1c1'> %time </span>"
-		format_time = "%b%-d%a %H:%M"
+		format_time = "%b%d 🧘🏻‍♂️ %a %H:%M"
 }
 
