@@ -29,15 +29,6 @@ function install_wps() {
 			print_info "并保持 $INSTALLERS 中只有一个最新的 deb 文件"
 		    print_info "然后重新执行 ./metaesc.sh -i wps"
         fi
-
-        if ! command -v masterpdfeditor5 &> /dev/null
-        then
-			print_info "安装 master-pdf-editor 用于编辑 outline"
-			sudo apt install ./master-pdf-editor-5.9.40-qt5.9.x86_64.deb
-			print_success "master-pdf-editor 安装完毕"
-		else 
-			print_success "master-pdf-editor 已安装"
-        fi
         
 	elif [[ $distro == "redhat" ]]; then
 		:
