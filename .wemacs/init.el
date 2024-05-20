@@ -115,10 +115,10 @@
       (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
       (abort-recursive-edit)))
   
-  (general-define-key
-   :keymaps '(normal visual global)
-   [escape] 'keyboard-quit
-   )
+    (general-define-key
+     :keymaps '(normal visual global)
+     [escape] 'keyboard-quit
+     )
   
   (general-define-key
    :keymaps '(minibuffer-local-map
@@ -161,7 +161,7 @@
       (kbd "O") 'evil-open-above
       (kbd "<") 'org-promote-subtree
       (kbd ">") 'org-demote-subtree
-      ))
+    ))
   
   (add-hook 'org-log-buffer-setup-hook 'evil-insert-state)
   ;; evil-collections ends here
@@ -183,32 +183,32 @@
     ;; :diminish evil-commentary
     :config
     (evil-commentary-mode)
-    )
+  )
   ;; evil-commentary ends here
   ;; [[file:~/org/logical/evil.org::evil-multiedit][evil-multiedit]]
   (use-package evil-multiedit
     :load-path "site-lisp/evil-multiedit"
     ;; git@github.com:metaescape/evil-multiedit.git
     :general
-    (:keymaps '(evil-visual-state-map)
-              ;; Highlights all matches of the selection in the buffer.
-              "R" 'evil-multiedit-match-all
-              ;; incrementally add the next unmatched match.
-              "n" 'evil-multiedit-match-and-next
-              "N" 'evil-multiedit-match-and-prev ;; p for evil past
-              )
-    (:keymaps '(evil-multiedit-state-map) 
-              "SPC" 'evil-multiedit-toggle-or-restrict-region
-              "ESC" 'evil-multiedit-abort
-              "C-j" 'evil-multiedit-next
-              "C-k" 'evil-multiedit-prev
-              "n" 'evil-multiedit-match-and-next
-              "N" 'evil-multiedit-match-and-prev
-              )
-    (:keymaps '(evil-multiedit-insert-state-map) 
-              "C-j" 'evil-multiedit-next
-              "C-k" 'evil-multiedit-prev
-              )
+     (:keymaps '(evil-visual-state-map)
+     ;; Highlights all matches of the selection in the buffer.
+     "R" 'evil-multiedit-match-all
+     ;; incrementally add the next unmatched match.
+     "n" 'evil-multiedit-match-and-next
+     "N" 'evil-multiedit-match-and-prev ;; p for evil past
+     )
+     (:keymaps '(evil-multiedit-state-map) 
+     "SPC" 'evil-multiedit-toggle-or-restrict-region
+     "ESC" 'evil-multiedit-abort
+     "C-j" 'evil-multiedit-next
+     "C-k" 'evil-multiedit-prev
+     "n" 'evil-multiedit-match-and-next
+     "N" 'evil-multiedit-match-and-prev
+     )
+     (:keymaps '(evil-multiedit-insert-state-map) 
+     "C-j" 'evil-multiedit-next
+     "C-k" 'evil-multiedit-prev
+     )
     :config
     (define-key evil-motion-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
     ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
@@ -224,7 +224,7 @@
     (evil-snipe-mode -1) ;; disabled 2 char jump
     (evil-snipe-override-mode +1) ;; enable 1 char jump
     (setq evil-snipe-scope 'line) ;; jump in line
-    )
+  )
   
   (use-package evil-find-char-pinyin
     :config
@@ -241,17 +241,17 @@
     :config
     (setq avy-all-windows t) ;; jump to any buffer in window
     (setq avy-timeout-seconds 0.5)
-    
+  
     (use-package ace-pinyin
       :config
       (ace-pinyin-global-mode +1))
-    
+  
     (defun ace-pinyin--build-string-regexp (string)
       (pinyinlib-build-regexp-string
        string
        (not ace-pinyin-enable-punctuation-translation)
        (not ace-pinyin-simplified-chinese-only-p)))
-    
+  
     (defun ace-pinyin-goto-char-timer (&optional arg)
       "Read one or many consecutive chars and jump to the first one.
   The window scope is determined by `avy-all-windows' (ARG negates it)."
@@ -263,7 +263,7 @@
           (setq avy--old-cands
                 (avy--read-candidates #'ace-pinyin--build-string-regexp))
           (avy-process avy--old-cands))))
-    
+  
     (general-define-key
      :keymaps 'org-agenda-mode-map
      :states 'motion ;; agenda 下用 motion 代替 normal state
@@ -290,7 +290,7 @@
   ;; :q should kill the current buffer rather than quitting emacs entirely
   (evil-ex-define-cmd "q" 'kill-this-buffer)
   (evil-ex-define-cmd "wq" 'kill-this-buffer)
-  ;; Need to type out :quit to close emacs
+   ;; Need to type out :quit to close emacs
   (evil-ex-define-cmd "quit" 'evil-quit)
   ;; ex-quit-buffer ends here
   (general-define-key
@@ -423,7 +423,20 @@
    :config
    ;; Doesn't work as expected!
    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-   (setq dired-open-extensions '(("mkv" . "mpv"))))
+   (setq dired-open-extensions '(("mkv" . "mpv")
+                                 ("pdf" . "masterpdfeditor5")))
+ 
+   (defun dired-open-current-dir ()
+     "Open the current directory in the default file browser."
+     (interactive)
+     (let ((current-directory (dired-current-directory)))
+       (if (eq system-type 'windows-nt)
+           (w32-shell-execute "open" current-directory)
+         (call-process "xdg-open" nil 0 nil current-directory))))
+ 
+   (evil-collection-define-key 'normal 'dired-mode-map
+     "go" 'dired-open-current-dir)
+   )
  ;; dired-open ends here
  ;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
  (use-package dired-hide-dotfiles
@@ -480,7 +493,9 @@
   ;;~/m/emacs/emacs_conf.rg
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root)
 
-  ;; mode line settings
+  ;; don't show tabbar name
+  (setq doom-modeline-workspace-name nil)
+
   (column-number-mode t))
 ;; mode line and theme:1 ends here
 
@@ -598,7 +613,7 @@
   :ensure nil
   :config (global-so-long-mode 1))
 
-;; warn when opening files bigger than 60MB
+;; warn when opening files bigger than 50MB
 (setq large-file-warning-threshold (* 60 1024 1024))
 ;; solong:1 ends here
 
@@ -723,26 +738,6 @@
 (setq enable-local-variables :safe)
 ;; auto read file:1 ends here
 
-;; [[file:~/org/design/wemacs.org::*时间戳函数][时间戳函数:1]]
-(defun now ()
-  (interactive)
-  (insert (format-time-string "[%Y-%m-%d %a %H:%M]")))
-(general-define-key
- :keymaps 'general-override-mode-map
- :states '(normal insert visual motion)
- "s-s n" 'now
- )
-
-(defun insert-time ()
-  (interactive)
-  (insert (format-time-string "=%H:%M= ")))
-(general-define-key
- :keymaps 'general-override-mode-map
- :states '(normal insert visual motion)
- "s-s s-s" 'insert-time
- )
-;; 时间戳函数:1 ends here
-
 ;; [[file:~/org/design/wemacs.org::*occur 搜索][occur 搜索:1]]
 ;; occur do what i mean: M-s o to select current word to search
 ;; like grep in vim,but more powerful.
@@ -779,6 +774,8 @@
 (use-package webjump
   :ensure nil
   :config
+  (setq browse-url-handlers
+        '(("." . browse-url-default-browser)))
   (setq webjump-baidu-query "https://www.baidu.com/s?wd=%s"
         webjump-google-query "https://www.google.com/search?q=%s"
         webjump-google-trans "https://translate.google.com/?hl=zh-CN&sl=auto&tl=zh-CN&text=%s&op=translate"
@@ -1027,14 +1024,18 @@
   (setq tab-bar-new-button-show nil)
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-show 1)
-  (setq tab-bar-tab-hints 1)
+  (setq tab-bar-tab-hints t) ;; show number
   (setq tab-bar-auto-width nil) ;; 取消自动 padding 大小(29.2 引入)
+  (setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
   (defun my/update-tab-bar-after-theme-change (&rest _args)
     "Update tab bar face attributes after a theme change."
     (set-face-attribute 'tab-bar-tab nil
                         :inherit 'doom-modeline-panel
                         :foreground 'unspecified
-                        :background 'unspecified))
+                        :background 'unspecified)
+  
+    (set-face-attribute 'tab-bar nil
+                        :foreground (face-attribute 'default :foreground)))
   
   (advice-add 'load-theme :after #'my/update-tab-bar-after-theme-change)
   (my/update-tab-bar-after-theme-change)
@@ -1077,15 +1078,15 @@
     (interactive)
     (cond 
      ((member major-mode '(special-mode
-                               messages-buffer-mode
-                               helpful-mode
-                               magit-status-mode
-                               help-mode
-                               Custom-mode
-                               ibuffer-mode
-                               debugger-mode
-                               org-roam-mode
-                               compilation-mode))
+                           messages-buffer-mode
+                           helpful-mode
+                           magit-status-mode
+                           help-mode
+                           Custom-mode
+                           ibuffer-mode
+                           debugger-mode
+                           org-roam-mode
+                           compilation-mode))
       (quit-window))
      ((member major-mode '(package-menu-mode))
       (switch-to-buffer (other-buffer (current-buffer) nil)))
@@ -1349,7 +1350,7 @@
     _h_: winner-undo                 _l_: winner-redo
     _i_: org-clock-in                _o_: org-clock-out
     _d_: org-clock done              _v_: org-imagine-view
-    _._: repeat operations               
+    _._: repeat operations           _x_: kill-this-buffer               
     "
   ;;("d" debug-test-hydra/body)
   ("r" (lambda () (interactive) (counsel-file-jump " " "/data/resource/readings")))
@@ -1366,6 +1367,8 @@
   ("i" (lambda () (interactive) (org-clock-in) (org-agenda "" " ")
          (evil-window-mru)))
   ("o" (lambda () (interactive) (org-clock-out) (org-agenda "" " ")
+         (evil-window-mru)))
+  ("I" (lambda () (interactive) (my/clock-in-long-focus) (org-agenda "" " ")
          (evil-window-mru)))
   ("d" (lambda () (interactive) (org-todo "DONE") (org-agenda "" " ")
          (evil-window-mru)))
@@ -1574,43 +1577,40 @@ FILENAME defaults to current buffer."
 ;; [[file:~/org/design/wemacs.org::*abbrev][abbrev:1]]
 (setq abbrev-mode nil) ;;change to t to try abbrev
 (define-abbrev-table 'global-abbrev-table 
-  '(("cnfi" "#+begin_src emacs-lisp :results none\n#+end_src"))
-  )
+ '(("cnfi" "#+begin_src emacs-lisp :results none\n#+end_src"))
+ )
 ;; abbrev:1 ends here
-
-;; [[file:~/org/design/wemacs.org::*Yankpad][Yankpad:1]]
-;; # [[file:~/org/logical/yankpad.org::yankpad][yankpad]]
 
 ;; [[file:~/org/design/wemacs.org::*company][company:1]]
 (use-package company
-  :config
-  (setq company-idle-delay 0) ;;default 0.2
-  (setq company-echo-delay 0) ;;default 0.01
-  (setq company-show-numbers t) 
-  (setq company-minimum-prefix-length 1) ;;default 3
-  (setq company-dabbrev-minimum-length 2) ;;default 4
-  (setq company-selection-wrap-around t) ;;default nil, next of end is begin
-  (setq company-dabbrev-downcase nil)
-  (setq company-backends '(company-capf
-                           company-keywords
-                           company-semantic
-                           company-files
-                           company-dabbrev
-                           company-etags
-                           company-elisp
-                           company-clang
-                           company-cmake
-                           company-yasnippet))
-  (setq company-require-match nil)
-  (global-company-mode)
+ :config
+ (setq company-idle-delay 0) ;;default 0.2
+ (setq company-echo-delay 0) ;;default 0.01
+ (setq company-show-numbers t) 
+ (setq company-minimum-prefix-length 2) ;;default 3
+ (setq company-dabbrev-minimum-length 2) ;;default 4
+ (setq company-selection-wrap-around t) ;;default nil, next of end is begin
+ (setq company-dabbrev-downcase nil)
+ (setq company-backends '(company-capf
+                        company-keywords
+                        company-semantic
+                        company-files
+                        company-dabbrev
+                        company-etags
+                        company-elisp
+                        company-clang
+                        company-cmake
+                        company-yasnippet))
+ (setq company-require-match nil)
+ (global-company-mode)
 
-  (use-package company-posframe
-    :after company
-    :hook (company-mode . company-posframe-mode)
-    :config
-    (use-package posframe) 
-    )
+ (use-package company-posframe
+  :after company
+  :hook (company-mode . company-posframe-mode)
+  :config
+  (use-package posframe) 
   )
+ )
 ;; company:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*与 yasnippet 冲突问题问题][与 yasnippet 冲突问题问题:2]]
@@ -1648,12 +1648,12 @@ FILENAME defaults to current buffer."
   ;; basic-ui ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::org-appear][org-appear]]
   (setq org-emphasis-alist
-        '(("*" (bold :slant italic :weight black )) ;; this make bold both italic and bold, but not color change
-          ("/" (italic :foreground "dark salmon" )) ;; italic text, the text will be "dark salmon"
-          ("_" underline :foreground "cyan" ) ;; underlined text, color is "cyan"
-          ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
-          ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
-          ("+" (:strike-through t :foreground "dark orange" ))))
+    '(("*" (bold :slant italic :weight black )) ;; this make bold both italic and bold, but not color change
+      ("/" (italic :foreground "dark salmon" )) ;; italic text, the text will be "dark salmon"
+      ("_" underline :foreground "cyan" ) ;; underlined text, color is "cyan"
+      ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
+      ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
+      ("+" (:strike-through t :foreground "dark orange" ))))
   
   (use-package org-appear
     :after org
@@ -1771,12 +1771,12 @@ FILENAME defaults to current buffer."
   
   ;; TODO color
   (setq org-todo-keyword-faces
-        '(
-          ("TODO" .      (:foreground "orange" :weight bold))
-          ("NEXT" .      (:foreground "yellow" :weight bold))
-          ("DONE" .      (:foreground "green" :weight bold))
-          ("CANCEL" .     (:foreground "gray40"))
-          ))
+     '(
+      ("TODO" .      (:foreground "orange" :weight bold))
+      ("NEXT" .      (:foreground "yellow" :weight bold))
+      ("DONE" .      (:foreground "green" :weight bold))
+      ("CANCEL" .     (:foreground "gray40"))
+  ))
   
   (setq org-log-into-drawer t) ;; add logbook
   (setq org-log-done 'time) ;; add CLOSED: timestamp when task done
@@ -1802,8 +1802,8 @@ FILENAME defaults to current buffer."
                   (org-agenda-skip-function #'org-agenda-skip-all-siblings-but-first)
                   ))
            (search "^* \\.*"
-                   ((org-agenda-overriding-header "Inbox Processing")
-                    (org-agenda-files '(,gtd-inbox-file))))
+                 ((org-agenda-overriding-header "Inbox Processing")
+                  (org-agenda-files '(,gtd-inbox-file))))
            nil)))
   
   (defun org-agenda-skip-all-siblings-but-first ()
@@ -1864,6 +1864,7 @@ FILENAME defaults to current buffer."
     (org-clock-continuously nil)
     (org-clock-in-switch-to-state "NEXT")
     (org-clock-out-remove-zero-time-clocks t)
+    (org-clock-display-default-range 'untilnow) ;; show statistic in all range
     (org-clock-persist t)
     (org-log-note-clock-out nil) ;; add log when clockout
     ;; (org-clock-persist-file (expand-file-name (format "%s/emacs/org-clock-save.el" xdg-cache)))
@@ -1880,21 +1881,29 @@ FILENAME defaults to current buffer."
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
-    
-    (defun set-org-clock-effort-when-nil ()
-      (when (not org-clock-effort)
-        (setq org-clock-effort "0:25")
-        (org-clock-update-mode-line)))
+  
+      (setq my/org-clock-effort 25)
+      
+      (defun set-org-clock-effort-when-nil ()
+        (setq org-clock-effort (format "00:%s" my/org-clock-effort))
+        (org-clock-update-mode-line))
+  
+    (defun my/clock-in-long-focus ()
+      (interactive)
+      ;; (setq my/org-clock-effort 
+      ;;       (completing-read "Select efforts: " '("0:52")))
+      (let ((my/org-clock-effort 52))
+        (org-clock-in)))
     
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
-    
+  
     (defun clock-in-focus-notify ()
       (let ((current-focus-time
              (/ (float-time
                  (time-subtract (current-time) org-clock-start-time))
                 60)))
-        (when (> current-focus-time 24)
+        (when (>= current-focus-time my/org-clock-effort)
           (start-process-shell-command
            ""
            nil
@@ -1904,33 +1913,39 @@ FILENAME defaults to current buffer."
                          (substring-no-properties
                           (org-clock-get-clock-string)))
                       ""))))
-    
+  
+    (setq my/clock-in-focus-notify-gap (* 60 9))
+  
     (defun clock-in-focus-timer-start ()
-      "设置一个计时器，每 480 秒（8分钟）触发一次 clock-in-focus-notify"
-      (setq clock-in-focus-timer (run-at-time 480 480 #'clock-in-focus-notify)))
-    
+      "设置一个计时器，每 my/clock-in-focus-notify-gap 触发一次 clock-in-focus-notify"
+      (setq clock-in-focus-timer
+            (run-at-time
+             my/clock-in-focus-notify-gap
+             my/clock-in-focus-notify-gap
+             #'clock-in-focus-notify)))
+  
     (defun clock-in-focus-timer-stop ()
       (when (boundp 'clock-in-focus-timer)
         (cancel-timer clock-in-focus-timer)))
-    
+  
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
-    
+  
     (defun clock-out-idle-notify ()
       (setq clock-out-idle-time-duration (+ 10 clock-out-idle-time-duration))
       (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
-    
+  
     (defun clock-out-idle-timer-start ()
       "设置一个计时器，每 600 秒（10分钟）触发一次 clock-out-idle-notify,
        用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
-      
+  
       (setq clock-out-idle-time-duration 0)
       (setq clock-out-idle-timer (run-at-time 600 600 #'clock-out-idle-notify)))
-    
+  
     (defun clock-out-idle-timer-stop ()
       (when (boundp 'clock-out-idle-timer)
         (cancel-timer clock-out-idle-timer)))
-    
+  
     (add-hook 'org-clock-out-hook #'clock-out-idle-timer-start)
     (add-hook 'org-clock-in-hook #'clock-out-idle-timer-stop)
     )
@@ -1939,20 +1954,20 @@ FILENAME defaults to current buffer."
   (defun my/org-agenda-clock-in-and-refresh ()
     (interactive)
     (org-agenda-clock-in) (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun my/org-agenda-clock-out-and-refresh ()
     (interactive)
     (org-agenda-clock-out) (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun my/org-agenda-done ()
     (interactive)
     (org-agenda-todo "DONE") (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun org-agenda--jump-to-now ()
     "Search for the keyword 'now' in the current buffer and jump to it."
     (goto-char (point-min))  ; 从 buffer 的开头开始搜索
     (re-search-forward "now" nil t))  ; 搜索 'now' 关键词
-
+  
   (defun org-agenda-clockreport-mode-enhenced ()
     (interactive)
     (if org-agenda-clockreport-mode
@@ -1964,7 +1979,7 @@ FILENAME defaults to current buffer."
         (org-agenda-clockreport-mode)
         (re-search-forward "Time" nil t)
         (next-line 2))))
-
+  
   (general-define-key
    :keymaps 'org-agenda-mode-map
    :states 'motion ;; agenda 下用 motion 代替 normal state
@@ -1983,7 +1998,7 @@ FILENAME defaults to current buffer."
           (tab-bar-switch-to-tab tab-name)
         (tab-new)
         (tab-rename tab-name))))
-  (setq org-agenda-window-setup 'only-window)
+    (setq org-agenda-window-setup 'only-window)
   
   (defun gtd-setup-window-layout ()
     "Sets up a window layout with one window on the left and two windows stacked vertically on the right."
@@ -1992,8 +2007,6 @@ FILENAME defaults to current buffer."
       (delete-other-windows)
       ;; 打开 agenda 跳到 clock 上
       (org-agenda "" " ")
-      (ignore-errors
-        (goto-agenda-last-clocked))
       (split-window-horizontally) ;; 切分左右窗口
       (split-window-vertically)  ;; 在左侧 agenda 切分上下窗口
       (select-window (next-window)) ;; 在左侧下方窗口打开 entry 文件
@@ -2016,7 +2029,7 @@ FILENAME defaults to current buffer."
       (if (equal current-tab "gtds")
           (tab-bar-switch-to-recent-tab)
         (progn (create-or-switch-to-tab "gtds")
-               (gtd-setup-window-layout)))
+                 (gtd-setup-window-layout)))
       (setq last-switch-action "tab-switch")))
   (bind-key (kbd "s-<f10>") (lambda () (interactive) (gtd-oriented-tab-switch "gtds")))
   ;; gtd-oriented-tab ends here
@@ -2071,19 +2084,19 @@ FILENAME defaults to current buffer."
   ;; global ends here
   ;; [[file:~/org/logical/org_babel.org::load-language][load-language]]
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-     (emacs-lisp . t)
-     (shell . t)
-     (org . t)
-     (scheme . t)
-     (python . t)
-     (makefile . t)
-     (dot . t)
-     (C, t)
-     (js . t)
-     (jupyter . t) ;; last
-     ))
+      'org-babel-load-languages
+      '(
+      (emacs-lisp . t)
+      (shell . t)
+      (org . t)
+      (scheme . t)
+      (python . t)
+      (makefile . t)
+      (dot . t)
+      (C, t)
+      (js . t)
+      (jupyter . t) ;; last
+      ))
   ;; load-language ends here
   ;; [[file:~/org/logical/org_babel.org::ob-org][ob-org]]
   (setq org-babel-default-header-args:org '((:exports . "none")
@@ -2094,149 +2107,149 @@ FILENAME defaults to current buffer."
     "Fontify #+ lines and blocks."
     (let ((case-fold-search t))
       (when (re-search-forward
-  	         (rx bol (group (zero-or-more (any " \t")) "#"
-  			                (group (group (or (seq "+" (one-or-more (any "a-zA-Z")) (optional ":"))
-  					                          (any " \t")
-  					                          eol))
-  				                   (optional (group "_" (group (one-or-more (any "a-zA-Z"))))))
-  			                (zero-or-more (any " \t"))
-  			                (group (group (zero-or-more (not (any " \t\n"))))
-  				                   (zero-or-more (any " \t"))
-  				                   (group (zero-or-more any)))))
-  	         limit t)
+  	       (rx bol (group (zero-or-more (any " \t")) "#"
+  			              (group (group (or (seq "+" (one-or-more (any "a-zA-Z")) (optional ":"))
+  					                        (any " \t")
+  					                        eol))
+  				                 (optional (group "_" (group (one-or-more (any "a-zA-Z"))))))
+  			              (zero-or-more (any " \t"))
+  			              (group (group (zero-or-more (not (any " \t\n"))))
+  				                 (zero-or-more (any " \t"))
+  				                 (group (zero-or-more any)))))
+  	       limit t)
         (let ((beg (match-beginning 0))
-  	          (end-of-beginline (match-end 0))
-  	          ;; Including \n at end of #+begin line will include \n
-  	          ;; after the end of block content.
-  	          (block-start (match-end 0))
-  	          (block-end nil)
-  	          (lang (match-string 7)) ; The language, if it is a source block.
-  	          (bol-after-beginline (line-beginning-position 2))
-  	          (dc1 (downcase (match-string 2)))
-  	          (dc3 (downcase (match-string 3)))
-  	          (whole-blockline org-fontify-whole-block-delimiter-line)
-  	          beg-of-endline end-of-endline nl-before-endline quoting block-type)
-  	      (cond
-  	       ((and (match-end 4) (equal dc3 "+begin"))
-  	        ;; Truly a block
-  	        (setq block-type (downcase (match-string 5))
-  		          ;; Src, example, export, maybe more.
-  		          quoting (member block-type org-protecting-blocks))
-  	        (when (re-search-forward
-  		           (rx-to-string `(group bol (or (seq (one-or-more "*") space)
-  					                             (seq (zero-or-more (any " \t"))
-  						                              "#+end"
-  						                              ,(match-string 4)
-  						                              word-end
-  						                              (zero-or-more any)))))
-  		           ;; We look further than LIMIT on purpose.
-  		           nil t)
-  	          ;; We do have a matching #+end line.
-  	          (setq beg-of-endline (match-beginning 0)
-  		            end-of-endline (match-end 0)
-  		            nl-before-endline (1- (match-beginning 0)))
-  	          (setq block-end (match-beginning 0)) ; Include the final newline.
-  	          (when quoting
-  	            (org-remove-flyspell-overlays-in bol-after-beginline nl-before-endline)
-  	            (remove-text-properties beg end-of-endline
-  				                        '(display t invisible t intangible t)))
+  	        (end-of-beginline (match-end 0))
+  	        ;; Including \n at end of #+begin line will include \n
+  	        ;; after the end of block content.
+  	        (block-start (match-end 0))
+  	        (block-end nil)
+  	        (lang (match-string 7)) ; The language, if it is a source block.
+  	        (bol-after-beginline (line-beginning-position 2))
+  	        (dc1 (downcase (match-string 2)))
+  	        (dc3 (downcase (match-string 3)))
+  	        (whole-blockline org-fontify-whole-block-delimiter-line)
+  	        beg-of-endline end-of-endline nl-before-endline quoting block-type)
+  	    (cond
+  	     ((and (match-end 4) (equal dc3 "+begin"))
+  	      ;; Truly a block
+  	      (setq block-type (downcase (match-string 5))
+  		        ;; Src, example, export, maybe more.
+  		        quoting (member block-type org-protecting-blocks))
+  	      (when (re-search-forward
+  		         (rx-to-string `(group bol (or (seq (one-or-more "*") space)
+  					                           (seq (zero-or-more (any " \t"))
+  						                            "#+end"
+  						                            ,(match-string 4)
+  						                            word-end
+  						                            (zero-or-more any)))))
+  		         ;; We look further than LIMIT on purpose.
+  		         nil t)
+  	        ;; We do have a matching #+end line.
+  	        (setq beg-of-endline (match-beginning 0)
+  		          end-of-endline (match-end 0)
+  		          nl-before-endline (1- (match-beginning 0)))
+  	        (setq block-end (match-beginning 0)) ; Include the final newline.
+  	        (when quoting
+  	          (org-remove-flyspell-overlays-in bol-after-beginline nl-before-endline)
+  	          (remove-text-properties beg end-of-endline
+  				                      '(display t invisible t intangible t)))
+  	        (add-text-properties
+  	         beg end-of-endline '(font-lock-fontified t font-lock-multiline t))
+  	        (org-remove-flyspell-overlays-in beg bol-after-beginline)
+  	        (org-remove-flyspell-overlays-in nl-before-endline end-of-endline)
+  	        (cond
+  	         ((and lang (not (string= lang "")) org-src-fontify-natively)
+  	          (org-src-font-lock-fontify-block lang block-start block-end)
+  	          (add-text-properties bol-after-beginline block-end '(src-block t)))
+  	         (quoting
   	          (add-text-properties
-  	           beg end-of-endline '(font-lock-fontified t font-lock-multiline t))
-  	          (org-remove-flyspell-overlays-in beg bol-after-beginline)
-  	          (org-remove-flyspell-overlays-in nl-before-endline end-of-endline)
-  	          (cond
-  	           ((and lang (not (string= lang "")) org-src-fontify-natively)
-  	            (org-src-font-lock-fontify-block lang block-start block-end)
-  	            (add-text-properties bol-after-beginline block-end '(src-block t)))
-  	           (quoting
-  	            (add-text-properties
-  	             bol-after-beginline beg-of-endline
-  	             (list 'face
-  		               (list :inherit
-  			                 (let ((face-name
-  				                    (intern (format "org-block-%s" lang))))
-  			                   (append (and (facep face-name) (list face-name))
-  				                       '(org-block)))))))
-  	           ((not org-fontify-quote-and-verse-blocks))
-  	           ((string= block-type "quote")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-quote t))
-  	           ((string= block-type "comment")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-quote t))
-  	           ((string= block-type "dialogue")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-quote t))
-  	           ((string= block-type "details")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-verse t))
+  	           bol-after-beginline beg-of-endline
+  	           (list 'face
+  		             (list :inherit
+  			               (let ((face-name
+  				                  (intern (format "org-block-%s" lang))))
+  			                 (append (and (facep face-name) (list face-name))
+  				                     '(org-block)))))))
+  	         ((not org-fontify-quote-and-verse-blocks))
+  	         ((string= block-type "quote")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-quote t))
+  	         ((string= block-type "comment")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-quote t))
+  	         ((string= block-type "dialogue")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-quote t))
+  	         ((string= block-type "details")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-verse t))
                ;; 不能有数字和-
-  	           ((string= block-type "reply")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-quote t))
-  	           ((string= block-type "gpt")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-quote t))
-  	           ((string= block-type "verse")
-  	            (add-face-text-property
-  	             bol-after-beginline beg-of-endline 'org-verse t)))
-  	          ;; Fontify the #+begin and #+end lines of the blocks
+  	         ((string= block-type "reply")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-quote t))
+  	         ((string= block-type "gpt")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-quote t))
+  	         ((string= block-type "verse")
+  	          (add-face-text-property
+  	           bol-after-beginline beg-of-endline 'org-verse t)))
+  	        ;; Fontify the #+begin and #+end lines of the blocks
+  	        (add-text-properties
+  	         beg (if whole-blockline bol-after-beginline end-of-beginline)
+  	         '(face org-block-begin-line))
+  	        (unless (eq (char-after beg-of-endline) ?*)
   	          (add-text-properties
-  	           beg (if whole-blockline bol-after-beginline end-of-beginline)
-  	           '(face org-block-begin-line))
-  	          (unless (eq (char-after beg-of-endline) ?*)
-  	            (add-text-properties
-  	             beg-of-endline
-  	             (if whole-blockline
-  		             (let ((beg-of-next-line (1+ end-of-endline)))
-  		               (min (point-max) beg-of-next-line))
-  		           (min (point-max) end-of-endline))
-  	             '(face org-block-end-line)))
-  	          t))
-  	       ((member dc1 '("+title:" "+author:" "+email:" "+date:"))
-  	        (org-remove-flyspell-overlays-in
-  	         (match-beginning 0)
-  	         (if (equal "+title:" dc1) (match-end 2) (match-end 0)))
-  	        (add-text-properties
-  	         beg (match-end 3)
-  	         (if (member (intern (substring dc1 1 -1)) org-hidden-keywords)
-  	             '(font-lock-fontified t invisible t)
-  	           '(font-lock-fontified t face org-document-info-keyword)))
-  	        (add-text-properties
-  	         (match-beginning 6) (min (point-max) (1+ (match-end 6)))
-  	         (if (string-equal dc1 "+title:")
-  	             '(font-lock-fontified t face org-document-title)
-  	           '(font-lock-fontified t face org-document-info))))
-  	       ((string-prefix-p "+caption" dc1)
-  	        (org-remove-flyspell-overlays-in (match-end 2) (match-end 0))
-  	        (remove-text-properties (match-beginning 0) (match-end 0)
-  				                    '(display t invisible t intangible t))
-  	        ;; Handle short captions
-  	        (save-excursion
-  	          (beginning-of-line)
-  	          (looking-at (rx (group (zero-or-more (any " \t"))
-  				                     "#+caption"
-  				                     (optional "[" (zero-or-more any) "]")
-  				                     ":")
-  			                  (zero-or-more (any " \t")))))
-  	        (add-text-properties (line-beginning-position) (match-end 1)
-  			                     '(font-lock-fontified t face org-meta-line))
-  	        (add-text-properties (match-end 0) (line-end-position)
-  			                     '(font-lock-fontified t face org-block))
-  	        t)
-  	       ((member dc3 '(" " ""))
-  	        ;; Just a comment, the plus was not there
-  	        (org-remove-flyspell-overlays-in beg (match-end 0))
-  	        (add-text-properties
-  	         beg (match-end 0)
-  	         '(font-lock-fontified t face font-lock-comment-face)))
-  	       (t ;; Just any other in-buffer setting, but not indented
-  	        (org-remove-flyspell-overlays-in (match-beginning 0) (match-end 0))
-  	        (remove-text-properties (match-beginning 0) (match-end 0)
-  				                    '(display t invisible t intangible t))
-  	        (add-text-properties beg (match-end 0)
-  			                     '(font-lock-fontified t face org-meta-line))
-  	        t))))))
+  	           beg-of-endline
+  	           (if whole-blockline
+  		           (let ((beg-of-next-line (1+ end-of-endline)))
+  		             (min (point-max) beg-of-next-line))
+  		         (min (point-max) end-of-endline))
+  	           '(face org-block-end-line)))
+  	        t))
+  	     ((member dc1 '("+title:" "+author:" "+email:" "+date:"))
+  	      (org-remove-flyspell-overlays-in
+  	       (match-beginning 0)
+  	       (if (equal "+title:" dc1) (match-end 2) (match-end 0)))
+  	      (add-text-properties
+  	       beg (match-end 3)
+  	       (if (member (intern (substring dc1 1 -1)) org-hidden-keywords)
+  	           '(font-lock-fontified t invisible t)
+  	         '(font-lock-fontified t face org-document-info-keyword)))
+  	      (add-text-properties
+  	       (match-beginning 6) (min (point-max) (1+ (match-end 6)))
+  	       (if (string-equal dc1 "+title:")
+  	           '(font-lock-fontified t face org-document-title)
+  	         '(font-lock-fontified t face org-document-info))))
+  	     ((string-prefix-p "+caption" dc1)
+  	      (org-remove-flyspell-overlays-in (match-end 2) (match-end 0))
+  	      (remove-text-properties (match-beginning 0) (match-end 0)
+  				                  '(display t invisible t intangible t))
+  	      ;; Handle short captions
+  	      (save-excursion
+  	        (beginning-of-line)
+  	        (looking-at (rx (group (zero-or-more (any " \t"))
+  				                   "#+caption"
+  				                   (optional "[" (zero-or-more any) "]")
+  				                   ":")
+  			                (zero-or-more (any " \t")))))
+  	      (add-text-properties (line-beginning-position) (match-end 1)
+  			                   '(font-lock-fontified t face org-meta-line))
+  	      (add-text-properties (match-end 0) (line-end-position)
+  			                   '(font-lock-fontified t face org-block))
+  	      t)
+  	     ((member dc3 '(" " ""))
+  	      ;; Just a comment, the plus was not there
+  	      (org-remove-flyspell-overlays-in beg (match-end 0))
+  	      (add-text-properties
+  	       beg (match-end 0)
+  	       '(font-lock-fontified t face font-lock-comment-face)))
+  	     (t ;; Just any other in-buffer setting, but not indented
+  	      (org-remove-flyspell-overlays-in (match-beginning 0) (match-end 0))
+  	      (remove-text-properties (match-beginning 0) (match-end 0)
+  				                  '(display t invisible t intangible t))
+  	      (add-text-properties beg (match-end 0)
+  			                   '(font-lock-fontified t face org-meta-line))
+  	      t))))))
   ;; block-fontface ends here
   ;; [[file:~/org/logical/org_babel.org::jupyter-python-args][jupyter-python-args]]
   (setq-default org-babel-default-header-args:jupyter-python
@@ -2254,12 +2267,9 @@ FILENAME defaults to current buffer."
   ;; [[file:~/org/logical/org_babel.org::kernel-name-modeline][kernel-name-modeline]]
   (setq jupyter-current-buffer-kernel "zshot")
   (setq mode-line-misc-info
-        '((t (concat "{" jupyter-current-buffer-kernel "}"))
-          (pyvenv-mode pyvenv-mode-line-indicator)
-          ("" so-long-mode-line-info)
-          (global-mode-string
-           ("" global-mode-string " ")))
-        )
+      '((t (concat "{" jupyter-current-buffer-kernel "}"))
+       (pyvenv-mode pyvenv-mode-line-indicator)
+       ("" so-long-mode-line-info)))
   
   (make-variable-buffer-local 'org-babel-default-header-args:python)
   ;; kernel-name-modeline ends here
@@ -2295,9 +2305,9 @@ FILENAME defaults to current buffer."
             (:noweb . "yes")
             (:display . "plain")
             (:kernel . "racket")))
-    
+  
     (org-babel-jupyter-override-src-block "racket")
-    )
+  )
   ;; ob-jupyter-racket ends here
   ;; [[file:~/org/logical/org_babel.org::tangle-block][tangle-block]]
   (defun tangle-current-block()
@@ -2377,7 +2387,7 @@ FILENAME defaults to current buffer."
     (cond
      ((derived-mode-p 'org-mode)
       (my/jump-to-tangled-target-block-by-name))
-     ((derived-mode-p 'prog-mode)
+     ((or (derived-mode-p 'prog-mode) (derived-mode-p 'conf-space-mode))
       (org-babel-tangle-jump-to-org))
      (t
       (message "Not in Org mode or a programming mode."))))
@@ -2535,13 +2545,18 @@ FILENAME defaults to current buffer."
   :general
   (defun my/insert-time ()
     (interactive)
-    (insert (format-time-string "=%H:%M= ")))
+    (insert (format-time-string "=%H:%M= ")) (evil-insert-state))
+
+  (defun my/insert-now-date ()
+    (interactive)
+    (insert (format-time-string "[%Y-%m-%d %a %H:%M] ")) (evil-insert-state))
 
   (general-define-key
    :keymaps 'general-override-mode-map
-   :states '(insert)
-   "s-s t" 'my/insert-time
-   "s-s s-s" 'yas-insert-snippet)
+   :states '(insert normal)
+   "s-r s-w" 'my/insert-now-date
+   "s-r s-e" 'my/insert-time
+   "s-r s-s" 'yas-insert-snippet)
   )
 ;; yasnippet-setting ends here
 ;; [[file:~/org/logical/org_note_taking.org::ass-setting][ass-setting]]
@@ -2888,12 +2903,12 @@ FILENAME defaults to current buffer."
   (defun cycle-elpy-folding ()
     (interactive)
     (if (and (boundp 'elpy-all-folding) (= 1 elpy-all-folding))
-      (setq elpy-all-folding 0)
+        (setq elpy-all-folding 0)
       (setq elpy-all-folding 1)
       )
     (if (= 1 elpy-all-folding)
         (elpy-folding-hide-leafs)
-        (hs-show-all)))
+      (hs-show-all)))
   ;; folding ends here
   ;; [[file:~/org/logical/elpy.org::pyvenv][pyvenv]]
   (setenv "WORKON_HOME" "/home/pipz/miniconda3/envs")
@@ -2969,7 +2984,18 @@ FILENAME defaults to current buffer."
 ;; python 编程环境特定配置:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*scheme env][scheme env:1]]
-(add-to-list 'Info-directory-list "/data/resource/readings/manual/sicp")
+(use-package info
+  :init
+  (add-to-list 'Info-directory-list "/data/resource/readings/manual/sicp")
+  :config
+  (general-define-key
+   :keymaps 'Info-mode-map
+   :states '(normal)
+   "d"  'Info-scroll-up
+   "u"  'Info-scroll-down
+   "O"  'Info-top-node
+   )
+  )
 ;; scheme env:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*scheme env][scheme env:2]]
@@ -2991,7 +3017,7 @@ FILENAME defaults to current buffer."
   (add-hook 'ielm-mode-hook #'paredit-mode)
   (add-hook 'lisp-mode-hook #'paredit-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
-)
+  )
 ;; scheme env:3 ends here
 
 ;; [[file:~/org/design/wemacs.org::*yaml][yaml:1]]
@@ -3131,4 +3157,3 @@ FILENAME defaults to current buffer."
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
 ;; init-eaf ends here
-(put 'list-timers 'disabled nil)
