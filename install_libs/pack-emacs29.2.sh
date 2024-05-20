@@ -33,7 +33,7 @@ function install_emacs29.2() {
             rm -rf emacs-29.2.tar.gz
             print_notice "删除 emacs-29.2.tar.gz"
             popd
-		    print_success "emacs29.2 编译完毕"
+            print_success "emacs29.2 编译完毕"
         fi
 	elif [[ $distro == "redhat" ]]; then
 		:
