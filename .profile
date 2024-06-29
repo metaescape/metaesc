@@ -54,3 +54,5 @@ export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 
 # for personal scripts
 export PATH="$HOME/metaesc/bin:$PATH"
+
+export PATH="$HOME/.deno/bin:$PATH"
