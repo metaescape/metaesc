@@ -181,7 +181,50 @@
   ;; [[file:~/org/logical/evil.org::evil-surround][evil-surround]]
   (use-package evil-surround
     :config
-    (global-evil-surround-mode 1))
+    (global-evil-surround-mode 1)
+  
+    (defun insert-around-region (begin end left right)
+      "Insert LEFT and RIGHT around the current region."
+      (save-excursion
+        (goto-char end)
+        (insert right)
+        (goto-char begin)
+        (insert left)))
+  
+    (defun surround-with-correct-punctuation (char)
+      "Surround region with CHAR. Use Chinese punctuation if the region contains Chinese characters."
+      (interactive "cEnter surround character: ")
+      (let ((begin (region-beginning))
+            (end (region-end))
+            (region (buffer-substring-no-properties (region-beginning) (region-end)))
+            (chinese-punctuation (pcase char
+                                   (?\" "“”")
+                                   (?' "‘’")
+                                   (?\( "（）")
+                                   (?\) "（）")
+                                   (?\[ "【】")
+                                   (?\] "【】")
+                                   (?\{ "｛｝")
+                                   (?\} "｛｝")
+                                   (?\> "《》")
+                                   (?\< "《》")
+                                   (_ nil))))
+        (if (and chinese-punctuation (string-match-p "\\cc" region))
+            (let ((left (substring chinese-punctuation 0 1))
+                  (right (substring chinese-punctuation 1 2)))
+              (insert-around-region begin end left right))
+          (evil-surround-region (region-beginning) (region-end) 'char char))))
+  
+    (defun my-evil-surround-dwim ()
+      "Detect the surrounding character and use the correct punctuation based on the region content."
+      (interactive)
+      (call-interactively 'surround-with-correct-punctuation))
+  
+    (general-define-key
+     :keymaps 'general-override-mode-map
+     :states '(visual)
+     "S" 'my-evil-surround-dwim
+     ))
   ;; evil-surround ends here
   ;; [[file:~/org/logical/evil.org::evil-commentary][evil-commentary]]
   (use-package evil-commentary
