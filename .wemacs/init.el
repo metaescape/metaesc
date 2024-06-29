@@ -30,9 +30,14 @@
 
 ;; [[file:~/org/design/wemacs.org::*用 package 从 melpa 安装 use-package][用 package 从 melpa 安装 use-package:1]]
 (require 'package)
-(setq elpa-china-image '(("gnu"   . "http://1.15.88.122/gnu/")
-                    ("melpa" . "http://1.15.88.122/melpa/")))
-(setq package-archives elpa-china-image)
+;; (setq package-archives
+;;       '(("gnu"   . "https://elpa.gnu.org/packages/")
+;;         ("melpa" . "https://melpa.org/packages/")))
+
+(setq package-archives
+      '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+
 
 ;; update the package metadata if the local cache is missing
 ;; (unless package-archive-contents (package-refresh-contents))
