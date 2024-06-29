@@ -46,8 +46,8 @@
   (interactive)
   (setq url-proxy-services
         '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-     ("http" . "127.0.0.1:7890")
-      ("https" . "127.0.0.1:7890"))))
+          ("http" . "127.0.0.1:7890")
+          ("https" . "127.0.0.1:7890"))))
 
 (defun my/set-unproxy ()
   (interactive)
@@ -89,13 +89,12 @@
   (fset 'yes-or-no-p 'y-or-n-p))
 ;; 快速插入代码 bootstrap:1 ends here
 
-;; [[file:~/org/design/wemacs.org::*更新包提醒][更新包提醒:1]]
+;; [[file:~/org/design/wemacs.org::*包的升级管理方案][包的升级管理方案:2]]
 (use-package pkg-update-checker
-  :defer 30 ;; 
   :load-path "site-lisp/pkg-update-checker" 
   :config
   (start-pkg-update-checker-timer))
-;; 更新包提醒:1 ends here
+;; 包的升级管理方案:2 ends here
 
 ;; [[file:~/org/design/wemacs.org::*Evil][Evil:1]]
 ;; # [[file:~/org/logical/evil.org::evil-basic][evil-basic]]
@@ -549,13 +548,9 @@
 
 ;; [[file:~/org/design/wemacs.org::*encodings and fonts][encodings and fonts:1]]
   ;; font setting
-;; (set-frame-font "Noto Sans Mono:size=18")
 ;; (set-frame-font "Consolas:size=16")
+(set-frame-font "Noto Sans Mono:size=16")
 
-(if (eq system-type 'gnu/linux)
-    (set-frame-font "Noto Sans Mono:size=16")
-  ;; (set-frame-font "Consolas:size=18")
-  )
 (setq default-frame-alist nil)
 
 ;; encoding
@@ -1653,7 +1648,6 @@ FILENAME defaults to current buffer."
                         company-files
                         company-dabbrev
                         company-etags
-                        company-elisp
                         company-clang
                         company-cmake
                         company-yasnippet))
