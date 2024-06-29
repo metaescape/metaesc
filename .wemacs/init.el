@@ -2132,6 +2132,7 @@ FILENAME defaults to current buffer."
   
   (setq org-babel-default-header-args
         '((:session . "none")
+          (:async . "yes")
           (:results . "replace")
           (:exports . "both")
           (:cache . "no")
@@ -2310,10 +2311,7 @@ FILENAME defaults to current buffer."
   ;; block-fontface ends here
   ;; [[file:~/org/logical/org_babel.org::jupyter-python-args][jupyter-python-args]]
   (setq-default org-babel-default-header-args:jupyter-python
-                '((:async . "yes")
-                  (:noweb . "yes")
-                  (:exports . "both")
-                  (:kernel . "zshot")
+                '((:kernel . "zshot")
                   (:eval . "never-export")
                   (:session . "py")
                   ;; (:session . "/tmp/kernel.json")
@@ -2346,10 +2344,7 @@ FILENAME defaults to current buffer."
            (session (cdr (assoc kernel jupyter-kernel-alist))))
       (setq-local jupyter-current-buffer-kernel kernel)
       (setq-local org-babel-default-header-args:python
-                  `((:async . "yes")
-                    (:noweb . "yes")
-                    (:exports . "both")
-                    (:eval . "never-export")
+                  `((:eval . "never-export")
                     (:kernel . ,kernel)
                     (:session . ,session)))))
   ;; jupyter-change-session ends here
@@ -2357,15 +2352,24 @@ FILENAME defaults to current buffer."
   (use-package racket-mode
     :config
     (setq org-babel-default-header-args:jupyter-racket
-          '((:async . "yes")
-            (:session . "jrack")
-            (:noweb . "yes")
+          '((:session . "jrack")
             (:display . "plain")
             (:kernel . "racket")))
   
     (org-babel-jupyter-override-src-block "racket")
   )
   ;; ob-jupyter-racket ends here
+  ;; [[file:~/org/logical/org_babel.org::ob-jupyter-deno][ob-jupyter-deno]]
+  (use-package typescript-mode
+    :config
+    (setq org-babel-default-header-args:jupyter-typescript
+        '((:session . "deno-ts")
+          (:display . "plain")
+          (:kernel . "deno")))
+  
+    (org-babel-jupyter-override-src-block "typescript")
+  )
+  ;; ob-jupyter-deno ends here
   ;; [[file:~/org/logical/org_babel.org::tangle-block][tangle-block]]
   (defun tangle-current-block()
     (interactive)
