@@ -4,6 +4,6 @@
 # group: org block
 # --
 
-#+begin_src bash
+#+begin_src bash :results drawer replace
 $0
 #+end_src
