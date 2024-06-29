@@ -1041,7 +1041,17 @@
   (setq dashboard-image-banner-max-width 300)
   (setq dashboard-banner-logo-title "don't panic") ;;nil to delete
 
-  (setq dashboard-set-navigator t)
+  (setq dashboard-startupify-list '(dashboard-insert-banner
+                                    dashboard-insert-newline
+                                    dashboard-insert-banner-title
+                                    dashboard-insert-newline
+                                    dashboard-insert-navigator
+                                    dashboard-insert-newline
+                                    dashboard-insert-init-info
+                                    dashboard-insert-items
+                                    dashboard-insert-newline
+                                    dashboard-insert-footer))
+
   ;; Format: "(icon title help action face prefix suffix)"
   (setq dashboard-navigator-buttons
         `(;; line1
