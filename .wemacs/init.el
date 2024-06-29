@@ -1426,8 +1426,6 @@
          (evil-window-mru)))
   ("o" (lambda () (interactive) (org-clock-out) (org-agenda "" " ")
          (evil-window-mru)))
-  ("I" (lambda () (interactive) (my/clock-in-long-focus) (org-agenda "" " ")
-         (evil-window-mru)))
   ("d" (lambda () (interactive) (org-todo "DONE") (org-agenda "" " ")
          (evil-window-mru)))
   ("v" org-imagine-view)
@@ -1939,19 +1937,12 @@ FILENAME defaults to current buffer."
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
   
-      (setq my/org-clock-effort 25)
+      (setq my/org-clock-effort 51)
       
       (defun set-org-clock-effort-when-nil ()
-        (setq org-clock-effort (format "00:%s" my/org-clock-effort))
+        (setq org-clock-effort my/org-clock-effort)
         (org-clock-update-mode-line))
   
-    (defun my/clock-in-long-focus ()
-      (interactive)
-      ;; (setq my/org-clock-effort 
-      ;;       (completing-read "Select efforts: " '("0:52")))
-      (let ((my/org-clock-effort 52))
-        (org-clock-in)))
-    
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
   
