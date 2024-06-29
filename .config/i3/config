@@ -184,7 +184,7 @@ bindsym XF86MonBrightnessDown exec bash ~/metaesc/lib/brightness_code01.sh -20
 # # fn-bright-control ends here
 
 # # [[file:~/org/logical/i3wm.org::i3-main-mode][i3-main-mode]]
-set $main_mode pkill[s-p] logout[s-o] emacs[e] swap/resize[[S]-hjkl] keymaps[s-k]
+set $main_mode pkill[s-p] logout[s-o] emacs[e] swap/resize[[S]-hjkl,8,9] keymaps[s-k]
 mode "$main_mode" {
 
     # # [[file:~/org/logical/i3wm.org::i3-main-mode][switch-window-in-workspace]]
@@ -209,6 +209,8 @@ mode "$main_mode" {
     bindsym j resize grow height 5 px
     bindsym k resize shrink height 5 px  
     bindsym l resize grow width 5 px
+    bindsym 8 resize set 50 ppt 50 ppt
+    bindsym 9 resize set 62 ppt 38 ppt
     # # resize-window-with-hjkl ends here
 
     # # [[file:~/org/logical/i3wm.org::i3-main-mode][swap-window-with-shift-hjkl]]
