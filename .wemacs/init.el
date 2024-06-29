@@ -1682,54 +1682,53 @@ FILENAME defaults to current buffer."
 (use-package org
   :ensure nil
   :init 
+  ;; fix bug for expand a heading with tab : Subtree (no children)
+  (setq org-fold-core-style 'overlays) 
   (setq org-ellipsis " ▾")
   (global-set-key (kbd "C-c l") 'org-store-link)
   (bind-key "C-c n" 'narrow-or-widen-dwim)
-  :hook (org-mode . efs/org-mode-setup)
+  :general
+  (:keymaps 'org-mode-map
+            "s-l"  'org-toggle-link-display)
+  :hook (org-mode . org-mode-ui-setup)
   :config
   (require 'ol-man) ;; support follow link in woman buffer
   (setq org-id-method 'ts)
   (setq org-image-actual-width nil)
-  ;; [[file:~/org/logical/orgmode_workflow.org::basic-ui][basic-ui]]
-  (defun efs/org-font-setup ()
-    ;; Replace list hyphen with dot
+  ;; [[file:~/org/logical/orgmode_workflow.org::org-basic-ui][org-basic-ui]]
+  (defun org-mode-ui-setup ()
+    (org-indent-mode)
+    (setq word-wrap nil) 
+    (visual-line-mode 1)
     (font-lock-add-keywords
      'org-mode
      '(("^ *\\([-]\\) "
-        (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
-  
-  (defun efs/org-mode-setup ()
-    (org-indent-mode)
-    (setq word-wrap nil) 
-    (efs/org-font-setup)
-    (visual-line-mode 1))
-  ;; basic-ui ends here
-  ;; [[file:~/org/logical/orgmode_workflow.org::org-appear][org-appear]]
-  (setq org-emphasis-alist
-    '(("*" (bold :slant italic :weight black )) ;; this make bold both italic and bold, but not color change
-      ("/" (italic :foreground "dark salmon" )) ;; italic text, the text will be "dark salmon"
-      ("_" underline :foreground "cyan" ) ;; underlined text, color is "cyan"
-      ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
-      ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
-      ("+" (:strike-through t :foreground "dark orange" ))))
-  
-  (use-package org-appear
-    :after org
-    :hook (org-mode . org-appear-mode)
-    :config
-    (setq org-hide-emphasis-markers t)
-    (setq org-appear-autolinks t)
+        (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    (setq org-emphasis-alist
+          '(("*" (bold :slant italic :weight black )) ;; this make bold both italic and bold, but not color change
+            ("/" (italic :foreground "dark salmon" )) ;; italic text, the text will be "dark salmon"
+            ("_" underline :foreground "cyan" ) ;; underlined text, color is "cyan"
+            ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
+            ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
+            ("+" (:strike-through t :foreground "dark orange" ))))
+    
+    (use-package org-appear
+      :after org
+      :hook (org-mode . org-appear-mode)
+      :config
+      (setq org-hide-emphasis-markers t)
+      (setq org-appear-autolinks t)
+      )
+    
+    (defun org-mode-visual-fill ()
+      (setq visual-fill-column-width 100
+            visual-fill-column-center-text t)
+      (visual-fill-column-mode 1))
+    
+    (use-package visual-fill-column
+      :hook (org-mode . org-mode-visual-fill))
     )
-  ;; org-appear ends here
-  ;; [[file:~/org/logical/orgmode_workflow.org::visual-fill-column][visual-fill-column]]
-  (defun org-mode-visual-fill ()
-    (setq visual-fill-column-width 100
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
-  
-  (use-package visual-fill-column
-    :hook (org-mode . org-mode-visual-fill))
-  ;; visual-fill-column ends here
+  ;; org-basic-ui ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::narrow-or-widen-dwim][narrow-or-widen-dwim]]
   (defun narrow-or-widen-dwim ()
     "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
