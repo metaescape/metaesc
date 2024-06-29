@@ -2746,6 +2746,29 @@ FILENAME defaults to current buffer."
 
 ;; 确保在执行 org-citar-open-notes 前加载 org-roam, 这样才能使用 roamdb 查笔记
 (advice-add 'citar-open-notes :before #'my/open-roam-notes-advice)
+
+(defun my/org-open-at-point-cite-first ()
+  "Check if `thing-at-point` contains `cite:` and call `org-cite-follow` if it does.
+If found, copy the citation to a new temporary Org buffer and call `org-cite-follow`."
+  (let ((tap-email (thing-at-point 'email)))
+    (if (and tap-email (string-match "cite:" tap-email))
+        (let ((temp-buffer (generate-new-buffer "*temp-org-citation-buffer*")))
+          (with-current-buffer temp-buffer
+            (org-mode)
+            (insert (format "[%s]" tap-email))
+            (goto-char (point-min))
+            (let ((context (org-element-context)))
+              (org-cite-follow context nil)))
+          (kill-buffer temp-buffer)
+          t)
+      nil)))
+
+(defun my/org-open-at-point-advice (orig-fun &rest args)
+  "Advice to call `my/org-open-at-point-cite-first` before executing `org-open-at-point-global`."
+  (unless (my/org-open-at-point-cite-first)
+    (apply orig-fun args)))
+
+(advice-add 'org-open-at-point-global :around #'my/org-open-at-point-advice)
 ;; org-cite ends here
 ;; # org-notes ends here
 
