@@ -89,12 +89,12 @@
   (fset 'yes-or-no-p 'y-or-n-p))
 ;; 快速插入代码 bootstrap:1 ends here
 
-;; [[file:~/org/design/wemacs.org::*包的升级管理方案][包的升级管理方案:2]]
+;; [[file:~/org/design/wemacs.org::*包的升级管理方案][包的升级管理方案:1]]
 (use-package pkg-update-checker
   :load-path "site-lisp/pkg-update-checker" 
   :config
   (start-pkg-update-checker-timer))
-;; 包的升级管理方案:2 ends here
+;; 包的升级管理方案:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*Evil][Evil:1]]
 ;; # [[file:~/org/logical/evil.org::evil-basic][evil-basic]]
@@ -470,20 +470,7 @@
    :config
    ;; Doesn't work as expected!
    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-   (setq dired-open-extensions '(("mkv" . "mpv")
-                                 ("pdf" . "masterpdfeditor5")))
- 
-   (defun dired-open-current-dir ()
-     "Open the current directory in the default file browser."
-     (interactive)
-     (let ((current-directory (dired-current-directory)))
-       (if (eq system-type 'windows-nt)
-           (w32-shell-execute "open" current-directory)
-         (call-process "xdg-open" nil 0 nil current-directory))))
- 
-   (evil-collection-define-key 'normal 'dired-mode-map
-     "go" 'dired-open-current-dir)
-   )
+   (setq dired-open-extensions '(("mkv" . "mpv"))))
  ;; dired-open ends here
  ;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
  (use-package dired-hide-dotfiles
@@ -1406,7 +1393,7 @@
     _._: repeat operations           _x_: kill-this-buffer               
     "
   ;;("d" debug-test-hydra/body)
-  ("r" (lambda () (interactive) (counsel-file-jump " " "/data/resource/readings")))
+  ("r" (lambda () (interactive) (counsel-file-jump " " "/data/resource/readings/")))
   ("f" counsel-file-jump)
   ;; bookmark-set is temporary, you need save
   ("b" (lambda () (interactive) (bookmark-set) (bookmark-save)))
@@ -1433,6 +1420,39 @@
  :keymaps '(general-override-mode-map org-agenda-mode-map)
  :states '(normal visual motion)
  "," 'main-hydra/body)
+
+(use-package ivy
+  :config 
+  (defun open-with-system-app (file)
+    (let* ((ext (file-name-extension file))
+           (app-list (cond ((equal ext "pdf") '("masterpdfeditor5" "xdg-open"))
+                           ((equal ext "epub") '("foliate"))
+                           ((equal ext "md") '("typora"))))
+           (app (completing-read
+                 "Select Apps: "
+                 (append app-list '("code" "nautilus")))))
+      ;;(message (format "%s %s" default-directory file))
+      (if (or (equal app "code") (equal app "natuils"))
+          (dired-open--start-process
+           (cdr (project-current "" file))
+           app)
+        (dired-open--start-process file app))))
+
+  (defun open-with-system-app-dwim ()
+    (interactive)
+    (if (derived-mode-p 'dired-mode)
+        (open-with-system-app  (dired-get-file-for-visit))
+      (open-with-system-app (buffer-file-name))))
+  
+  (ivy-add-actions
+   'counsel-file-jump
+   '(("p" open-with-system-app "open file with system app")))
+
+  (general-define-key
+   :keymaps '(org-mode-map pdf-view-mode-map markdown-mode-map
+                           prog-mode-map nov-mode-map dired-mode-map)
+   :states '(normal visual)
+   "M-o" 'open-with-system-app-dwim))
 ;; 常用函数的 hydra 界面:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*重复操作的子按键 hydra][重复操作的子按键 hydra:1]]
@@ -1513,29 +1533,6 @@
     :config (counsel-projectile-mode))
   )
 ;; projectile:1 ends here
-
-;; [[file:~/org/design/wemacs.org::*magit][magit:1]]
-(use-package magit
-  :if (executable-find "git")
-  :bind ("C-x g" . magit-status)
-  :config
-  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
-  (defun magit-log-follow-current-file ()
-    "A wrapper around `magit-log-buffer-file' with `--follow' argument."
-    (interactive)
-    (magit-log-buffer-file t))
-
-  (add-hook 'git-commit-mode-hook 'evil-insert-state)
-  )
-;; magit:1 ends here
-
-;; [[file:~/org/design/wemacs.org::*magit][magit:2]]
-(general-define-key
- :keymaps '(magit-mode-map magit-module-section-map)
- :states 'normal
- "K" 'move-9-lines-up
- )
-;; magit:2 ends here
 
 ;; [[file:~/org/design/wemacs.org::*gitgutter 和 git timemachine][gitgutter 和 git timemachine:1]]
 (use-package git-timemachine
@@ -1703,7 +1700,7 @@ FILENAME defaults to current buffer."
             ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
             ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
             ("+" (:strike-through t :foreground "dark orange" ))))
-    
+  
     (use-package org-appear
       :after org
       :hook (org-mode . org-appear-mode)
@@ -1711,12 +1708,12 @@ FILENAME defaults to current buffer."
       (setq org-hide-emphasis-markers t)
       (setq org-appear-autolinks t)
       )
-    
+  
     (defun org-mode-visual-fill ()
       (setq visual-fill-column-width 100
             visual-fill-column-center-text t)
       (visual-fill-column-mode 1))
-    
+  
     (use-package visual-fill-column
       :hook (org-mode . org-mode-visual-fill))
     )
@@ -1736,6 +1733,7 @@ FILENAME defaults to current buffer."
           (directory . emacs)
           ("\\.mp4\\'" . "vlc \"%s\"")
           ("\\.mp3\\'" . "vlc \"%s\"")
+          ("\\.drawio\\'" . "drawio \"%s\"")
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . default)))
