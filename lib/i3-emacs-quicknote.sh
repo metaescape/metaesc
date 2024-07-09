@@ -82,8 +82,8 @@ elif [[ $focus_win_class =~ 'code' ]]; then
 	
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 5)))
-	emacsclient -a "$FILE_PATH" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
-		--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(96 . 90)))"
+	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+		--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(96 . 90)) (find-file \"$FILE_PATH\"))"
 else
 	sleep 0.01
 	~/metaesc/lib/restore_fullscreen.sh
