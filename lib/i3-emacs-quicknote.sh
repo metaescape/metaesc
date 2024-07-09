@@ -45,6 +45,45 @@ elif [[ $focus_win_class =~ 'emacs' ]]; then
 	# xdotool key F10 #send F10 to emacs window to cycle agenda，触发了死循环
 	# 必须修改 emacs 中 agenda cycle 按键
 	xdotool key super+F10
+elif [[ $focus_win_class =~ 'code' ]]; then
+	# 如果当前是 vscode 窗口，那么用 emacsclient 打开当前文件
+	# VS code setting
+	# “window.title”: “${activeEditorLong}${separator}${rootName}”,
+	# How To:
+	# Open Settings: hit: Command+ ,
+	# Search for “title”
+	# In the input replace activeEditorShort with activeEditorLong
+	# Save.
+	sleep 0.01
+	~/metaesc/lib/restore_fullscreen.sh
+
+	window_id=$(xdotool getactivewindow)
+
+	# Get the position and size of the window
+	window_info=$(xdotool getwindowgeometry --shell $window_id)
+	window_x=$(echo "$window_info" | grep X | cut -d '=' -f 2)
+	window_y=$(echo "$window_info" | grep Y | cut -d '=' -f 2)
+	window_width=$(echo "$window_info" | grep WIDTH | cut -d '=' -f 2)
+	window_height=$(echo "$window_info" | grep HEIGHT | cut -d '=' -f 2)
+
+	width=$window_width
+	height=$window_height
+
+	# 获取窗口名称
+	WINDOW_NAME=$(xprop -id $window_id WM_NAME)
+
+	# 提取文件路径（假设窗口名称格式为 "<filename> - <directory> - Visual Studio Code"）
+	FILE_PATH=$(echo $WINDOW_NAME | awk -F '"' '{print $2}' | awk -F ' - ' '{print $1}')
+
+	# x 是从屏幕左侧开始，y 是从屏幕上边缘开始
+	center_x=$(($window_x + ($window_width / 2)))
+	# 放在稍微靠下的位置
+	center_y=$(($window_y + ($window_height * 2 /4)))
+	
+	x_corner=$(($center_x  - ($width * 5)))
+	y_corner=$(($center_y  - ($height * 5)))
+	emacsclient -a "$FILE_PATH" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+		--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(96 . 90)))"
 else
 	sleep 0.01
 	~/metaesc/lib/restore_fullscreen.sh
@@ -77,6 +116,7 @@ else
 	# 	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
 	# else
 		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
+	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+	--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
 	# fi
 fi
