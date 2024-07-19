@@ -48,9 +48,7 @@ keycode  46 = l L l L
 keycode  47 = semicolon colon semicolon colon
 keycode  48 = apostrophe quotedbl apostrophe quotedbl
 keycode  49 = grave asciitilde grave asciitilde
-! change Shift_L to Super_L, than send Cancel via xcape
-! keycode  50 = Shift_L NoSymbol Shift_L
-keycode  50 = Super_L NoSymbol Super_L
+keycode  50 = Shift_L NoSymbol Shift_L
 keycode  51 = backslash bar backslash bar
 keycode  52 = z Z z Z
 keycode  53 = x X x X
@@ -65,9 +63,9 @@ keycode  61 = slash question slash question
 keycode  62 = Shift_R NoSymbol Shift_R
 keycode  63 = KP_Multiply KP_Multiply KP_Multiply KP_Multiply KP_Multiply KP_Multiply XF86ClearGrab
 keycode  64 = Alt_L Meta_L Alt_L Meta_L
-! change space to Shift_L than use xcape to send space when press alone
+! change space to Shift_R than use xcape to send space when press alone
 ! keycode  65 = space NoSymbol space
-keycode  65 = Shift_L NoSymbol Shift_L
+keycode  65 = Shift_R NoSymbol Shift_R
 ! change capslock to control_L 
 ! keycode  66 = Caps_Lock NoSymbol Caps_Lock
 keycode  66 = Control_L NoSymbol Control_L
