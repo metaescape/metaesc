@@ -153,10 +153,11 @@ exec_always --no-startup-id ~/metaesc/lib/clock_notify.sh
 # # [[file:~/org/logical/i3wm.org::set-keymap][set-keymap]]
 exec_always --no-startup-id exec ~/metaesc/lib/code01s1.sh
 
-set $keymap-switch-mode "which keymap to change? s1(1), 回到默认(0)"
+set $keymap-switch-mode "keymap: s(2), metaesc(1), 回到默认(0)"
 mode $keymap-switch-mode {
     bindsym 0 exec ~/metaesc/lib/code01default.sh, mode default
     bindsym 1 exec ~/metaesc/lib/code01s1.sh, mode default
+    bindsym 2 exec ~/metaesc/lib/code01s2.sh, mode default
     bindsym Return mode default
     bindsym n mode default
     bindsym Escape mode default
@@ -168,7 +169,9 @@ exec --no-startup-id sleep 2; i3-msg "workspace $ws2"; ~/metaesc/lib/open_emacs 
 exec --no-startup-id sleep 2; google-chrome --new-window \
                                             https://chat.openai.com/ \
                                             https://gemini.google.com/ \
-                                            https://www.chatpdf.com/
+                                            https://www.chatpdf.com/ \
+                                            https://filehelper.weixin.qq.com/ \
+                                            https://weread.qq.com/web/ \
 # # emacs-chrome-initialize ends here
 
 # # [[file:~/org/logical/i3wm.org::fn-audio-control][fn-audio-control]]
@@ -206,9 +209,9 @@ mode "$main_mode" {
 
     # # [[file:~/org/logical/i3wm.org::i3-main-mode][resize-window-with-hjkl]]
     bindsym h resize shrink width 5 px
+    bindsym l resize grow width 5 px
     bindsym j resize grow height 5 px
     bindsym k resize shrink height 5 px  
-    bindsym l resize grow width 5 px
     bindsym 8 resize set 50 ppt 50 ppt
     bindsym 9 resize set 62 ppt 38 ppt
     # # resize-window-with-hjkl ends here
@@ -305,11 +308,14 @@ floating_modifier $super
 # toggle tiling / floating
 bindsym Menu floating toggle
 for_window [title="^EmacsAnywhere$"] floating enable
-floating_maximum_size 1200 x 900
+for_window [title="^ScreenX$"] sticky enable
+# floating_maximum_size 1200 x 900
+floating_maximum_size -1 x -1
 # # float-window-setting ends here
 
 # # [[file:~/org/logical/i3wm.org::screen-capture-like-mac][screen-capture-like-mac]]
 bindsym $alt+Control+4 exec gnome-screenshot -ai
+bindsym $alt+Control+3 --release exec ~/metaesc/lib/screenx.sh
 # # screen-capture-like-mac ends here
 # # [[file:~/org/logical/i3wm.org::copy-paste-with-super-cv][copy-paste-with-super-cv]]
 bindsym $super+c exec ~/metaesc/lib/paste.sh c
