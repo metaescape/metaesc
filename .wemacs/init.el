@@ -91,6 +91,7 @@
 
 ;; [[file:~/org/design/wemacs.org::*包的升级管理方案][包的升级管理方案:1]]
 (use-package pkg-update-checker
+  :defer 10
   :load-path "site-lisp/pkg-update-checker" 
   :config
   (start-pkg-update-checker-timer))
@@ -465,13 +466,6 @@
    :hook
    (dired-mode . nerd-icons-dired-mode))
  ;; icons-dired ends here
- ;; [[file:~/org/logical/dired.org::dired-open][dired-open]]
- (use-package dired-open
-   :config
-   ;; Doesn't work as expected!
-   ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-   (setq dired-open-extensions '(("mkv" . "mpv"))))
- ;; dired-open ends here
  ;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
  (use-package dired-hide-dotfiles
    :hook (dired-mode . dired-hide-dotfiles-mode)
@@ -1433,10 +1427,11 @@
                  (append app-list '("code" "nautilus")))))
       ;;(message (format "%s %s" default-directory file))
       (if (or (equal app "code") (equal app "natuils"))
-          (dired-open--start-process
-           (cdr (project-current "" file))
-           app)
-        (dired-open--start-process file app))))
+          (start-process "open-external" nil
+                         "setsid" app
+                         (cdr (project-current "" file)))
+        (start-process "open-external" nil "setsid" app file))))
+  
 
   (defun open-with-system-app-dwim ()
     (interactive)
@@ -1450,7 +1445,8 @@
 
   (general-define-key
    :keymaps '(org-mode-map pdf-view-mode-map markdown-mode-map
-                           prog-mode-map nov-mode-map dired-mode-map)
+                           prog-mode-map nov-mode-map dired-mode-map
+                           general-override-mode-map)
    :states '(normal visual)
    "M-o" 'open-with-system-app-dwim))
 ;; 常用函数的 hydra 界面:1 ends here
@@ -3224,3 +3220,4 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
 ;; init-eaf ends here
+(put 'list-timers 'disabled nil)

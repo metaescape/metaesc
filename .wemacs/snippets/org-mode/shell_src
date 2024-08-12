@@ -4,6 +4,6 @@
 # group: org block
 # --
 
-#+begin_src bash :results drawer replace
+#+begin_src bash :eval no
 $0
 #+end_src
