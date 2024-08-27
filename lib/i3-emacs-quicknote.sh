@@ -7,7 +7,7 @@
 
 1. 找到 emacsclient, 在编译后的 lib-src 目录中, 或直接在环境变量中
 2. 设置 i3 使得 emacs 作为 popup window
-   for_window [title="^EmacsAnywhere$"] floating enable
+   for_window [title="^Floating"] floating enable
 3. 编写脚本判断是否在 chrome, 是则发送 Y 按键
 4. 发送完后调用 emacsclient 打开特定 org 文件，跳到最后一行，调用粘贴
 5. 绑定 i3 按键 F10 激活该脚
@@ -32,7 +32,7 @@ comment
 
 focus_win_class=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'"' -f2)
 focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) | cut -d'"' -f2)
-if [[ $focus_win_name =~ 'EmacsAnywhere' ]]; then
+if [[ $focus_win_name =~ 'Floating' ]]; then
 	i3-msg kill
 elif [[ $focus_win_class =~ 'emacs' ]]; then
 	# 以下命令会执行失败
@@ -82,7 +82,7 @@ elif [[ $focus_win_class =~ 'code' ]]; then
 	
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 5)))
-	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
 		--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(96 . 90)) (find-file \"$FILE_PATH\"))"
 else
 	sleep 0.01
@@ -113,10 +113,10 @@ else
 	# if [[ $focus_win_class =~ 'google-chrome' ]]; then
 	# 	xdotool key Escape "Y"
 	# 	sleep 0.01
-	# 	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
+	# 	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
 	# else
 		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
 	--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
 	# fi
 fi

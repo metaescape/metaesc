@@ -11,7 +11,7 @@
 # Usage: Run the script to interactively choose and manage windows in an i3 environment.
 # deprecated, use ~/metaesc/lib/ivy-xwish.el instead
 
-win=$(wmctrl -l | tr -s ' ' | grep -v "select_window\|EmacsAnywhere" |\
+win=$(wmctrl -l | tr -s ' ' | grep -v "select_window\|Floating" |\
         fzf --height 50%  --header ', to kill; / to swap' --expect=/,,)
 current_win_id=$(cat /tmp/current_win_id)
 

@@ -14,7 +14,7 @@ focus_win_class=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'
 focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) | cut -d'"' -f2)
 focus_wid=$(printf 0x%08x $(xdotool getactivewindow))
 
-if [[ $focus_win_name =~ 'EmacsAnywhere' ]]; then
+if [[ $focus_win_name =~ 'Floating' ]]; then
 	# emacsclient --eval "(minibuffer-keyboard-quit)"
 	xdotool key Escape #send ESC to 
 	i3-msg kill
@@ -42,5 +42,5 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 9)))
 	# echo $x_corner $y_corner >> /tmp/testout
-	emacsclient -a "" -n -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) (alpha . (98 . 90)) (minibuffer . only))" --eval "(let ((ivy-xwish \"$_cur_dir/ivy-xwish.el\")) (when (file-exists-p ivy-xwish) (load-file ivy-xwish) (list-xwindows-ivy \"$focus_wid\"))))" 
+	emacsclient -a "" -n -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) (alpha . (98 . 90)) (minibuffer . only))" --eval "(let ((ivy-xwish \"$_cur_dir/ivy-xwish.el\")) (when (file-exists-p ivy-xwish) (load-file ivy-xwish) (list-xwindows-ivy \"$focus_wid\"))))" 
 fi

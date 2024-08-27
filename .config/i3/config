@@ -307,7 +307,7 @@ bar {
 floating_modifier $super
 # toggle tiling / floating
 bindsym Menu floating toggle
-for_window [title="^EmacsAnywhere$"] floating enable
+for_window [title="^Floating"] floating enable
 for_window [title="^ScreenX$"] sticky enable
 # floating_maximum_size 1200 x 900
 floating_maximum_size -1 x -1

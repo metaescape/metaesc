@@ -5,7 +5,7 @@
 
 1. 找到 emacsclient, 在编译后的 lib-src 目录中, 或直接在环境变量中
 2. 设置 i3 使得 emacs 作为 popup window
-   for_window [title="^EmacsAnywhere$"] floating enable
+   for_window [title="^Floating$"] floating enable
 3. 识别当前窗口的坐标，将 popup 窗口定位到当前窗口的中心
    ~xdotool getactivewindow getwindowgeometry~
    获得坐标和像素范围，然后计算出中心
@@ -15,7 +15,7 @@ comment
 
 focus_win_class=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'"' -f2)
 focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) | cut -d'"' -f2)
-if [[ $focus_win_name =~ 'EmacsAnywhere' ]]; then
+if [[ $focus_win_name =~ 'Floating' ]]; then
 	i3-msg kill
 else
 	sleep 0.01
@@ -43,6 +43,6 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 5)))
 	# else
-	emacsclient -a "" -c -F "((name . \"EmacsAnywhere\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (shell) (end-of-buffer) (evil-insert-state) (comint-send-string nil \"cd ~/codes/hugchangelife\n\")  (comint-send-string nil \"./pub.sh p\n\"))"
+	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (shell) (end-of-buffer) (evil-insert-state) (comint-send-string nil \"cd ~/codes/hugchangelife\n\")  (comint-send-string nil \"./pub.sh p\n\"))"
 	# fi
 fi
