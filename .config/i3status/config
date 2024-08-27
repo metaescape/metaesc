@@ -8,7 +8,7 @@ general {
 		color_bad = '#ba5e57'
 }
 
-# order += "tztime local"
+order += "tztime local"
 # order += "memory"
 order += "load"
 order += "disk /home"
