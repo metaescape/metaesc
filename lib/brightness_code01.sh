@@ -7,7 +7,7 @@
 var1=$1
 [ -z "$var1" ] && var1="0"
 
-brightness_file=/sys/class/backlight/amdgpu_bl0/brightness
+brightness_file=/sys/class/backlight/amdgpu_bl1/brightness
 mod=$(stat -c "%a" $brightness_file)
 if [ $mod -ne 646 ]; then
     PASSWD="$(zenity --password --title=Authentication)"
