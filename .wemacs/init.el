@@ -94,6 +94,7 @@
   :defer 10
   :load-path "site-lisp/pkg-update-checker" 
   :config
+  (setq pkg-update-checker-interval-hour (* 3 24))
   (start-pkg-update-checker-timer))
 ;; 包的升级管理方案:1 ends here
 
@@ -864,11 +865,11 @@
   :general
   (:keymaps '(global-map Info-mode-map bibtex-mode-map markdown-mode-map comint-mode-map)
             "M-n" 'swiper-isearch
-            "s-n" 'projectile-ripgrep)
+            "s-p" 'project-counsel-rg
+            "s-." 'counsel-rg-current-dir)
   :bind ( 
          ("C-s" . swiper)
          ("s-s T" . search-all-tasks)
-         ("s-s p" . projectile-ripgrep)
          ("s-s g" . counsel-rg)
          ("s-s v" . counsel-rg-my-vocab)
          :map org-mode-map
@@ -892,6 +893,16 @@
    "SPC" 'ivy-switch-buffer
    "/" 'swiper-isearch
    )
+
+  (defun project-counsel-rg ()
+    (interactive)
+    (counsel-rg nil nil nil
+                (format "[%s] " (project-current))))
+
+  (defun counsel-rg-current-dir ()
+    (interactive)
+    (counsel-rg nil default-directory nil
+                (format "[%s] " default-directory)))
   ;; [[file:~/org/logical/ivy.org::search-all-tasks][search-all-tasks]]
   (defun search-all-tasks ()
     (interactive)
@@ -902,8 +913,8 @@
   ;; @see https://www.reddit.com/r/emacs/comments/b7g1px/withemacs_execute_commands_like_marty_mcfly/
   (defvar my-ivy-fly-commands
     '(query-replace-regexp
-      flush-lines keep-lines ivy-read
-      swiper swiper-backward swiper-all
+      flush-lines keep-lines ivy-read counsel-rg-current-dir
+      swiper swiper-backward swiper-all project-counsel-rg
       swiper-isearch swiper-isearch-backward
       lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol
       counsel-grep-or-swiper counsel-grep-or-swiper-backward
@@ -1050,6 +1061,7 @@
    "R" 'desktop-read)
   )
 ;; dashboard ends here
+
 (use-package tab-bar
   :ensure nil
   :config
@@ -1067,12 +1079,20 @@
                         :inherit 'doom-modeline-panel
                         :foreground 'unspecified
                         :background 'unspecified)
-  
+    
     (set-face-attribute 'tab-bar nil
                         :foreground (face-attribute 'default :foreground)))
   
   (advice-add 'load-theme :after #'my/update-tab-bar-after-theme-change)
   (my/update-tab-bar-after-theme-change)
+
+  (setq tab-line-new-button-show nil)  ;; do not show add-new button
+  ;;(setq tab-line-close-button-show nil)  ;; do not show close button
+  (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+                      :background "#113c61" :foreground "white" :box nil)
+  (set-face-attribute 'tab-line-tab nil ;; active tab in another window
+                      :inherit 'tab-line
+                      :background "gray10" :foreground "white"  :box nil)
   ;; tab-utils ends here
   ;; [[file:~/org/logical/window_manager.org::switch-tab-by-name-num][switch-tab-by-name-num]]
   (defun switch-to-tab-by-number (num)
@@ -1377,7 +1397,7 @@
 (defhydra main-hydra (:color red :hint nil :exit t :timeout 3 :idle 0.2)
   "
     most common used functions
-    _f_: projectile-find-file        _m_: maximize current window
+    _f_: counsel-file-jump           _m_: maximize current window
     _r_: open files in reading dir   _b_: add bookmark and save
     _w_: save-buffer                 _q_: quickly quitely quit window
     _-_: split-window-below          _\\_: split-window-right
@@ -1417,6 +1437,31 @@
 
 (use-package ivy
   :config 
+
+  (defun async-open-file (file command)
+    "Open FILE with COMMAND.
+
+FILE is string, path to the file you want to open.  It is
+resolved with `file-truename'.
+
+Note that FILE should not be \"shell escaped\", that is handled
+by this function if the shell is invoked.
+
+COMMAND is a string representing the command to run.
+adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
+"
+    (let ((process
+           (apply
+            'start-process "dired-open" nil
+            (list "sh" "-c"
+                  (concat
+                   "nohup "
+                   command
+                   " "
+                   (shell-quote-argument (file-truename file))
+                   " 2>&1 >/dev/null")))))
+      process))
+
   (defun open-with-system-app (file)
     (let* ((ext (file-name-extension file))
            (app-list (cond ((equal ext "pdf") '("masterpdfeditor5" "xdg-open"))
@@ -1427,11 +1472,8 @@
                  (append app-list '("code" "nautilus")))))
       ;;(message (format "%s %s" default-directory file))
       (if (or (equal app "code") (equal app "natuils"))
-          (start-process "open-external" nil
-                         "setsid" app
-                         (cdr (project-current "" file)))
-        (start-process "open-external" nil "setsid" app file))))
-  
+          (async-open-file (file-name-directory (buffer-file-name)) app)
+        (async-open-file file app))))
 
   (defun open-with-system-app-dwim ()
     (interactive)
@@ -1510,25 +1552,6 @@
   
   (advice-add 'yas-expand-from-trigger-key :around #'yas-expand-only-in-insert-state)
 ;; tab 冲突处理:4 ends here
-
-;; [[file:~/org/design/wemacs.org::*projectile][projectile:1]]
-(use-package projectile
-  :diminish projectile-mode
-  :custom ((projectile-completion-system 'ivy))
-  :defer 1
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  ("s-p" . projectile-command-map)
-  :init
-  ;; NOTE: Set this to the folder where you keep your Git repos!
-  ;; (setq projectile-project-search-path '("~/myconf/" "~/org/" ))
-  (setq projectile-switch-project-action #'projectile-dired)
-  :config
-  (projectile-mode)
-  (use-package counsel-projectile
-    :config (counsel-projectile-mode))
-  )
-;; projectile:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*gitgutter 和 git timemachine][gitgutter 和 git timemachine:1]]
 (use-package git-timemachine
@@ -1711,8 +1734,7 @@ FILENAME defaults to current buffer."
       (visual-fill-column-mode 1))
   
     (use-package visual-fill-column
-      :hook (org-mode . org-mode-visual-fill))
-    )
+      :hook (org-mode . org-mode-visual-fill)))
   ;; org-basic-ui ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::narrow-or-widen-dwim][narrow-or-widen-dwim]]
   (defun narrow-or-widen-dwim ()
@@ -3220,4 +3242,3 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
 ;; init-eaf ends here
-(put 'list-timers 'disabled nil)
