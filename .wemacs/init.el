@@ -1061,7 +1061,6 @@
    "R" 'desktop-read)
   )
 ;; dashboard ends here
-
 (use-package tab-bar
   :ensure nil
   :config
@@ -1079,20 +1078,12 @@
                         :inherit 'doom-modeline-panel
                         :foreground 'unspecified
                         :background 'unspecified)
-    
+  
     (set-face-attribute 'tab-bar nil
                         :foreground (face-attribute 'default :foreground)))
   
   (advice-add 'load-theme :after #'my/update-tab-bar-after-theme-change)
   (my/update-tab-bar-after-theme-change)
-
-  (setq tab-line-new-button-show nil)  ;; do not show add-new button
-  ;;(setq tab-line-close-button-show nil)  ;; do not show close button
-  (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
-                      :background "#113c61" :foreground "white" :box nil)
-  (set-face-attribute 'tab-line-tab nil ;; active tab in another window
-                      :inherit 'tab-line
-                      :background "gray10" :foreground "white"  :box nil)
   ;; tab-utils ends here
   ;; [[file:~/org/logical/window_manager.org::switch-tab-by-name-num][switch-tab-by-name-num]]
   (defun switch-to-tab-by-number (num)
@@ -1197,6 +1188,17 @@
     :ensure nil
     :hook (after-init . winner-mode))
   )
+;; [[file:~/org/logical/window_manager.org::tab-line][tab-line]]
+(use-package tab-line
+  :config 
+  (setq tab-line-new-button-show nil)  ;; do not show add-new button
+  ;;(setq tab-line-close-button-show nil)  ;; do not show close button
+  (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+                    :background "#135c63" :foreground "white" :box nil)
+  (set-face-attribute 'tab-line-tab nil ;; active tab in another window
+                      :inherit 'tab-line
+                      :background "gray10" :foreground "white"  :box nil))
+;; tab-line ends here
 ;; # tab-bar ends here
 ;; 窗口、 tab 管理:1 ends here
 
@@ -1775,6 +1777,10 @@ FILENAME defaults to current buffer."
                 (error "End of source block not found"))))
         (error "Named block not found"))))
   
+  (defun my/exec-org-shell-block-in-file (block-name file)
+    (start-process-shell-command
+     "" nil (my/read-org-block-by-name file block-name)))
+  
   (defun my/jump-to-org-block-by-name (file block-name)
     "Jump inside the src block with name: block-name in the specified file."
     (find-file file)  ; 打开文件
@@ -1947,11 +1953,11 @@ FILENAME defaults to current buffer."
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
   
-      (setq my/org-clock-effort 51)
-      
-      (defun set-org-clock-effort-when-nil ()
-        (setq org-clock-effort my/org-clock-effort)
-        (org-clock-update-mode-line))
+    (setq my/org-clock-effort 12)
+    
+    (defun set-org-clock-effort-when-nil ()
+      (setq org-clock-effort my/org-clock-effort)
+      (org-clock-update-mode-line))
   
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
@@ -1962,24 +1968,21 @@ FILENAME defaults to current buffer."
                  (time-subtract (current-time) org-clock-start-time))
                 60)))
         (when (>= current-focus-time my/org-clock-effort)
-          (start-process-shell-command
-           ""
-           nil
-           (my/read-org-block-by-name "~/org/historical/projects.gtd" "timeout")))
+          (my/exec-org-shell-block-in-file "timeout" "~/org/historical/projects.gtd"))
         (org-notify (if (org-clock-is-active)
                         (string-trim
                          (substring-no-properties
                           (org-clock-get-clock-string)))
                       ""))))
   
-    (setq my/clock-in-focus-notify-gap (* 60 9))
+    (setq my/clock-in-focus-notify-gap 9)
   
     (defun clock-in-focus-timer-start ()
-      "设置一个计时器，每 my/clock-in-focus-notify-gap 触发一次 clock-in-focus-notify"
+      "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
       (setq clock-in-focus-timer
             (run-at-time
-             my/clock-in-focus-notify-gap
-             my/clock-in-focus-notify-gap
+            (* 60 my/clock-in-focus-notify-gap)
+            (* 60 my/clock-in-focus-notify-gap)
              #'clock-in-focus-notify)))
   
     (defun clock-in-focus-timer-stop ()
@@ -1989,16 +1992,20 @@ FILENAME defaults to current buffer."
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
   
+    (setq my/clock-out-idle-notify-gap 5)
+  
     (defun clock-out-idle-notify ()
-      (setq clock-out-idle-time-duration (+ 10 clock-out-idle-time-duration))
+      (setq clock-out-idle-time-duration
+            (+ my/clock-out-idle-notify-gap clock-out-idle-time-duration))
+      (my/exec-org-shell-block-in-file "idle" "~/org/historical/projects.gtd")
       (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
   
     (defun clock-out-idle-timer-start ()
-      "设置一个计时器，每 600 秒（10分钟）触发一次 clock-out-idle-notify,
+      "设置一个计时器，每 my/clock-out-idle-notify-gap 分触发一次 clock-out-idle-notify,
        用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
-  
-      (setq clock-out-idle-time-duration 0)
-      (setq clock-out-idle-timer (run-at-time 600 600 #'clock-out-idle-notify)))
+      (let ((gap-secs (* 60 my/clock-out-idle-notify-gap)))
+        (setq clock-out-idle-time-duration 0)
+        (setq clock-out-idle-timer (run-at-time gap-secs gap-secs #'clock-out-idle-notify))))
   
     (defun clock-out-idle-timer-stop ()
       (when (boundp 'clock-out-idle-timer)
@@ -2035,8 +2042,9 @@ FILENAME defaults to current buffer."
           (beginning-of-line))
       (progn
         (org-agenda-clockreport-mode)
-        (re-search-forward "Time" nil t)
-        (next-line 2))))
+        (re-search-forward "Total time" nil t)
+        (evil-forward-word-end)
+        (recenter-top-bottom))))
   
   (general-define-key
    :keymaps 'org-agenda-mode-map

@@ -4,11 +4,11 @@ set -ue
 
 source $(dirname "${BASH_SOURCE[0]:-$0}")/utilfuncs.sh
 
-function install_emacs29.2() {
+function install_emacs29.4() {
 	local distro
 	distro=$(whichdistro)
 	if [[ $distro == "debian" ]]; then
-        if [ ! -e $CODES/emacs-29.2 ]; then
+        if [ ! -e $CODES/emacs-29.4 ]; then
             print_info "采用编译的方式来安装 emacs, 首先要准备安装条件，包括 build 需要的库，包括 build-essential, 剩下的可以用 `sudo apt build-dep --no-install-recommends emacs` 来查看"
             sudo apt install build-essential -y
             sudo apt build-dep emacs -y
@@ -22,18 +22,18 @@ function install_emacs29.2() {
             sudo apt install sqlite3 -y
 
             pushd $CODES
-            wget http://mirrors.aliyun.com/gnu/emacs/emacs-29.2.tar.gz
-            print_notice "下载 emacs-29.2.tar.gz"
-            tar -xf emacs-29.2.tar.gz
-            pushd $CODES/emacs-29.2
+            wget http://mirrors.aliyun.com/gnu/emacs/emacs-29.4.tar.gz
+            print_notice "下载 emacs-29.4.tar.gz"
+            tar -xf emacs-29.4.tar.gz
+            pushd $CODES/emacs-29.4
             ./autogen.sh
             ./configure --with-native-compilation=aot
             make -j16 
             popd 
-            rm -rf emacs-29.2.tar.gz
-            print_notice "删除 emacs-29.2.tar.gz"
+            mv emacs-29.4.tar.gz $INSTALLER/
+            print_notice "emacs-29.4.tar.gz 移动到 $INSTALLER/"
             popd
-            print_success "emacs29.2 编译完毕"
+            print_success "emacs29.4 编译完毕"
         fi
 	elif [[ $distro == "redhat" ]]; then
 		:
@@ -42,7 +42,7 @@ function install_emacs29.2() {
 	fi
 }
 
-function setup_emacs29.2() {
+function setup_emacs29.4() {
 	local distro
 	distro=$(whichdistro)
     _cur_dir=$(dirname "${BASH_SOURCE[0]:-$0}")
@@ -60,8 +60,8 @@ function setup_emacs29.2() {
         ln -sfT $conf_dir/.wemacs/snippets $CONFIG_HOME/snippets
 
 		print_info "把 emacsclient 和 emacs 以软链接方式添加到 ~/.local/bin/, 以供全局使用"
-        ln -sf $CODES/emacs-29.2/src/emacs $HOME/.local/bin/emacs
-        ln -sf $CODES/emacs-29.2/lib-src/emacsclient $HOME/.local/bin/emacsclient
+        ln -sf $CODES/emacs-29.4/src/emacs $HOME/.local/bin/emacs
+        ln -sf $CODES/emacs-29.4/lib-src/emacsclient $HOME/.local/bin/emacsclient
 
 		print_info "把 $HOME/.emacs.d 设置为 $HOME/.wemacs 目录的软链接"
         if [ -d "$HOME/.emacs.d" ] && [ ! -L "$HOME/.emacs.d" ]; then

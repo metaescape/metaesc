@@ -2,7 +2,7 @@
 # 打开不同 配置 的 emacs 方式, 但基本只用默认的
 
 export PATH=$HOME/miniconda3/envs/usr/bin:$PATH
-version=${version:-29.2}
+version=${version:-29.4}
 em=~/codes/emacs-${version}/src/emacs
 emc=~/codes/emacs-${version}/lib-src/emacsclient
 if [ "$1" == 'default' ]; then
