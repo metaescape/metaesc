@@ -291,11 +291,11 @@ gpull() {
 
 # User specific aliases and functions
 deep() {
-sudo mount -t ecryptfs -o key=passphrase:passphrase_passwd=123,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=yes ~/org/self/.deep ~/org/self/.deep
+    sudo chmod 000 ~/org/self/.deep
 }
 
 undeep() {
-    sudo umount ~/org/self/.deep
+    sudo chmod 755 ~/org/self/.deep
 }
 
 port=7890

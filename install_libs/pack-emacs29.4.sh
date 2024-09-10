@@ -30,8 +30,8 @@ function install_emacs29.4() {
             ./configure --with-native-compilation=aot
             make -j16 
             popd 
-            mv emacs-29.4.tar.gz $INSTALLER/
-            print_notice "emacs-29.4.tar.gz 移动到 $INSTALLER/"
+            mv emacs-29.4.tar.gz $INSTALLERS/
+            print_notice "emacs-29.4.tar.gz 移动到 $INSTALLERS/"
             popd
             print_success "emacs29.4 编译完毕"
         fi

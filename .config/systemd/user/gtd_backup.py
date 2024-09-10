@@ -8,7 +8,7 @@ now = datetime.datetime.now().strftime(date_format)
 src_files_name = ["projects.gtd", "inbox.gtd"]
 src_fold = os.path.expanduser("~/org/historical")
 src_files = [os.path.join(src_fold, name) for name in src_files_name]
-bak_fold = "/data/resource/important_bak"
+bak_fold = "/data/resource/gtds_backup"
 backup_files = [os.path.join(bak_fold, now+name) for name in src_files_name]
 for src, backup in zip(src_files, backup_files):
     shutil.copy2(src, backup)

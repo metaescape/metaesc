@@ -1464,23 +1464,26 @@ adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
                    " 2>&1 >/dev/null")))))
       process))
 
-  (defun open-with-system-app (file)
+  (defun open-with-system-app (file &optional dired)
     (let* ((ext (file-name-extension file))
            (app-list (cond ((equal ext "pdf") '("masterpdfeditor5" "xdg-open"))
                            ((equal ext "epub") '("foliate"))
                            ((equal ext "md") '("typora"))))
            (app (completing-read
                  "Select Apps: "
-                 (append app-list '("code" "nautilus")))))
-      ;;(message (format "%s %s" default-directory file))
-      (if (or (equal app "code") (equal app "natuils"))
-          (async-open-file (file-name-directory (buffer-file-name)) app)
-        (async-open-file file app))))
+                 (append app-list '("code" "nautilus" "code folder")))))
+      ;;(message (format "%s-%s" default-directory file))
+      (cond
+       ((equal app "natuils")
+        (async-open-file (file-name-directory file) app))
+       ((equal app "code folder")
+        (async-open-file (file-name-directory file) "code"))
+       (t (async-open-file file app)))))
 
   (defun open-with-system-app-dwim ()
     (interactive)
     (if (derived-mode-p 'dired-mode)
-        (open-with-system-app  (dired-get-file-for-visit))
+        (open-with-system-app (dired-get-file-for-visit) 't)
       (open-with-system-app (buffer-file-name))))
   
   (ivy-add-actions
