@@ -1833,15 +1833,14 @@ FILENAME defaults to current buffer."
   (defun my/set-archive-location (&rest _)
     "设置 org-archive-location 为当前存档文件的位置。"
     (setq org-archive-location (get-current-archive-file-location)))
-
+  
   ;; defalult (time file olpath category todo itags)
   (setq org-archive-save-context-info '(time))
   (advice-add 'org-archive-subtree :before #'my/set-archive-location)
-
+  
   (setq org-refile-targets
-        `((,(substring (get-current-archive-file-location) 0 -2)
-           :maxlevel . 1)))
-
+      `((,(substring (get-current-archive-file-location) 0 -2)
+          :maxlevel . 1)))
   ;; agenda-archive-gtd-files ends here
   :config
   ;; [[file:~/org/logical/orgmode_workflow.org::todo-list][todo-list]]
@@ -1850,12 +1849,12 @@ FILENAME defaults to current buffer."
   
   ;; TODO color
   (setq org-todo-keyword-faces
-        '(
-          ("TODO" .      (:foreground "orange" :weight bold))
-          ("NEXT" .      (:foreground "yellow" :weight bold))
-          ("DONE" .      (:foreground "green" :weight bold))
-          ("CANCEL" .     (:foreground "gray40"))
-          ))
+     '(
+      ("TODO" .      (:foreground "orange" :weight bold))
+      ("NEXT" .      (:foreground "yellow" :weight bold))
+      ("DONE" .      (:foreground "green" :weight bold))
+      ("CANCEL" .     (:foreground "gray40"))
+  ))
   
   (setq org-log-into-drawer t) ;; add logbook
   (setq org-log-done 'time) ;; add CLOSED: timestamp when task done
@@ -1881,8 +1880,8 @@ FILENAME defaults to current buffer."
                   (org-agenda-skip-function #'org-agenda-skip-all-siblings-but-first)
                   ))
            (search "^* \\.*"
-                   ((org-agenda-overriding-header "Inbox Processing")
-                    (org-agenda-files '(,gtd-inbox-file))))
+                 ((org-agenda-overriding-header "Inbox Processing")
+                  (org-agenda-files '(,gtd-inbox-file))))
            nil)))
   
   (defun org-agenda-skip-all-siblings-but-first ()
@@ -1935,6 +1934,39 @@ FILENAME defaults to current buffer."
   
   (add-hook 'org-ctrl-c-ctrl-c-hook 'my/update-clocktable-if-appropriate)
   ;; clocktable-db-block ends here
+  ;; [[file:~/org/logical/orgmode_workflow.org::checkbox-statistics][checkbox-statistics]]
+  (defun count-statistics ()
+    (let (num den end current-level)
+      (save-excursion
+        (setq current-level (org-outline-level))
+        (setq end (save-excursion
+                    (org-end-of-subtree t)
+                    (point)))
+        (while (re-search-forward "^\\*+ .*\\[\\([0-9]*\\)\\(?:%\\|/\\([0-9]*\\)\\)\\]" end t)
+          ;; 要马上获取，否则会变成 nil
+          (let ((first (string-to-number (match-string 1)))
+                (second (string-to-number (match-string 2))))
+            ;; 只处理比当前标题更低一层级的标题
+            (when (= (org-outline-level) (+ 1 current-level))
+              ;; (message (number-to-string (org-outline-level)) )
+              ;; (message (thing-at-point 'line))
+              (push first num)
+              (push second den)))))
+      (setq num (apply #'+ num)
+            den (apply #'+  den))
+      (format "[%s/%s]" num den)))
+  
+  (defun update-statistics ()
+    (save-excursion
+      (save-restriction   
+        (while (org-up-heading-safe) 
+          (let ((count (count-statistics)))
+            (when (re-search-forward "\\[\\([0-9]*\\)\\(?:%\\|/\\([0-9]*\\)\\)\\]" (point-at-eol) t) 
+              (replace-match count)))
+          nil))))
+  
+  (add-hook 'org-checkbox-statistics-hook 'update-statistics)
+  ;; checkbox-statistics ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::org-clock-agenda][org-clock-agenda]]
   (use-package org-clock
     :ensure nil
@@ -1960,16 +1992,16 @@ FILENAME defaults to current buffer."
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
-    
+  
     (setq my/org-clock-effort 12)
     
     (defun set-org-clock-effort-when-nil ()
       (setq org-clock-effort my/org-clock-effort)
       (org-clock-update-mode-line))
-    
+  
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
-    
+  
     (defun clock-in-focus-notify ()
       (let ((current-focus-time
              (/ (float-time
@@ -1982,43 +2014,43 @@ FILENAME defaults to current buffer."
                          (substring-no-properties
                           (org-clock-get-clock-string)))
                       ""))))
-    
+  
     (setq my/clock-in-focus-notify-gap 9)
-    
+  
     (defun clock-in-focus-timer-start ()
       "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
       (setq clock-in-focus-timer
             (run-at-time
-             (* 60 my/clock-in-focus-notify-gap)
-             (* 60 my/clock-in-focus-notify-gap)
+            (* 60 my/clock-in-focus-notify-gap)
+            (* 60 my/clock-in-focus-notify-gap)
              #'clock-in-focus-notify)))
-    
+  
     (defun clock-in-focus-timer-stop ()
       (when (boundp 'clock-in-focus-timer)
         (cancel-timer clock-in-focus-timer)))
-    
+  
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
-    
+  
     (setq my/clock-out-idle-notify-gap 5)
-    
+  
     (defun clock-out-idle-notify ()
       (setq clock-out-idle-time-duration
             (+ my/clock-out-idle-notify-gap clock-out-idle-time-duration))
       (my/exec-org-shell-block-in-file "idle" "~/org/historical/projects.gtd")
       (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
-    
+  
     (defun clock-out-idle-timer-start ()
       "设置一个计时器，每 my/clock-out-idle-notify-gap 分触发一次 clock-out-idle-notify,
        用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
       (let ((gap-secs (* 60 my/clock-out-idle-notify-gap)))
         (setq clock-out-idle-time-duration 0)
         (setq clock-out-idle-timer (run-at-time gap-secs gap-secs #'clock-out-idle-notify))))
-    
+  
     (defun clock-out-idle-timer-stop ()
       (when (boundp 'clock-out-idle-timer)
         (cancel-timer clock-out-idle-timer)))
-    
+  
     (add-hook 'org-clock-out-hook #'clock-out-idle-timer-start)
     (add-hook 'org-clock-in-hook #'clock-out-idle-timer-stop)
     )
@@ -2073,7 +2105,7 @@ FILENAME defaults to current buffer."
           (tab-bar-switch-to-tab tab-name)
         (tab-new)
         (tab-rename tab-name))))
-  (setq org-agenda-window-setup 'only-window)
+    (setq org-agenda-window-setup 'only-window)
   
   (defun gtd-setup-window-layout ()
     "Sets up a window layout with one window on the left and two windows stacked vertically on the right."
@@ -2104,7 +2136,7 @@ FILENAME defaults to current buffer."
       (if (equal current-tab "gtds")
           (tab-bar-switch-to-recent-tab)
         (progn (create-or-switch-to-tab "gtds")
-               (gtd-setup-window-layout)))
+                 (gtd-setup-window-layout)))
       (setq last-switch-action "tab-switch")))
   (bind-key (kbd "s-<f10>") (lambda () (interactive) (gtd-oriented-tab-switch "gtds")))
   ;; gtd-oriented-tab ends here
