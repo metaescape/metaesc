@@ -31,6 +31,8 @@ elif [[ "$var1" == 'v' ]]; then
 	    xdotool key --clearmodifiers ctrl+V
 	elif [[ $focus_win =~ 'urxvt' ]]; then
 	    xdotool key --clearmodifiers ctrl+alt+v
+	elif [[ $focus_win =~ emacs ]]; then
+	    xdotool key --clearmodifiers p
     else
 	    xdotool key --clearmodifiers ctrl+v
     fi

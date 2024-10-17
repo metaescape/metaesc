@@ -318,7 +318,7 @@ bindsym $alt+Control+4 exec gnome-screenshot -ai
 bindsym $alt+Control+3 --release exec ~/metaesc/lib/screenx.sh
 # # screen-capture-like-mac ends here
 # # [[file:~/org/logical/i3wm.org::copy-paste-with-super-cv][copy-paste-with-super-cv]]
-bindsym $super+c exec ~/metaesc/lib/paste.sh c
-bindsym $super+v exec ~/metaesc/lib/paste.sh v
+bindsym F8 --release exec ~/metaesc/lib/paste.sh c
+bindsym F9 --release exec ~/metaesc/lib/paste.sh v
 # # copy-paste-with-super-cv ends here
 # # 主配置:1 ends here
