@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: html_src
+# key: ,h
+# group: org block
+# --
+
+#+begin_src html
+$0
+#+end_src
+
