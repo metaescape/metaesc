@@ -9,9 +9,8 @@ function install_conda() {
 	distro=$(whichdistro)
 	if [[ $distro == "debian" ]]; then
         if [ ! -e ~/miniconda3 ]; then
-            pushd ~
-			print_info "下载 bash 脚本直接安装 miniconda3"
-            print_notice "下载 miniconda 3"
+            pushd ~/Downloads
+			print_info "下载最新的 miniconda3 安装脚本"
 			wget https://mirrors.aliyun.com/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
 			bash Miniconda3-latest-Linux-x86_64.sh -b
 			rm Miniconda3-latest-Linux-x86_64.sh
@@ -24,7 +23,7 @@ function install_conda() {
 		conda env list | grep ^usr
 		if [ "$?" != 0 ]; then
 			echo "install conda usr environment"
-			conda create -n usr python=3.7
+			conda create -n usr python=3.8
 		fi
 		export PS1="\u@\h:\w\$ "
 		source ~/miniconda3/bin/activate usr
