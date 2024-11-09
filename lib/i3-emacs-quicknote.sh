@@ -45,8 +45,8 @@ elif [[ $focus_win_class =~ 'emacs' ]]; then
 	# xdotool key F10 #send F10 to emacs window to cycle agenda，触发了死循环
 	# 必须修改 emacs 中 agenda cycle 按键
 	xdotool key super+F10
-elif [[ $focus_win_class =~ 'code' ]]; then
-	# 如果当前是 vscode 窗口，那么用 emacsclient 打开当前文件
+elif [[ $focus_win_class =~ 'Vcode' ]]; then
+	# 如果当前是 vscode 窗口，那么用 emacsclient 打开当前文件, 目前注释掉
 	# VS code setting
 	# “window.title”: “${activeEditorLong}${separator}${rootName}”,
 	# How To:
