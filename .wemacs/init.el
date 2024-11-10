@@ -120,11 +120,16 @@
         (setq deactivate-mark  t)
       (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
       (abort-recursive-edit)))
+
+  (defun duplicate-line-and-next ()
+    (interactive)
+    (progn (duplicate-line) (evil-next-line)))
   
   (general-define-key
    :keymaps '(normal visual global)
-   [escape] 'keyboard-quit)
-  
+   [escape] 'keyboard-quit
+   "C-y" 'duplicate-line-and-next)
+
   (general-define-key
    :keymaps '(minibuffer-local-map
               minibuffer-local-ns-map
@@ -144,7 +149,7 @@
     :after evil
     :config
     (evil-collection-init))
-  
+
   (use-package evil-org
     :after org
     :hook (org-mode . (lambda () (evil-org-mode +1)))
@@ -167,7 +172,7 @@
       (kbd "<") 'org-promote-subtree
       (kbd ">") 'org-demote-subtree
       ))
-  
+
   (add-hook 'org-log-buffer-setup-hook 'evil-insert-state)
   ;; evil-collections ends here
   ;; [[file:~/org/logical/evil.org::expand-region][expand-region]]
@@ -273,7 +278,7 @@
     (evil-snipe-override-mode +1) ;; enable 1 char jump
     (setq evil-snipe-scope 'line) ;; jump in line
     )
-  
+
   (use-package evil-find-char-pinyin
     :config
     (evil-find-char-pinyin-toggle-snipe-integration t)
@@ -323,10 +328,10 @@
   ;; deal with wrap
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-  
+
   (evil-define-motion move-9-lines-down () (evil-next-visual-line 9))
   (evil-define-motion move-9-lines-up () (evil-previous-visual-line 9))
-  
+
   (general-define-key
    :keymaps 'general-override-mode-map
    :states '(normal visual motion)
@@ -1805,13 +1810,6 @@ FILENAME defaults to current buffer."
   :ensure nil
   :init
   ;; [[file:~/org/logical/orgmode_workflow.org::agenda-archive-gtd-files][agenda-archive-gtd-files]]
-  (defun duplicate-line-and-next ()
-    (interactive)
-    (progn (duplicate-line) (evil-next-line)))
-  (general-define-key
-   :keymaps '(general-override-mode-map)
-   "C-," 'duplicate-line-and-next)
-
   (setq gtd-project-file "~/org/historical/projects.gtd"
         gtd-inbox-file "~/org/historical/inbox.gtd")
 
