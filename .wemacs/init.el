@@ -1961,6 +1961,15 @@ FILENAME defaults to current buffer."
             den (apply #'+  den))
       (format "[%s/%s]" num den)))
 
+  (defun find-org-stats-setup-and-update ()
+    ;; goto the beginning of the buffer
+    (goto-char (point-min))
+    (let((count (count-statistics)))
+      ;; search for #+stats:
+      (when (re-search-forward "#\\+stats: " nil t)
+        (when (re-search-forward "\\[\\([0-9]*\\)\\(?:%\\|/\\([0-9]*\\)\\)\\]" nil t) 
+          (replace-match count)))))
+
   (defun update-statistics ()
     (save-excursion
       (save-restriction   
@@ -1968,7 +1977,8 @@ FILENAME defaults to current buffer."
           (let ((count (count-statistics)))
             (when (re-search-forward "\\[\\([0-9]*\\)\\(?:%\\|/\\([0-9]*\\)\\)\\]" (point-at-eol) t) 
               (replace-match count)))
-          nil))))
+          nil)
+        (find-org-stats-setup-and-update))))
 
   (add-hook 'org-checkbox-statistics-hook 'update-statistics)
   ;; checkbox-statistics ends here
