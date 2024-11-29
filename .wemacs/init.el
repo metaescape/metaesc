@@ -120,7 +120,7 @@
         (setq deactivate-mark  t)
       (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
       (abort-recursive-edit)))
-
+  
   (defun duplicate-line-and-next ()
     (interactive)
     (progn (duplicate-line) (evil-next-line)))
@@ -129,7 +129,7 @@
    :keymaps '(normal visual global)
    [escape] 'keyboard-quit
    "C-y" 'duplicate-line-and-next)
-
+  
   (general-define-key
    :keymaps '(minibuffer-local-map
               minibuffer-local-ns-map
@@ -149,7 +149,7 @@
     :after evil
     :config
     (evil-collection-init))
-
+  
   (use-package evil-org
     :after org
     :hook (org-mode . (lambda () (evil-org-mode +1)))
@@ -172,7 +172,7 @@
       (kbd "<") 'org-promote-subtree
       (kbd ">") 'org-demote-subtree
       ))
-
+  
   (add-hook 'org-log-buffer-setup-hook 'evil-insert-state)
   ;; evil-collections ends here
   ;; [[file:~/org/logical/evil.org::expand-region][expand-region]]
@@ -187,7 +187,7 @@
   (use-package evil-surround
     :config
     (global-evil-surround-mode 1)
-    
+  
     (defun insert-around-region (begin end left right)
       "Insert LEFT and RIGHT around the current region."
       (save-excursion
@@ -195,7 +195,7 @@
         (insert right)
         (goto-char begin)
         (insert left)))
-    
+  
     (defun surround-with-correct-punctuation (char)
       "Surround region with CHAR. Use Chinese punctuation if the region contains Chinese characters."
       (interactive "cEnter surround character: ")
@@ -219,12 +219,12 @@
                   (right (substring chinese-punctuation 1 2)))
               (insert-around-region begin end left right))
           (evil-surround-region (region-beginning) (region-end) 'char char))))
-    
+  
     (defun my-evil-surround-dwim ()
       "Detect the surrounding character and use the correct punctuation based on the region content."
       (interactive)
       (call-interactively 'surround-with-correct-punctuation))
-    
+  
     (general-define-key
      :keymaps 'general-override-mode-map
      :states '(visual)
@@ -236,32 +236,32 @@
     ;; :diminish evil-commentary
     :config
     (evil-commentary-mode)
-    )
+  )
   ;; evil-commentary ends here
   ;; [[file:~/org/logical/evil.org::evil-multiedit][evil-multiedit]]
   (use-package evil-multiedit
     :load-path "site-lisp/evil-multiedit"
     ;; git@github.com:metaescape/evil-multiedit.git
     :general
-    (:keymaps '(evil-visual-state-map)
-              ;; Highlights all matches of the selection in the buffer.
-              "R" 'evil-multiedit-match-all
-              ;; incrementally add the next unmatched match.
-              "n" 'evil-multiedit-match-and-next
-              "N" 'evil-multiedit-match-and-prev ;; p for evil past
-              )
-    (:keymaps '(evil-multiedit-state-map) 
-              "SPC" 'evil-multiedit-toggle-or-restrict-region
-              "ESC" 'evil-multiedit-abort
-              "C-j" 'evil-multiedit-next
-              "C-k" 'evil-multiedit-prev
-              "n" 'evil-multiedit-match-and-next
-              "N" 'evil-multiedit-match-and-prev
-              )
-    (:keymaps '(evil-multiedit-insert-state-map) 
-              "C-j" 'evil-multiedit-next
-              "C-k" 'evil-multiedit-prev
-              )
+     (:keymaps '(evil-visual-state-map)
+     ;; Highlights all matches of the selection in the buffer.
+     "R" 'evil-multiedit-match-all
+     ;; incrementally add the next unmatched match.
+     "n" 'evil-multiedit-match-and-next
+     "N" 'evil-multiedit-match-and-prev ;; p for evil past
+     )
+     (:keymaps '(evil-multiedit-state-map) 
+     "SPC" 'evil-multiedit-toggle-or-restrict-region
+     "ESC" 'evil-multiedit-abort
+     "C-j" 'evil-multiedit-next
+     "C-k" 'evil-multiedit-prev
+     "n" 'evil-multiedit-match-and-next
+     "N" 'evil-multiedit-match-and-prev
+     )
+     (:keymaps '(evil-multiedit-insert-state-map) 
+     "C-j" 'evil-multiedit-next
+     "C-k" 'evil-multiedit-prev
+     )
     :config
     (define-key evil-motion-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
     ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
@@ -277,8 +277,8 @@
     (evil-snipe-mode -1) ;; disabled 2 char jump
     (evil-snipe-override-mode +1) ;; enable 1 char jump
     (setq evil-snipe-scope 'line) ;; jump in line
-    )
-
+  )
+  
   (use-package evil-find-char-pinyin
     :config
     (evil-find-char-pinyin-toggle-snipe-integration t)
@@ -294,17 +294,17 @@
     :config
     (setq avy-all-windows t) ;; jump to any buffer in window
     (setq avy-timeout-seconds 0.5)
-    
+  
     (use-package ace-pinyin
       :config
       (ace-pinyin-global-mode +1))
-    
+  
     (defun ace-pinyin--build-string-regexp (string)
       (pinyinlib-build-regexp-string
        string
        (not ace-pinyin-enable-punctuation-translation)
        (not ace-pinyin-simplified-chinese-only-p)))
-    
+  
     (defun ace-pinyin-goto-char-timer (&optional arg)
       "Read one or many consecutive chars and jump to the first one.
   The window scope is determined by `avy-all-windows' (ARG negates it)."
@@ -316,7 +316,7 @@
           (setq avy--old-cands
                 (avy--read-candidates #'ace-pinyin--build-string-regexp))
           (avy-process avy--old-cands))))
-    
+  
     (general-define-key
      :keymaps 'org-agenda-mode-map
      :states 'motion ;; agenda 下用 motion 代替 normal state
@@ -328,10 +328,10 @@
   ;; deal with wrap
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
+  
   (evil-define-motion move-9-lines-down () (evil-next-visual-line 9))
   (evil-define-motion move-9-lines-up () (evil-previous-visual-line 9))
-
+  
   (general-define-key
    :keymaps 'general-override-mode-map
    :states '(normal visual motion)
@@ -343,7 +343,7 @@
   ;; :q should kill the current buffer rather than quitting emacs entirely
   (evil-ex-define-cmd "q" 'kill-this-buffer)
   (evil-ex-define-cmd "wq" 'kill-this-buffer)
-  ;; Need to type out :quit to close emacs
+   ;; Need to type out :quit to close emacs
   (evil-ex-define-cmd "quit" 'evil-quit)
   ;; ex-quit-buffer ends here
   (general-define-key
@@ -1707,10 +1707,6 @@ FILENAME defaults to current buffer."
   :general
   (:keymaps 'org-mode-map
             "s-l"  'org-toggle-link-display)
-  (:keymaps '(evil-normal-state-map)
-            "[ -" 'org-previous-item 
-            "] -" 'org-next-item
-            )
   :hook (org-mode . org-mode-ui-setup)
   :config
   (require 'ol-man) ;; support follow link in woman buffer
@@ -1732,7 +1728,7 @@ FILENAME defaults to current buffer."
             ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
             ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
             ("+" (:strike-through t :foreground "dark orange" ))))
-    
+  
     (use-package org-appear
       :after org
       :hook (org-mode . org-appear-mode)
@@ -1740,12 +1736,12 @@ FILENAME defaults to current buffer."
       (setq org-hide-emphasis-markers t)
       (setq org-appear-autolinks t)
       )
-    
+  
     (defun org-mode-visual-fill ()
       (setq visual-fill-column-width 100
             visual-fill-column-center-text t)
       (visual-fill-column-mode 1))
-    
+  
     (use-package visual-fill-column
       :hook (org-mode . org-mode-visual-fill)))
   ;; org-basic-ui ends here
@@ -1812,65 +1808,65 @@ FILENAME defaults to current buffer."
   ;; [[file:~/org/logical/orgmode_workflow.org::agenda-archive-gtd-files][agenda-archive-gtd-files]]
   (setq gtd-project-file "~/org/historical/projects.gtd"
         gtd-inbox-file "~/org/historical/inbox.gtd")
-
+  
   (setq org-agenda-files (list gtd-project-file gtd-inbox-file))
-
+  
   (defun get-archive-files-by-year (&optional year)
     (let ((year (or year "")))
       (file-expand-wildcards (format "~/org/historical/archive/%s*.org" year))))
-
+  
   (defun get-current-archive-file-location ()
     (format
      "~/org/historical/archive/%s%s.org::"
      (format-time-string "%Y")
      (if (<= (string-to-number (format-time-string "%m")) 6) "a" "b")))
-
+  
   (defun get-current-journal-file ()
     (format
      "~/org/self/journal/j%s%s.org"
      (format-time-string "%Y")
      (if (<= (string-to-number (format-time-string "%m")) 6) "a" "b")))
-
+  
   (defun get-gtd-files-by-year (&optional year)
     (append org-agenda-files
             (get-archive-files-by-year year)))
-
+  
   (defun my/set-archive-location (&rest _)
     "设置 org-archive-location 为当前存档文件的位置。"
     (setq org-archive-location (get-current-archive-file-location)))
-
+  
   ;; defalult (time file olpath category todo itags)
   (setq org-archive-save-context-info '(time))
   (advice-add 'org-archive-subtree :before #'my/set-archive-location)
-
+  
   (setq org-refile-targets
-        `((,(substring (get-current-archive-file-location) 0 -2)
-           :maxlevel . 1)))
+      `((,(substring (get-current-archive-file-location) 0 -2)
+          :maxlevel . 1)))
   ;; agenda-archive-gtd-files ends here
   :config
   ;; [[file:~/org/logical/orgmode_workflow.org::todo-list][todo-list]]
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)" "CANCEL(c@/!)")))
-
+  
   ;; TODO color
   (setq org-todo-keyword-faces
-        '(
-          ("TODO" .      (:foreground "orange" :weight bold))
-          ("NEXT" .      (:foreground "yellow" :weight bold))
-          ("DONE" .      (:foreground "green" :weight bold))
-          ("CANCEL" .     (:foreground "gray40"))
-          ))
-
+     '(
+      ("TODO" .      (:foreground "orange" :weight bold))
+      ("NEXT" .      (:foreground "yellow" :weight bold))
+      ("DONE" .      (:foreground "green" :weight bold))
+      ("CANCEL" .     (:foreground "gray40"))
+  ))
+  
   (setq org-log-into-drawer t) ;; add logbook
   (setq org-log-done 'time) ;; add CLOSED: timestamp when task done
-
+  
   (setq org-tag-alist '( ("noexport" . ?n)))
   ;; todo-list ends here
-
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::main-agenda][main-agenda]]
   (setq org-agenda-block-separator nil)
   (setq org-agenda-start-with-log-mode t) ;; show log
-
+  
   (setq org-agenda-todo-view
         `(" " "Agenda"
           ((agenda ""
@@ -1885,10 +1881,10 @@ FILENAME defaults to current buffer."
                   (org-agenda-skip-function #'org-agenda-skip-all-siblings-but-first)
                   ))
            (search "^* \\.*"
-                   ((org-agenda-overriding-header "Inbox Processing")
-                    (org-agenda-files '(,gtd-inbox-file))))
+                 ((org-agenda-overriding-header "Inbox Processing")
+                  (org-agenda-files '(,gtd-inbox-file))))
            nil)))
-
+  
   (defun org-agenda-skip-all-siblings-but-first ()
     "Skip all but the first non-done entry."
     (let (should-skip-entry)
@@ -1901,17 +1897,17 @@ FILENAME defaults to current buffer."
       (when should-skip-entry
         (or (outline-next-heading)
             (goto-char (point-max))))))
-
+  
   (defun org-current-is-todo-or-next ()
     (or (string= "TODO" (org-get-todo-state))
         (string= "NEXT" (org-get-todo-state))))
-
+  
   (setq org-agenda-prefix-format
         '((agenda . "%?-8t%-3e% s")
           (todo . "%-6:c %-6e")
           (tags . "%-12:c")
           (search . "%-12:c")))
-
+  
   (add-to-list 'org-agenda-custom-commands `,org-agenda-todo-view)
   ;; main-agenda ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::clocktable-db-block][clocktable-db-block]]
@@ -1936,7 +1932,7 @@ FILENAME defaults to current buffer."
                    nil))))
         (org-dblock-update)
         t)))  ; Return non-nil to indicate the hook has done something.
-
+  
   (add-hook 'org-ctrl-c-ctrl-c-hook 'my/update-clocktable-if-appropriate)
   ;; clocktable-db-block ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::checkbox-statistics][checkbox-statistics]]
@@ -1960,7 +1956,7 @@ FILENAME defaults to current buffer."
       (setq num (apply #'+ num)
             den (apply #'+  den))
       (format "[%s/%s]" num den)))
-
+  
   (defun find-org-stats-setup-and-update ()
     ;; goto the beginning of the buffer
     (goto-char (point-min))
@@ -1969,7 +1965,7 @@ FILENAME defaults to current buffer."
       (when (re-search-forward "#\\+stats: " nil t)
         (when (re-search-forward "\\[\\([0-9]*\\)\\(?:%\\|/\\([0-9]*\\)\\)\\]" nil t) 
           (replace-match count)))))
-
+  
   (defun update-statistics ()
     (save-excursion
       (save-restriction   
@@ -1979,7 +1975,7 @@ FILENAME defaults to current buffer."
               (replace-match count)))
           nil)
         (find-org-stats-setup-and-update))))
-
+  
   (add-hook 'org-checkbox-statistics-hook 'update-statistics)
   ;; checkbox-statistics ends here
   ;; [[file:~/org/logical/orgmode_workflow.org::org-clock-agenda][org-clock-agenda]]
@@ -2007,16 +2003,16 @@ FILENAME defaults to current buffer."
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
-    
+  
     (setq my/org-clock-effort 12)
     
     (defun set-org-clock-effort-when-nil ()
       (setq org-clock-effort my/org-clock-effort)
       (org-clock-update-mode-line))
-    
+  
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
-    
+  
     (defun clock-in-focus-notify ()
       (let ((current-focus-time
              (/ (float-time
@@ -2029,43 +2025,43 @@ FILENAME defaults to current buffer."
                          (substring-no-properties
                           (org-clock-get-clock-string)))
                       ""))))
-    
+  
     (setq my/clock-in-focus-notify-gap 9)
-    
+  
     (defun clock-in-focus-timer-start ()
       "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
       (setq clock-in-focus-timer
             (run-at-time
-             (* 60 my/clock-in-focus-notify-gap)
-             (* 60 my/clock-in-focus-notify-gap)
+            (* 60 my/clock-in-focus-notify-gap)
+            (* 60 my/clock-in-focus-notify-gap)
              #'clock-in-focus-notify)))
-    
+  
     (defun clock-in-focus-timer-stop ()
       (when (boundp 'clock-in-focus-timer)
         (cancel-timer clock-in-focus-timer)))
-    
+  
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
-    
+  
     (setq my/clock-out-idle-notify-gap 5)
-    
+  
     (defun clock-out-idle-notify ()
       (setq clock-out-idle-time-duration
             (+ my/clock-out-idle-notify-gap clock-out-idle-time-duration))
       (my/exec-org-shell-block-in-file "idle" "~/org/historical/projects.gtd")
       (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
-    
+  
     (defun clock-out-idle-timer-start ()
       "设置一个计时器，每 my/clock-out-idle-notify-gap 分触发一次 clock-out-idle-notify,
        用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
       (let ((gap-secs (* 60 my/clock-out-idle-notify-gap)))
         (setq clock-out-idle-time-duration 0)
         (setq clock-out-idle-timer (run-at-time gap-secs gap-secs #'clock-out-idle-notify))))
-    
+  
     (defun clock-out-idle-timer-stop ()
       (when (boundp 'clock-out-idle-timer)
         (cancel-timer clock-out-idle-timer)))
-    
+  
     (add-hook 'org-clock-out-hook #'clock-out-idle-timer-start)
     (add-hook 'org-clock-in-hook #'clock-out-idle-timer-stop)
     )
@@ -2074,20 +2070,20 @@ FILENAME defaults to current buffer."
   (defun my/org-agenda-clock-in-and-refresh ()
     (interactive)
     (org-agenda-clock-in) (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun my/org-agenda-clock-out-and-refresh ()
     (interactive)
     (org-agenda-clock-out) (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun my/org-agenda-done ()
     (interactive)
     (org-agenda-todo "DONE") (org-agenda-redo) (org-agenda-goto))
-
+  
   (defun org-agenda--jump-to-now ()
     "Search for the keyword 'now' in the current buffer and jump to it."
     (goto-char (point-min))  ; 从 buffer 的开头开始搜索
     (re-search-forward "now" nil t))  ; 搜索 'now' 关键词
-
+  
   (defun org-agenda-clockreport-mode-enhenced ()
     (interactive)
     (if org-agenda-clockreport-mode
@@ -2100,7 +2096,7 @@ FILENAME defaults to current buffer."
         (re-search-forward "Total time" nil t)
         (evil-forward-word-end)
         (recenter-top-bottom))))
-
+  
   (general-define-key
    :keymaps 'org-agenda-mode-map
    :states 'motion ;; agenda 下用 motion 代替 normal state
@@ -2121,10 +2117,8 @@ FILENAME defaults to current buffer."
         (tab-new)
         (tab-rename tab-name))))
   (setq org-agenda-window-setup 'only-window)
-
-  (defun gtd-setup-window-layout ()
-    "Sets up a window layout with one window on the left and two windows stacked vertically on the right."
-    (interactive)
+  
+  (defun gtd-4-window-layout ()
     (progn
       (delete-other-windows)
       ;; 打开 agenda 跳到 clock 上
@@ -2144,7 +2138,28 @@ FILENAME defaults to current buffer."
       (select-window (next-window))
       (switch-to-buffer
        (find-file (get-current-journal-file)))))
-
+  
+  (defun gtd-3-window-layout ()
+    (progn
+      (delete-other-windows)
+      ;; 打开 agenda 跳到 clock 上
+      (org-agenda "" " ") ;; 打开 agenda
+      (split-window-vertically)  ;; 切分上下窗口
+      (let ((target-file gtd-project-file)) ;; 打开 gtd 文件
+          (switch-to-buffer (find-file target-file)))
+      (ignore-errors ;; 跳转到最近 clock 的任务
+        (org-clock-goto))
+      (select-window (next-window)) ;;切换到下方
+      (split-window-horizontally) ;; 切分左右窗口
+      (select-window (next-window)) ;; 切换到右侧,进入 journal 文件
+      (switch-to-buffer
+       (find-file (get-current-journal-file)))))
+  
+  (defun gtd-setup-window-layout ()
+    "Sets up a window layout with one window on the left and two windows stacked vertically on the right."
+    (interactive)
+    (gtd-3-window-layout))
+  
   (defun gtd-oriented-tab-switch (gtd-tab-name)
     "if current tab is gtd-tab-name, execute other-window, else goto gtd-tab"
     (let ((current-tab (cdr (assq 'name (tab-bar--current-tab)))))
@@ -3306,4 +3321,3 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
 ;; init-eaf ends here
-(put 'list-timers 'disabled nil)
