@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: meta
+# key: ,meta
+# group: org block
+# --
+
+:PROPERTIES:
+:END:
+#+TITLE: $0
+#+CREATED:
+#+DATE: 
+#+filetags:

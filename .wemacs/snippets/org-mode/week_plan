@@ -4,11 +4,15 @@
 # group: org block
 # --
 
-* 第 `(org-days-to-iso-week (org-today))` 周事项跟踪
-** 周总结
-- `(org-days-to-iso-week (org-today))` 周总结
+* 第 `(org-days-to-iso-week (org-today))` 周事项跟踪 
+** 计划，运动，安定，org commit, 总结 [/]
+
+- clock 时间表
   #+BEGIN: clocktable :maxlevel 1 :emphasize nil :scope (lambda () (get-gtd-files-by-year `(format-time-string "%Y")`)) :block `(format-time-string "%Y")`-W`(org-days-to-iso-week (org-today))`$0
 
   #+END: clocktable
 
-** `(org-days-to-iso-week (org-today))` 周运动安定
+- [ ] 冥想 /5 组各 20 分钟
+- [ ] 仰卧起坐 /20 组各 10 次
+- [ ] 本周 org 和项目的 git commit
+- [ ] (周天)总结

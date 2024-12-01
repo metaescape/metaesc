@@ -1840,8 +1840,8 @@ FILENAME defaults to current buffer."
   (advice-add 'org-archive-subtree :before #'my/set-archive-location)
   
   (setq org-refile-targets
-      `((,(substring (get-current-archive-file-location) 0 -2)
-          :maxlevel . 1)))
+        `((,(substring (get-current-archive-file-location) 0 -2)
+           :maxlevel . 1)))
   ;; agenda-archive-gtd-files ends here
   :config
   ;; [[file:~/org/logical/orgmode_workflow.org::todo-list][todo-list]]
@@ -1850,12 +1850,12 @@ FILENAME defaults to current buffer."
   
   ;; TODO color
   (setq org-todo-keyword-faces
-     '(
-      ("TODO" .      (:foreground "orange" :weight bold))
-      ("NEXT" .      (:foreground "yellow" :weight bold))
-      ("DONE" .      (:foreground "green" :weight bold))
-      ("CANCEL" .     (:foreground "gray40"))
-  ))
+        '(
+          ("TODO" .      (:foreground "orange" :weight bold))
+          ("NEXT" .      (:foreground "yellow" :weight bold))
+          ("DONE" .      (:foreground "green" :weight bold))
+          ("CANCEL" .     (:foreground "gray40"))
+          ))
   
   (setq org-log-into-drawer t) ;; add logbook
   (setq org-log-done 'time) ;; add CLOSED: timestamp when task done
@@ -1881,8 +1881,8 @@ FILENAME defaults to current buffer."
                   (org-agenda-skip-function #'org-agenda-skip-all-siblings-but-first)
                   ))
            (search "^* \\.*"
-                 ((org-agenda-overriding-header "Inbox Processing")
-                  (org-agenda-files '(,gtd-inbox-file))))
+                   ((org-agenda-overriding-header "Inbox Processing")
+                    (org-agenda-files '(,gtd-inbox-file))))
            nil)))
   
   (defun org-agenda-skip-all-siblings-but-first ()
@@ -2003,16 +2003,16 @@ FILENAME defaults to current buffer."
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
-  
-    (setq my/org-clock-effort 12)
+    
+    (setq my/org-clock-effort 360)
     
     (defun set-org-clock-effort-when-nil ()
       (setq org-clock-effort my/org-clock-effort)
       (org-clock-update-mode-line))
-  
+    
     (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
     (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
-  
+    
     (defun clock-in-focus-notify ()
       (let ((current-focus-time
              (/ (float-time
@@ -2025,43 +2025,43 @@ FILENAME defaults to current buffer."
                          (substring-no-properties
                           (org-clock-get-clock-string)))
                       ""))))
-  
+    
     (setq my/clock-in-focus-notify-gap 9)
-  
+    
     (defun clock-in-focus-timer-start ()
       "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
       (setq clock-in-focus-timer
             (run-at-time
-            (* 60 my/clock-in-focus-notify-gap)
-            (* 60 my/clock-in-focus-notify-gap)
+             (* 60 my/clock-in-focus-notify-gap)
+             (* 60 my/clock-in-focus-notify-gap)
              #'clock-in-focus-notify)))
-  
+    
     (defun clock-in-focus-timer-stop ()
       (when (boundp 'clock-in-focus-timer)
         (cancel-timer clock-in-focus-timer)))
-  
+    
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
-  
+    
     (setq my/clock-out-idle-notify-gap 5)
-  
+    
     (defun clock-out-idle-notify ()
       (setq clock-out-idle-time-duration
             (+ my/clock-out-idle-notify-gap clock-out-idle-time-duration))
       (my/exec-org-shell-block-in-file "idle" "~/org/historical/projects.gtd")
       (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
-  
+    
     (defun clock-out-idle-timer-start ()
       "设置一个计时器，每 my/clock-out-idle-notify-gap 分触发一次 clock-out-idle-notify,
        用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
       (let ((gap-secs (* 60 my/clock-out-idle-notify-gap)))
         (setq clock-out-idle-time-duration 0)
         (setq clock-out-idle-timer (run-at-time gap-secs gap-secs #'clock-out-idle-notify))))
-  
+    
     (defun clock-out-idle-timer-stop ()
       (when (boundp 'clock-out-idle-timer)
         (cancel-timer clock-out-idle-timer)))
-  
+    
     (add-hook 'org-clock-out-hook #'clock-out-idle-timer-start)
     (add-hook 'org-clock-in-hook #'clock-out-idle-timer-stop)
     )
@@ -2144,9 +2144,9 @@ FILENAME defaults to current buffer."
       (delete-other-windows)
       ;; 打开 agenda 跳到 clock 上
       (org-agenda "" " ") ;; 打开 agenda
-      (split-window-vertically)  ;; 切分上下窗口
+      (split-window-vertically 24)  ;; 切分上下窗口, 上方 22 行（屏幕一般总共 40 行）
       (let ((target-file gtd-project-file)) ;; 打开 gtd 文件
-          (switch-to-buffer (find-file target-file)))
+        (switch-to-buffer (find-file target-file)))
       (ignore-errors ;; 跳转到最近 clock 的任务
         (org-clock-goto))
       (select-window (next-window)) ;;切换到下方
