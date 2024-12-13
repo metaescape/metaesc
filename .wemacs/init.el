@@ -2004,7 +2004,7 @@ FILENAME defaults to current buffer."
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
     
-    (setq my/org-clock-effort 360)
+    (setq my/org-clock-effort 500)
     
     (defun set-org-clock-effort-when-nil ()
       (setq org-clock-effort my/org-clock-effort)
@@ -2026,7 +2026,7 @@ FILENAME defaults to current buffer."
                           (org-clock-get-clock-string)))
                       ""))))
     
-    (setq my/clock-in-focus-notify-gap 9)
+    (setq my/clock-in-focus-notify-gap 20)
     
     (defun clock-in-focus-timer-start ()
       "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
@@ -2043,7 +2043,7 @@ FILENAME defaults to current buffer."
     (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
     (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
     
-    (setq my/clock-out-idle-notify-gap 5)
+    (setq my/clock-out-idle-notify-gap 10)
     
     (defun clock-out-idle-notify ()
       (setq clock-out-idle-time-duration
@@ -3321,3 +3321,4 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
 ;; init-eaf ends here
+(put 'list-timers 'disabled nil)
