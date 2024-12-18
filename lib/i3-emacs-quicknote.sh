@@ -115,8 +115,9 @@ else
 	# 	sleep 0.01
 	# 	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file \"~/org/self/journal/j2023.org\") (end-of-buffer) (insert-time) (insert (format \"%s \" (current-kill 0 t))) (evil-insert-state) )"
 	# else
-		# 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
+	# 先复制，再粘贴到 buffer 最后一行结尾
+    ~/metaesc/lib/paste.sh c
 	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
-	--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time))"
+	--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time) (insert \"Anki:\") (evil-paste-after 1))"
 	# fi
 fi
