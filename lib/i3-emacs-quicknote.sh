@@ -89,7 +89,7 @@ else
 	~/metaesc/lib/restore_fullscreen.sh
 
 	width=72
-	height=12
+	height=18
 	window_id=$(xdotool getactivewindow)
 
 	# Get the position and size of the window

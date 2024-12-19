@@ -19,7 +19,7 @@ if [[ "$var1" == 'c' ]]; then
 		# from=$(xclip -selection c -o)
 	elif [[ $focus_win =~ code ]]; then
 		sleep 0.2
-	    xdotool key --clearmodifiers ctrl+C
+	    xdotool key --clearmodifiers ctrl+c # not work on terminal
 		notify-send 'copied from code' -t 300
     fi
     # dump to a note file
