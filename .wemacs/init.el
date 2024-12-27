@@ -2004,7 +2004,7 @@ FILENAME defaults to current buffer."
                  (not (string= org-last-state org-state)))
         (org-clock-out)))
     
-    (setq my/org-clock-effort 500)
+    (setq my/org-clock-effort 1000)
     
     (defun set-org-clock-effort-when-nil ()
       (setq org-clock-effort my/org-clock-effort)
@@ -3238,11 +3238,13 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
 ;; [[file:~/org/design/wemacs.org::init-eaf][init-eaf]]
 (use-package eaf
   ;; :load-path "~/.wemacs/site-lisp/eaf"
-  :commands eaf-open-mindmap
+  ;;:commands (eaf-open-mindmap eaf-open-pdf-from-history)
   :load-path "site-lisp/emacs-application-framework/"
   :config
   ;; # [[file:~/org/logical/eaf.org::mindmap][mindmap]]
   (require 'eaf-mindmap)
+  (require 'eaf-pdf-viewer)
+  (setq eaf-pdf-dark-mode nil)
   ;; # mindmap ends here
 
   (evil-set-initial-state 'eaf-mode 'emacs)
@@ -3297,6 +3299,28 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key windmove-up "M-k" eaf-mindmap-keybinding)
   (eaf-bind-key windmove-left "M-h" eaf-mindmap-keybinding)
   (eaf-bind-key windmove-right "M-l" eaf-mindmap-keybinding)
+
+  ;; pdf binding
+  (eaf-bind-key eaf-insert-or-space "SPC" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-insert-or-comma "," eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-insert-or-q "q" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key windmove-down "M-j" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key windmove-up "M-k" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key windmove-left "M-h" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key windmove-right "M-l" eaf-pdf-viewer-keybinding)
+
+  (general-define-key
+   :keymaps '(eaf-pdf-outline-mode-map)
+   :states '(normal visual)
+   "RET" 'eaf-pdf-outline-jump
+   "o" 'eaf-pdf-outline-view
+   )
+
+  (general-define-key
+   :keymaps '(eaf-pdf-outline-edit-mode-map)
+   :states '(normal)
+   [remap org-open-at-point] 'eaf-pdf-outline-edit-jump
+   )
 
   (defun my/open-mindmap ()
     "Open mindmap in a new window if there is only one window, or in other window if multiple windows are present."
