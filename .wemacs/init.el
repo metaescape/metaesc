@@ -3308,12 +3308,26 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key windmove-up "M-k" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-left "M-h" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-right "M-l" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up "j" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up_page "d" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down_page "u" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up_page "C-d" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down_page "C-u" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up_page "C-f" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down_page "C-b" eaf-pdf-viewer-keybinding)
+  ;;(eaf-bind-key eaf-pdf-outline-edit "E" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-pdf-outline-edit "O" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-pdf-extract-page-text "e" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key jump_to_next_saved_pos "i" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key jump_to_previous_saved_pos "o" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key jump_to_previous_saved_pos "C-o" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key jump_to_previous_saved_pos "C-t" eaf-pdf-viewer-keybinding)
 
   (general-define-key
    :keymaps '(eaf-pdf-outline-mode-map)
    :states '(normal visual)
-   "RET" 'eaf-pdf-outline-jump
-   "o" 'eaf-pdf-outline-view
+   "RET" 'eaf-pdf-outline-view
+   "o" 'eaf-pdf-outline-jump
    )
 
   (general-define-key
