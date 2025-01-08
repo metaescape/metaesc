@@ -1411,13 +1411,14 @@
     _i_: org-clock-in                _o_: org-clock-out
     _d_: org-clock done              _v_: org-imagine-view
     _._: repeat operations           _x_: kill-this-buffer               
+    _p_: eaf-open-pdf-from-history   _c_: current-node-org-clock-display
     "
   ;;("d" debug-test-hydra/body)
   ("r" (lambda () (interactive) (counsel-file-jump " " "/data/resource/readings/")))
+  ("p" eaf-open-pdf-from-history)
   ("f" counsel-file-jump)
   ;; bookmark-set is temporary, you need save
   ("b" (lambda () (interactive) (bookmark-set) (bookmark-save)))
-  ("p" nil)
   ("m" delete-other-windows)
   ("q"  delete-window)
   ("w"  save-buffer)
@@ -1432,6 +1433,7 @@
          (evil-window-mru)))
   ("v" org-imagine-view)
   ("," narrow-or-widen-dwim)
+  ("c" current-node-org-clock-display)
   ("h" winner-undo :exit nil)
   ("l" winner-redo :exit nil)
   ("." hydra-repeats/body))
@@ -1994,6 +1996,14 @@ FILENAME defaults to current buffer."
     ;; (org-clock-report-include-clocking-task t)
     (org-show-notification-timeout 10)
     :config
+
+    (defun current-node-org-clock-display ()
+      "Show work hours statistics graph using Python script."
+      (interactive)
+      (org-narrow-to-subtree)
+      (org-clock-display)
+      (widen))
+
     (defun org-clock-out-if-done ()
       "Clock out when the task is marked DONE"
       (when (and (string= org-state "DONE")
@@ -2144,6 +2154,7 @@ FILENAME defaults to current buffer."
       (delete-other-windows)
       ;; 打开 agenda 跳到 clock 上
       (org-agenda "" " ") ;; 打开 agenda
+      (org-agenda-clockreport-mode-enhenced)
       (split-window-vertically 24)  ;; 切分上下窗口, 上方 22 行（屏幕一般总共 40 行）
       (let ((target-file gtd-project-file)) ;; 打开 gtd 文件
         (switch-to-buffer (find-file target-file)))
@@ -3322,6 +3333,8 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key jump_to_previous_saved_pos "o" eaf-pdf-viewer-keybinding)
   (eaf-bind-key jump_to_previous_saved_pos "C-o" eaf-pdf-viewer-keybinding)
   (eaf-bind-key jump_to_previous_saved_pos "C-t" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key jump_to_page ":" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key toggle_inverted_mode "R" eaf-pdf-viewer-keybinding)
 
   (general-define-key
    :keymaps '(eaf-pdf-outline-mode-map)
