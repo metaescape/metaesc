@@ -3,7 +3,8 @@
 # # [[file:~/org/logical/i3wm.org::set-font-border][set-font-border]]
 font pango:Noto Sans CJK Mono SC 9
 
-for_window [class=".*"] border pixel 1
+for_window [class=".*"] border pixel 2
+gaps inner 5
 # # set-font-border ends here
 # # [[file:~/org/logical/i3wm.org::set-modifier][set-modifier]]
 set $super Mod4

@@ -3335,6 +3335,13 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key jump_to_previous_saved_pos "C-t" eaf-pdf-viewer-keybinding)
   (eaf-bind-key jump_to_page ":" eaf-pdf-viewer-keybinding)
   (eaf-bind-key toggle_inverted_mode "R" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_to_begin "gg" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key my/switch-back "gq" eaf-pdf-viewer-keybinding)
+
+  (setq display-buffer-alist
+        '(("\\*\\(Outline Edit\\|Page text\\)"
+           (display-buffer-reuse-window)
+           (window-height . 0.35))))
 
   (general-define-key
    :keymaps '(eaf-pdf-outline-mode-map)
@@ -3373,3 +3380,5 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   )
 ;; init-eaf ends here
 (put 'list-timers 'disabled nil)
+
+
