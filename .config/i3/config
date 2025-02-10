@@ -4,7 +4,7 @@
 font pango:Noto Sans CJK Mono SC 9
 
 for_window [class=".*"] border pixel 2
-gaps inner 5
+gaps inner 4
 # # set-font-border ends here
 # # [[file:~/org/logical/i3wm.org::set-modifier][set-modifier]]
 set $super Mod4
@@ -147,6 +147,7 @@ exec --no-startup-id /usr/share/sangfor/EasyConnect/EasyConnect
 exec ~/metaesc/lib/monitor.sh
 exec_always --no-startup-id compton --conf ~/.config/compton.conf -b
 exec_always --no-startup-id ~/metaesc/lib/wallpaper.sh
+exec_always --no-startup-id ~/metaesc/lib/backpages.sh
 # # set-monitor-and-wallpaper ends here
 # # [[file:~/org/logical/i3wm.org::clock-notify][clock-notify]]
 exec_always --no-startup-id ~/metaesc/lib/clock_notify.sh
