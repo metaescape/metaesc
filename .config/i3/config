@@ -150,7 +150,7 @@ exec_always --no-startup-id ~/metaesc/lib/wallpaper.sh
 exec_always --no-startup-id ~/metaesc/lib/backpages.sh
 # # set-monitor-and-wallpaper ends here
 # # [[file:~/org/logical/i3wm.org::clock-notify][clock-notify]]
-exec_always --no-startup-id ~/metaesc/lib/clock_notify.sh
+exec --no-startup-id ~/metaesc/lib/clock_notify.sh
 # # clock-notify ends here
 # # [[file:~/org/logical/i3wm.org::set-keymap][set-keymap]]
 exec_always --no-startup-id exec ~/metaesc/lib/code01s1.sh
