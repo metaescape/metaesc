@@ -77,7 +77,5 @@ battery 0 {
 }
 
 tztime local {
-		format = "<span background='#81a1c1'> %time </span>"
-		format_time = "%b%d 🧘🏻‍♂️ %a %H:%M"
+        format = "<span background='#81a1c1'> %b%d 🧘🏻‍♂️ %a %H:%M </span>"
 }
-
