@@ -281,6 +281,10 @@ bar {
     }
     # i3bar_command i3bar --transparency
     status_command i3status
+    # disable sroll wheel
+    bindsym button4 nop
+    bindsym button5 nop
+    bindsym --release button3 exec ~/metaesc/lib/backpages.sh show
 }
 # # addy-bar ends here
 # # [[file:~/org/logical/i3wm.org::addy-theme][addy-theme]]
