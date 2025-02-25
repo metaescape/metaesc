@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: concept_node
+# key: ,n
+# group: org block
+# --
+
+:PROPERTIES:
+:CUSTOM_ID: $0
+:TO: [[#null]] 
+:END:
