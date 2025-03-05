@@ -291,11 +291,11 @@ gpull() {
 
 # User specific aliases and functions
 deep() {
-    sudo chmod 000 ~/org/self/.deep
+    sudo chmod 000 /data/resource/.deep
 }
 
 undeep() {
-    sudo chmod 755 ~/org/self/.deep
+    sudo chmod 755 /data/resource/.deep
 }
 
 port=7890

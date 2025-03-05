@@ -3337,6 +3337,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key toggle_inverted_mode "R" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_to_begin "gg" eaf-pdf-viewer-keybinding)
   (eaf-bind-key my/switch-back "gq" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-pdf-narrow-search "/" eaf-pdf-viewer-keybinding)
 
   (setq display-buffer-alist
         '(("\\*\\(Outline Edit\\|Page text\\)"
@@ -3380,5 +3381,3 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   )
 ;; init-eaf ends here
 (put 'list-timers 'disabled nil)
-
-
