@@ -6,4 +6,4 @@ if [ -n "$PIDS" ]; then
   # 如果发现已有进程，则杀掉所有相关进程
   kill -9 $PIDS
 fi
-/home/pipz/miniconda3/envs/zshot/bin/python /data/codes/ranger/screenX/main.py -f &
+/home/pipz/miniconda3/envs/usr/bin/python /data/codes/ranger/screenX/main.py -f &
