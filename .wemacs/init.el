@@ -187,7 +187,7 @@
   (use-package evil-surround
     :config
     (global-evil-surround-mode 1)
-  
+    
     (defun insert-around-region (begin end left right)
       "Insert LEFT and RIGHT around the current region."
       (save-excursion
@@ -195,7 +195,7 @@
         (insert right)
         (goto-char begin)
         (insert left)))
-  
+    
     (defun surround-with-correct-punctuation (char)
       "Surround region with CHAR. Use Chinese punctuation if the region contains Chinese characters."
       (interactive "cEnter surround character: ")
@@ -219,12 +219,12 @@
                   (right (substring chinese-punctuation 1 2)))
               (insert-around-region begin end left right))
           (evil-surround-region (region-beginning) (region-end) 'char char))))
-  
+    
     (defun my-evil-surround-dwim ()
       "Detect the surrounding character and use the correct punctuation based on the region content."
       (interactive)
       (call-interactively 'surround-with-correct-punctuation))
-  
+    
     (general-define-key
      :keymaps 'general-override-mode-map
      :states '(visual)
@@ -236,32 +236,32 @@
     ;; :diminish evil-commentary
     :config
     (evil-commentary-mode)
-  )
+    )
   ;; evil-commentary ends here
   ;; [[file:~/org/logical/evil.org::evil-multiedit][evil-multiedit]]
   (use-package evil-multiedit
     :load-path "site-lisp/evil-multiedit"
     ;; git@github.com:metaescape/evil-multiedit.git
     :general
-     (:keymaps '(evil-visual-state-map)
-     ;; Highlights all matches of the selection in the buffer.
-     "R" 'evil-multiedit-match-all
-     ;; incrementally add the next unmatched match.
-     "n" 'evil-multiedit-match-and-next
-     "N" 'evil-multiedit-match-and-prev ;; p for evil past
-     )
-     (:keymaps '(evil-multiedit-state-map) 
-     "SPC" 'evil-multiedit-toggle-or-restrict-region
-     "ESC" 'evil-multiedit-abort
-     "C-j" 'evil-multiedit-next
-     "C-k" 'evil-multiedit-prev
-     "n" 'evil-multiedit-match-and-next
-     "N" 'evil-multiedit-match-and-prev
-     )
-     (:keymaps '(evil-multiedit-insert-state-map) 
-     "C-j" 'evil-multiedit-next
-     "C-k" 'evil-multiedit-prev
-     )
+    (:keymaps '(evil-visual-state-map)
+              ;; Highlights all matches of the selection in the buffer.
+              "R" 'evil-multiedit-match-all
+              ;; incrementally add the next unmatched match.
+              "n" 'evil-multiedit-match-and-next
+              "N" 'evil-multiedit-match-and-prev ;; p for evil past
+              )
+    (:keymaps '(evil-multiedit-state-map) 
+              "SPC" 'evil-multiedit-toggle-or-restrict-region
+              "ESC" 'evil-multiedit-abort
+              "C-j" 'evil-multiedit-next
+              "C-k" 'evil-multiedit-prev
+              "n" 'evil-multiedit-match-and-next
+              "N" 'evil-multiedit-match-and-prev
+              )
+    (:keymaps '(evil-multiedit-insert-state-map) 
+              "C-j" 'evil-multiedit-next
+              "C-k" 'evil-multiedit-prev
+              )
     :config
     (define-key evil-motion-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
     ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
@@ -277,7 +277,7 @@
     (evil-snipe-mode -1) ;; disabled 2 char jump
     (evil-snipe-override-mode +1) ;; enable 1 char jump
     (setq evil-snipe-scope 'line) ;; jump in line
-  )
+    )
   
   (use-package evil-find-char-pinyin
     :config
@@ -294,17 +294,17 @@
     :config
     (setq avy-all-windows t) ;; jump to any buffer in window
     (setq avy-timeout-seconds 0.5)
-  
+    
     (use-package ace-pinyin
       :config
       (ace-pinyin-global-mode +1))
-  
+    
     (defun ace-pinyin--build-string-regexp (string)
       (pinyinlib-build-regexp-string
        string
        (not ace-pinyin-enable-punctuation-translation)
        (not ace-pinyin-simplified-chinese-only-p)))
-  
+    
     (defun ace-pinyin-goto-char-timer (&optional arg)
       "Read one or many consecutive chars and jump to the first one.
   The window scope is determined by `avy-all-windows' (ARG negates it)."
@@ -316,7 +316,7 @@
           (setq avy--old-cands
                 (avy--read-candidates #'ace-pinyin--build-string-regexp))
           (avy-process avy--old-cands))))
-  
+    
     (general-define-key
      :keymaps 'org-agenda-mode-map
      :states 'motion ;; agenda 下用 motion 代替 normal state
@@ -341,9 +341,9 @@
   ;; evil-9line ends here
   ;; [[file:~/org/logical/evil.org::ex-quit-buffer][ex-quit-buffer]]
   ;; :q should kill the current buffer rather than quitting emacs entirely
-  (evil-ex-define-cmd "q" 'kill-this-buffer)
-  (evil-ex-define-cmd "wq" 'kill-this-buffer)
-   ;; Need to type out :quit to close emacs
+  (evil-ex-define-cmd "q" 'kill-current-buffer)
+  (evil-ex-define-cmd "wq" 'kill-current-buffer)
+  ;; Need to type out :quit to close emacs
   (evil-ex-define-cmd "quit" 'evil-quit)
   ;; ex-quit-buffer ends here
   (general-define-key
@@ -501,7 +501,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-oceanic-next t)
+  (load-theme 'doom-vibrant t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -514,6 +514,23 @@
   
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
+
+(defun load-my-starred-themes ()
+  "a colletion of themes with personal commment"
+  (interactive)
+  (let* ((starred-themes
+          '(
+            "doom-oceanic-next: 用得持续时间最长，比较耐看"
+            "doom-vibrant:  也很不错"
+            "doom-material: agenda 比较淡，但比较少关注 agenda 了"
+            "doom-acario-light: 很典雅的感觉，尽管有的时候太白了"
+            "doom-one: 比较经典，aganda, tabbar 稍微有些淡" 
+            "doom-peacock: 用来做中文相关编写似乎不错"
+            "doom-moonlight: 星空色，agenda 太淡"
+            ))
+         (line (completing-read "Themes: " starred-themes))
+         (theme (intern (car (string-split line ":")))))
+    (load-theme theme t)))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -979,7 +996,7 @@
   (defun counsel-rg-my-vocab ()
     (interactive)
     (counsel-rg "" "~/codes/ranger/vocab/" "" "-g *.org ")
-  )
+    )
   ;; counsel-rg-my-vocab ends here
   (use-package ivy-rich
     :init
@@ -1400,6 +1417,11 @@
 
 (setq text-scale-mode-step 1.1) ;; text scalle ratio
 
+(defun search-books ()
+  (interactive)
+  (let ((counsel-file-jump-args '("." "-name" ".git" "-prune" "-o" "-type" "f" "(" "-name" "*.pdf" "-o" "-name" "*.epub" ")" "-print")))
+    (counsel-file-jump " " "/data/resource/readings/")))
+
 (defhydra main-hydra (:color red :hint nil :exit t :timeout 3 :idle 0.2)
   "
     most common used functions
@@ -1410,11 +1432,11 @@
     _h_: winner-undo                 _l_: winner-redo
     _i_: org-clock-in                _o_: org-clock-out
     _d_: org-clock done              _v_: org-imagine-view
-    _._: repeat operations           _x_: kill-this-buffer               
+    _._: repeat operations           _x_: kill-current-buffer               
     _p_: eaf-open-pdf-from-history   _c_: current-node-org-clock-display
     "
   ;;("d" debug-test-hydra/body)
-  ("r" (lambda () (interactive) (counsel-file-jump " " "/data/resource/readings/")))
+  ("r" search-books)
   ("p" eaf-open-pdf-from-history)
   ("f" counsel-file-jump)
   ;; bookmark-set is temporary, you need save
@@ -1422,7 +1444,7 @@
   ("m" delete-other-windows)
   ("q"  delete-window)
   ("w"  save-buffer)
-  ("x"  kill-this-buffer)
+  ("x"  kill-current-buffer)
   ("\\"  split-window-right)
   ("-"  split-window-below)
   ("i" (lambda () (interactive) (org-clock-in) (org-agenda "" " ")
@@ -1848,7 +1870,7 @@ FILENAME defaults to current buffer."
   :config
   ;; [[file:~/org/logical/orgmode_workflow.org::todo-list][todo-list]]
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)" "CANCEL(c@/!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)" "CANCEL(c@/!)")))
   
   ;; TODO color
   (setq org-todo-keyword-faces
@@ -1860,7 +1882,7 @@ FILENAME defaults to current buffer."
           ))
   
   (setq org-log-into-drawer t) ;; add logbook
-  (setq org-log-done 'time) ;; add CLOSED: timestamp when task done
+  ;;(setq org-log-done 'time) ;; add CLOSED: timestamp when task done
   
   (setq org-tag-alist '( ("noexport" . ?n)))
   ;; todo-list ends here
@@ -2559,90 +2581,7 @@ FILENAME defaults to current buffer."
 ;; # org-babel ends here
 
 ;; # [[file:~/org/logical/org_note_taking.org::org-notes][org-notes]]
-;; [[file:~/org/logical/org_note_taking.org::pdf-tools][pdf-tools]]
-(use-package pdf-tools
-  :mode ("\\.pdf\\'" . pdf-tools-install)
-  :custom
-  (pdf-annot-activate-created-annotations t "automatically annotate highlights")
-  :config
-  (setq mouse-wheel-follow-mouse t)
-  (setq pdf-view-resize-factor 1.10)
-  (setq-default pdf-view-display-size 'fit-width)
-  (setq image-cache-eviction-delay 30) ; clear image cache after 30 sec, origin 300
-  ;; (pdf-tools-install)
 
-  (general-define-key
-   :keymaps 'pdf-view-mode-map
-   :states '(normal)
-   "C-c C-g"  'pdf-sync-forward-search
-   "o" 'pdf-history-backward
-   "C-o" 'pdf-history-backward
-   "C-t" 'pdf-history-backward
-   "i" 'pdf-history-forward
-   "C-i" 'pdf-history-forward
-   "H" '(lambda () (interactive) (image-backward-hscroll 10))
-   "L" '(lambda () (interactive) (image-forward-hscroll 10))
-   "O" 'pdf-outline
-   "C-c o" 'pdf-outline ;; same as outline in org/epub
-   "d" 'pdf-view-scroll-up-or-next-page
-   "b" 'pdf-view-scroll-down-or-previous-page
-   "u" 'pdf-view-scroll-down-or-previous-page
-   "gp" 'pdf-view-goto-page
-   "C-f" 'pdf-view-next-page
-   "C-b" 'pdf-view-previous-page
-   "/" 'pdf-occur
-   "C-s" 'isearch-forward
-   )
-
-  (general-define-key
-   :keymaps 'pdf-occur-buffer-mode-map
-   "M-RET" 'pdf-occur-view-occurrence
-   )
-  )
-
-(use-package org-pdftools
-  :hook (org-mode . org-pdftools-setup-link))
-;; pdf-tools ends here
-;; [[file:~/org/logical/org_note_taking.org::nov][nov]]
-(use-package nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (defun my-nov-font-setup ()
-    (face-remap-add-relative 'variable-pitch :height 1.25))
-  (add-hook 'nov-mode-hook 'my-nov-font-setup)
-  (setq nov-text-width 80)
-  (add-hook 'nov-mode-hook 'visual-line-mode)
-  (add-hook 'nov-mode-hook 'visual-fill-column-mode)
-
-  (defun nov-scroll-up-half (arg)
-    (interactive "P")
-    (cond
-     ((= (point) (point-max)) (nov-next-document))
-     ((>= (window-end) (point-max)) (goto-char (point-max)))
-     (t (scroll-up-line 15))))
-
-  (defun nov-scroll-down-half (arg)
-    (interactive "P")
-    (cond
-     ((= (point) (point-min)) 
-      (nov-previous-document)
-      (goto-char (point-max)))
-     ((and (<= (window-start) (point-min))
-           (> nov-documents-index 0))
-      (goto-char (point-min)))
-     (t (scroll-down-line 15))))
-
-  (general-define-key
-   :keymaps 'nov-mode-map
-   :states '(normal)
-   "C-c o" 'nov-goto-toc ;; same as outline in org/pdf
-   "O" 'nov-goto-toc
-   "o" 'nov-history-back
-   "i" 'nov-history-forward
-   "d" 'nov-scroll-up-half
-   "u" 'nov-scroll-down-half)
-  )
-;; nov ends here
 ;; [[file:~/org/logical/org_note_taking.org::download][download]]
 (use-package org-download
   :after org
@@ -2656,10 +2595,10 @@ FILENAME defaults to current buffer."
   (org-download-heading-lvl nil)
   (org-download-timestamp "%Y%m%d-%H%M%S_")
   (org-download-image-attr-list
-      '("#+ATTR_HTML: :width 600 :align center"))
+   '("#+ATTR_HTML: :width 600 :align center"))
   :config
   (org-download-enable)
- )
+  )
 ;; download ends here
 ;; [[file:~/org/logical/org_note_taking.org::org-imagine][org-imagine]]
 (use-package org-imagine
@@ -2907,7 +2846,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (rainbow-delimiters-mode)
-             ;; (company-mode) ;; conflict with cdlatex
+              ;; (company-mode) ;; conflict with cdlatex
               (smartparens-mode)
               (turn-on-reftex)
               (setq reftex-plug-into-AUCTeX t)
@@ -2921,25 +2860,20 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
               (add-to-list 'TeX-command-list '("pdfLaTeX" "%`pdflatex --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
               (setq TeX-command-default "XeLaTeX")
 
+              ;; Update PDF buffers after successful LaTeX runs
+              (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+                        #'TeX-revert-document-buffer)
 
-  ;; Update PDF buffers after successful LaTeX runs
-  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-            #'TeX-revert-document-buffer)
-
-  ;; to use pdfview with auctex
-  (add-hook 'LaTeX-mode-hook 'pdf-tools-install)
-
-  ;; to use pdfview with auctex
-  (setq TeX-view-program-selection '((output-pdf "pdf-tools"))
-        TeX-source-correlate-start-server t)
-  (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view"))))))
+              ;; to use pdfview with auctex
+              (add-to-list 'TeX-view-program-list '("eaf" eaf-pdf-synctex-forward-view))
+              (add-to-list 'TeX-view-program-selection '(output-pdf "eaf")))))
 ;; # auctex ends here
 ;; # [[file:~/org/logical/latex_ecosystem.org::cdlatex][cdlatex]]
 (use-package cdlatex
-:config
-(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
-;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-)
+  :config
+  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+  ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  )
 ;; # cdlatex ends here
 ;; # [[file:~/org/logical/latex_ecosystem.org::evil-tex][evil-tex]]
 (use-package evil-tex
@@ -3258,6 +3192,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (setq eaf-pdf-dark-mode nil)
   ;; # mindmap ends here
 
+  (setq eaf-find-file-ext-blacklist '("md" "org" "html" "htm")) ;; don't block epub 
   (evil-set-initial-state 'eaf-mode 'emacs)
   (add-to-list 'evil-insert-state-modes 'eaf-edit-mode)
 
@@ -3379,5 +3314,6 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
            (my/open-mindmap))
           (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
   )
+
 ;; init-eaf ends here
 (put 'list-timers 'disabled nil)
