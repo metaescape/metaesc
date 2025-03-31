@@ -1,10 +1,21 @@
 [global]
 monitor = 0
 follow = mouse
-# auto adjust
+
+# NOTE: Dunst geo setting before version 1.11:
 # geometry = "0x0-20+10" # upper right corner
 # geometry = "0x0+920+0" # upper middle
-geometry = "0x0-20-40" # bottom right
+# geometry = "0x0+20+40" # bottom right
+
+# NOTE: Dunst geo setting after version 1.11:
+
+# dynamic width from 0 to 300
+width = (0, 300)
+# constant width of 300
+# width = 300
+origin = bottom-right
+offset = (-20, -40)
+
 indicate_hidden = yes
 frame_color = "#aaaaaa"
 shrink = no

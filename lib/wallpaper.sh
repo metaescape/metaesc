@@ -4,6 +4,7 @@ wallpapers=(/data/resource/pictures/wallpaper-dark/*)
 count=$(ls -1q  /data/resource/pictures/wallpaper-dark | wc -l)
 ps aux | grep wallpaper.sh | grep -v "grep\|vim\|$$" | awk '{ print $2 }' | xargs kill -9
 i=$(($RANDOM % $count))
+notify-send "Wallpaper Reset" -t 3000
 while true
 do
 	feh --bg-scale ${wallpapers[$i]} --bg-fill

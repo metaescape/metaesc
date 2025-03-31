@@ -9,5 +9,7 @@ else
     # 如果发现已有进程，则杀掉所有相关进程
     kill -9 $PIDS
   fi
+
   ~/miniconda3/envs/usr/bin/python /data/codes/ranger/backpages/main.py &
+  notify-send "Backpages Restarted" -t 3000
 fi

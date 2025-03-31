@@ -9,7 +9,7 @@
 
 
 width=100
-height=50
+height=45
 window_id=$(xdotool getactivewindow)
 # Get the position and size of the window
 window_info=$(xdotool getwindowgeometry --shell $window_id)
@@ -18,6 +18,7 @@ window_y=$(echo "$window_info" | grep Y | cut -d '=' -f 2)
 window_width=$(echo "$window_info" | grep WIDTH | cut -d '=' -f 2)
 window_height=$(echo "$window_info" | grep HEIGHT | cut -d '=' -f 2)
 
+echo $window_width $window_height $window_x $window_y
 # x 是从屏幕左侧开始，y 是从屏幕上边缘开始
 center_x=$(($window_x + ($window_width / 2)))
 center_y=$(($window_y + ($window_height / 2)))
@@ -26,7 +27,7 @@ center_y=$(($window_y + ($window_height / 2)))
 # 因为电脑设置的字体大小大约是 10 磅，12 px， 因此要乘以 6 但现实发现乘以 5 比较准
 # 因为 bash 算不了浮点，有误差，因此这是经验法则，没必要算太细
 x_corner=$(($center_x  - ($width * 5)))
-y_corner=$(($center_y  - ($height * 9)))
+y_corner=$(($center_y  - ($height * 11)))
 # echo $x_corner $y_corner >> /tmp/testout
 # 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
 emacsclient "$1" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )"

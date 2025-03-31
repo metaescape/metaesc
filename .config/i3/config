@@ -140,8 +140,7 @@ bindsym $super+Tab focus output right
 exec --no-startup-id nm-applet
 
 for_window [workspace=$ws10] layout tabbed
-exec --no-startup-id ~/.local/Clash/cfw
-exec --no-startup-id /usr/share/sangfor/EasyConnect/EasyConnect
+exec_always --no-startup-id ~/metaesc/lib/cfw.sh
 # # network-manager ends here
 # # [[file:~/org/logical/i3wm.org::set-monitor-and-wallpaper][set-monitor-and-wallpaper]]
 exec ~/metaesc/lib/monitor.sh
