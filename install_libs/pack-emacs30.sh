@@ -22,20 +22,24 @@ function install_emacs30() {
             print_info "sqlite3 用于 org-roam"
             sudo apt install sqlite3 -y
 
+            pushd $INSTALLERS
+            if [ ! -d emacs-$VERSION.tar.gz ]; then
+                print_notice "下载 emacs-$VERSION.tar.gz"
+                wget http://mirrors.aliyun.com/gnu/emacs/emacs-$VERSION.tar.gz
+            fi
+            cp emacs-$VERSION.tar.gz $CODES
             pushd $CODES
-            wget http://mirrors.aliyun.com/gnu/emacs/emacs-$VERSION.tar.gz
-            print_notice "下载 emacs-$VERSION.tar.gz"
             tar -xf emacs-$VERSION.tar.gz
-            pushd $CODES/emacs-$VERSION
-            ./autogen.sh
-            ./configure # 不需要手动指定 native compile 选项，默认就是 aot
-            make -j16 
-            popd 
-            mv emacs-$VERSION.tar.gz $INSTALLERS/
-            print_notice "emacs-$VERSION.tar.gz 移动到 $INSTALLERS/"
-            popd
-            print_success "emacs$VERSION 编译完毕"
+        else
+        countdown_warning 10 "Emacs" "Find $CODES/emacs-$VERSION, do you want to recompile it?"
         fi
+        
+        pushd $CODES/emacs-$VERSION
+        ./autogen.sh
+        ./configure # 不需要手动指定 native compile 选项，默认就是 aot
+        make -j16 
+        print_success "emacs$VERSION 编译完毕"
+        popd; popd; popd
 	elif [[ $distro == "redhat" ]]; then
 		:
 	elif [[ $distro == "arch" ]]; then
