@@ -74,7 +74,7 @@ bindsym $super+Shift+u move container to workspace $wsu
 # # [[file:~/org/logical/i3wm.org::switch-to-last-workspace][switch-to-last-workspace]]
 # last activate workspace
 workspace_auto_back_and_forth yes
-bindsym $alt+Tab workspace back_and_forth 
+bindsym $super+Tab workspace back_and_forth 
 # # switch-to-last-workspace ends here
 # # [[file:~/org/logical/i3wm.org::close-window-mode][close-window-mode]]
 set $close "Close the window? (y/n)"
@@ -132,7 +132,7 @@ workspace $ws3 output primary
 # workspace $ws4 output VGA-1-1
 # # assign-workspace-to-monitor ends here
 # # [[file:~/org/logical/i3wm.org::switch-to-last-monitor][switch-to-last-monitor]]
-bindsym $super+Tab focus output right
+# bindsym $super+Tab focus output right
 # # switch-to-last-monitor ends here
 # # [[file:~/org/logical/i3wm.org::network-manager][network-manager]]
 # NetworkManager is the most popular way to manage wireless networks on Linux,
@@ -214,7 +214,7 @@ mode "$main_mode" {
     bindsym j resize grow height 5 px
     bindsym k resize shrink height 5 px  
     bindsym 8 resize set 50 ppt 50 ppt
-    bindsym 9 resize set 62 ppt 38 ppt
+    bindsym 9 resize set 59 ppt 41 ppt
     # # resize-window-with-hjkl ends here
 
     # # [[file:~/org/logical/i3wm.org::i3-main-mode][swap-window-with-shift-hjkl]]

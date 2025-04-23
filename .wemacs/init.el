@@ -138,12 +138,14 @@
               minibuffer-local-isearch-map)
    [escape] 'minibuffer-keyboard-quit)
   ;; evil-esc ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-undo-fu][evil-undo-fu]]
   (use-package undo-fu
     :config
     (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
     (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
   ;; evil-undo-fu ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-collections][evil-collections]]
   (use-package evil-collection
     :after evil
@@ -175,6 +177,7 @@
   
   (add-hook 'org-log-buffer-setup-hook 'evil-insert-state)
   ;; evil-collections ends here
+  
   ;; [[file:~/org/logical/evil.org::expand-region][expand-region]]
   (use-package expand-region
     :general
@@ -183,6 +186,7 @@
     :config
     (setq expand-region-contract-fast-key "z"))
   ;; expand-region ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-surround][evil-surround]]
   (use-package evil-surround
     :config
@@ -231,6 +235,7 @@
      "S" 'my-evil-surround-dwim
      ))
   ;; evil-surround ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-commentary][evil-commentary]]
   (use-package evil-commentary
     ;; :diminish evil-commentary
@@ -238,6 +243,7 @@
     (evil-commentary-mode)
     )
   ;; evil-commentary ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-multiedit][evil-multiedit]]
   (use-package evil-multiedit
     :load-path "site-lisp/evil-multiedit"
@@ -267,9 +273,11 @@
     ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
     (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
   ;; evil-multiedit ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-select-paste][evil-select-paste]]
   (setq-default evil-kill-on-visual-paste nil)
   ;; evil-select-paste ends here
+  
   ;; [[file:~/org/logical/evil.org::snipe-pinyin][snipe-pinyin]]
   (use-package evil-snipe
     :defer
@@ -286,6 +294,7 @@
     (setq evil-find-char-pinyin-enable-punctuation-translation t) ;;punctuation
     )
   ;; snipe-pinyin ends here
+  
   ;; [[file:~/org/logical/evil.org::avy-ace-pinyin][avy-ace-pinyin]]
   (use-package avy
     :bind
@@ -323,6 +332,7 @@
      "C-\\" 'ace-pinyin-goto-char-timer
      ))
   ;; avy-ace-pinyin ends here
+  
   ;; [[file:~/org/logical/evil.org::evil-9line][evil-9line]]
   ;; Use visual line motions even outside of visual-line-mode buffers
   ;; deal with wrap
@@ -339,6 +349,7 @@
    "K" 'move-9-lines-up
    )
   ;; evil-9line ends here
+  
   ;; [[file:~/org/logical/evil.org::ex-quit-buffer][ex-quit-buffer]]
   ;; :q should kill the current buffer rather than quitting emacs entirely
   (evil-ex-define-cmd "q" 'kill-current-buffer)
@@ -346,6 +357,7 @@
   ;; Need to type out :quit to close emacs
   (evil-ex-define-cmd "quit" 'evil-quit)
   ;; ex-quit-buffer ends here
+  
   (general-define-key
    :keymaps '(visual)
    "DEL" (lambda ()
@@ -362,123 +374,131 @@
 ;; eshell:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*dird mode][dird mode:1]]
- ;; # [[file:~/org/logical/dired.org::dired-setting][dired-setting]]
- (use-package dired
-   :ensure nil
-   :commands (dired dired-jump)
-   :bind (("C-c d" . dired-jump))
-   :custom ((dired-listing-switches "-agho --group-directories-first"))
-   :config
-   (setq delete-by-moving-to-trash t) ;; trash is loacated at .local/share/Trash
-   (require 'dired-x)
-   ;; detect target path of other window automatically 
-   (setq dired-dwim-target 1)
-   ;; [[file:~/org/logical/dired.org::dired-sort][dired-sort]]
-   (defun xah-dired-sort ()
-     "Sort dired dir listing in different ways.
-     Prompt for a choice.
-     URL `http://ergoemacs.org/emacs/dired_sort.html'
-     Version 2018-12-23"
-     (interactive)
-     (let ($sort-by $arg)
-       (setq $sort-by (ido-completing-read "Sort by:" '( "date" "size" "name" )))
-       (cond
-        ((equal $sort-by "name") (setq $arg "-Al "))
-        ((equal $sort-by "date") (setq $arg "-Al -t"))
-        ((equal $sort-by "size") (setq $arg "-Al -S"))
-        ;; ((equal $sort-by "dir") (setq $arg "-Al --group-directories-first"))
-        (t (error "logic error 09535" )))
-       (dired-sort-other $arg )))
-     (define-key dired-mode-map (kbd "s") 'xah-dired-sort)
-   ;; dired-sort ends here
-   ;; [[file:~/org/logical/dired.org::md-to-org][md-to-org]]
-   (require 'seq)
-   (defun dired-md-to-org ()
-     (interactive)
-     (let
-         ((shell-command "pandoc -t org `?`.md | sed -E '/^[[:space:]]+:/ d' > `?`.org"))
-       (setq marked-filepathes (dired-get-marked-files))
-       (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
-       (setq marked-source-filenames
-             (seq-filter
-              (lambda (x) (equal "md" (file-name-extension x))) marked-filenames))
-       (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
-       (dired-do-shell-command shell-command nil marked-source-names))) 
-   
-   (defun md-buffer-to-org ()
-     "Convert the current buffer's content from markdown to orgmode format and save it with the current buffer's file name but with .org extension."
-     (interactive)
-     (let ((filename (file-name-sans-extension (buffer-file-name))))
-       (shell-command-on-region (point-min) (point-max)
-                                (format "pandoc -t org %s.md | sed -E '/^[[:space:]]+:/ d' > %s.org" filename filename))))
-   ;; md-to-org ends here
-   ;; [[file:~/org/logical/dired.org::ipynb-to-md][ipynb-to-md]]
-   (defun ipynb-to-md ()
-     (interactive)
-     (let
-           ((shell-command "notedown `?`.ipynb --to markdown --strip > `?`.md"))
-           (setq marked-filepathes (dired-get-marked-files))
-           (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
-           (setq marked-source-filenames
-            (seq-filter
-             (lambda (x) (equal "ipynb" (file-name-extension x))) marked-filenames))
-           (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
-      (dired-do-shell-command shell-command nil marked-source-names)
-     )) 
-   ;; ipynb-to-md ends here
-   ;; [[file:~/org/logical/dired.org::md-to-ipynb][md-to-ipynb]]
-   (defun md-to-ipynb ()
-     (interactive)
-     (let
-           ((shell-command "notedown `?`.md > `?`.ipynb"))
-           (setq marked-filepathes (dired-get-marked-files))
-           (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
-           (setq marked-source-filenames
+;; # [[file:~/org/logical/dired.org::dired-setting][dired-setting]]
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-c d" . dired-jump))
+  :custom ((dired-listing-switches "-agho --group-directories-first"))
+  :config
+  (setq delete-by-moving-to-trash t) ;; trash is loacated at .local/share/Trash
+  (require 'dired-x)
+  ;; detect target path of other window automatically 
+  (setq dired-dwim-target 1)
+  ;; [[file:~/org/logical/dired.org::dired-sort][dired-sort]]
+  (defun xah-dired-sort ()
+    "Sort dired dir listing in different ways.
+    Prompt for a choice.
+    URL `http://ergoemacs.org/emacs/dired_sort.html'
+    Version 2018-12-23"
+    (interactive)
+    (let ($sort-by $arg)
+      (setq $sort-by (ido-completing-read "Sort by:" '( "date" "size" "name" )))
+      (cond
+       ((equal $sort-by "name") (setq $arg "-Al "))
+       ((equal $sort-by "date") (setq $arg "-Al -t"))
+       ((equal $sort-by "size") (setq $arg "-Al -S"))
+       ;; ((equal $sort-by "dir") (setq $arg "-Al --group-directories-first"))
+       (t (error "logic error 09535" )))
+      (dired-sort-other $arg )))
+  (define-key dired-mode-map (kbd "s") 'xah-dired-sort)
+  ;; dired-sort ends here
+  
+  ;; [[file:~/org/logical/dired.org::md-to-org][md-to-org]]
+  (require 'seq)
+  (defun dired-md-to-org ()
+    (interactive)
+    (let
+        ((shell-command "pandoc -t org `?`.md | sed -E '/^[[:space:]]+:/ d' > `?`.org"))
+      (setq marked-filepathes (dired-get-marked-files))
+      (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
+      (setq marked-source-filenames
             (seq-filter
              (lambda (x) (equal "md" (file-name-extension x))) marked-filenames))
-           (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
-      (dired-do-shell-command shell-command nil marked-source-names)
-     )) 
-   ;; md-to-ipynb ends here
-   ;; [[file:~/org/logical/dired.org::ipynb-to-org][ipynb-to-org]]
-   (defun ipynb-to-org ()
-     (interactive)
-     (let
-           ((shell-command "notedown `?`.ipynb --to markdown --strip > tmp.md; pandoc -t org tmp.md | sed -E '/^[[:space:]]+:/ d' > `?`.org;sleep 1; rm tmp.md"))
-           (setq marked-filepathes (dired-get-marked-files))
-           (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
-           (setq marked-source-filenames
+      (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
+      (dired-do-shell-command shell-command nil marked-source-names))) 
+  
+  (defun md-buffer-to-org ()
+    "Convert the current buffer's content from markdown to orgmode format and save it with the current buffer's file name but with .org extension."
+    (interactive)
+    (let ((filename (file-name-sans-extension (buffer-file-name))))
+      (shell-command-on-region (point-min) (point-max)
+                               (format "pandoc -t org %s.md | sed -E '/^[[:space:]]+:/ d' > %s.org" filename filename))))
+  ;; md-to-org ends here
+  
+  ;; [[file:~/org/logical/dired.org::ipynb-to-md][ipynb-to-md]]
+  (defun ipynb-to-md ()
+    (interactive)
+    (let
+        ((shell-command "notedown `?`.ipynb --to markdown --strip > `?`.md"))
+      (setq marked-filepathes (dired-get-marked-files))
+      (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
+      (setq marked-source-filenames
             (seq-filter
              (lambda (x) (equal "ipynb" (file-name-extension x))) marked-filenames))
-           (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
+      (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
       (dired-do-shell-command shell-command nil marked-source-names)
-     )) 
-   ;; ipynb-to-org ends here
-   )
- 
- ;; [[file:~/org/logical/dired.org::dired-single][dired-single]]
- (use-package dired-single
-   :config
-   (evil-collection-define-key 'normal 'dired-mode-map
-     "h" 'dired-single-up-directory
-     "l" 'dired-single-buffer
-     ;;(kbd "<backspace>") 'dired-single-up-directory
-   )
- )
- ;; dired-single ends here
- ;; [[file:~/org/logical/dired.org::icons-dired][icons-dired]]
- (use-package nerd-icons-dired
-   :hook
-   (dired-mode . nerd-icons-dired-mode))
- ;; icons-dired ends here
- ;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
- (use-package dired-hide-dotfiles
-   :hook (dired-mode . dired-hide-dotfiles-mode)
-   :config
-   (evil-collection-define-key 'normal 'dired-mode-map
-     "H" 'dired-hide-dotfiles-mode))
- ;; dired-hide-dotfiles ends here
- ;; # dired-setting ends here
+      )) 
+  ;; ipynb-to-md ends here
+  
+  ;; [[file:~/org/logical/dired.org::md-to-ipynb][md-to-ipynb]]
+  (defun md-to-ipynb ()
+    (interactive)
+    (let
+        ((shell-command "notedown `?`.md > `?`.ipynb"))
+      (setq marked-filepathes (dired-get-marked-files))
+      (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
+      (setq marked-source-filenames
+            (seq-filter
+             (lambda (x) (equal "md" (file-name-extension x))) marked-filenames))
+      (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
+      (dired-do-shell-command shell-command nil marked-source-names)
+      )) 
+  ;; md-to-ipynb ends here
+  
+  ;; [[file:~/org/logical/dired.org::ipynb-to-org][ipynb-to-org]]
+  (defun ipynb-to-org ()
+    (interactive)
+    (let
+        ((shell-command "notedown `?`.ipynb --to markdown --strip > tmp.md; pandoc -t org tmp.md | sed -E '/^[[:space:]]+:/ d' > `?`.org;sleep 1; rm tmp.md"))
+      (setq marked-filepathes (dired-get-marked-files))
+      (setq marked-filenames (mapcar 'file-name-nondirectory marked-filepathes))
+      (setq marked-source-filenames
+            (seq-filter
+             (lambda (x) (equal "ipynb" (file-name-extension x))) marked-filenames))
+      (setq marked-source-names (mapcar 'file-name-sans-extension marked-source-filenames))
+      (dired-do-shell-command shell-command nil marked-source-names)
+      )) 
+  ;; ipynb-to-org ends here
+  
+  )
+
+;; [[file:~/org/logical/dired.org::dired-single][dired-single]]
+(use-package dired-single
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-single-buffer
+    ;;(kbd "<backspace>") 'dired-single-up-directory
+    )
+  )
+;; dired-single ends here
+
+;; [[file:~/org/logical/dired.org::icons-dired][icons-dired]]
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+;; icons-dired ends here
+
+;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
+(use-package dired-hide-dotfiles
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "H" 'dired-hide-dotfiles-mode))
+;; dired-hide-dotfiles ends here
+
+;; # dired-setting ends here
 ;; dird mode:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*startup screen][startup screen:1]]
@@ -550,7 +570,7 @@
 ;; mode line and theme:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*encodings and fonts][encodings and fonts:1]]
-  ;; font setting
+;; font setting
 ;; (set-frame-font "Consolas:size=16")
 (set-frame-font "Noto Sans Mono:size=16")
 
@@ -606,7 +626,7 @@
 ;;(global-hl-line-mode 1)
 
 ;; set cursor to bar instead of block
-  (setq-default cursor-type 'bar)
+(setq-default cursor-type 'bar)
 ;; line number, cursor/line highlight:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*line number, cursor/line highlight][line number, cursor/line highlight:2]]
@@ -633,7 +653,7 @@
 ;; line number, cursor/line highlight:2 ends here
 
 ;; [[file:~/org/design/wemacs.org::*better default behavior(misc)][better default behavior(misc):1]]
-  ;;disable ring bell,防止每次使用c-g时产生告警声
+;;disable ring bell,防止每次使用c-g时产生告警声
 (setq ring-bell-function 'ignore)
 
 ;; 默认情况下当鼠标移动到屏幕最后一行，再往下移时，emacs会翻半页，这很突兀
@@ -672,7 +692,7 @@
 ;; hideshow:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*backup files][backup files:1]]
-  ;; start server
+;; start server
 (server-start)
 
 ;; store all backup and autosave files in the tmp dir
@@ -710,12 +730,12 @@
   :config
   (setq savehist-additional-variables
         ;; search entries
-          '(search-ring regexp-search-ring)
-          ;; save every minute
-          savehist-autosave-interval 60
-          ;; keep the home clean
-          savehist-file (expand-file-name "savehist" my-savefile-dir))
-    (savehist-mode +1))
+        '(search-ring regexp-search-ring)
+        ;; save every minute
+        savehist-autosave-interval 60
+        ;; keep the home clean
+        savehist-file (expand-file-name "savehist" my-savefile-dir))
+  (savehist-mode +1))
 
 (use-package recentf
   :ensure nil
@@ -739,16 +759,16 @@
                       :foreground "bisque"
                       :underline t)
   (setq
-       show-paren-style 'parenthesis
-       show-paren-when-point-inside-paren t
-       show-paren-when-point-in-periphery t)
+   show-paren-style 'parenthesis
+   show-paren-when-point-inside-paren t
+   show-paren-when-point-in-periphery t)
   )
 ;; 括号高亮:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*括号高亮][括号高亮:2]]
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode)
-)
+  )
 ;; 括号高亮:2 ends here
 
 ;; [[file:~/org/design/wemacs.org::*rgb 颜色编码的高亮][rgb 颜色编码的高亮:1]]
@@ -763,7 +783,7 @@
 ;; 透明设置:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*不再使用][不再使用:1]]
-  ;; (setq frame-title-format "%b - emacs")
+;; (setq frame-title-format "%b - emacs")
 ;; 不再使用:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*auto save file][auto save file:1]]
@@ -791,24 +811,26 @@
   "Call `occur' with a sane default."
   (interactive)
   (push (if (region-active-p)
-	    (buffer-substring-no-properties
-	     (region-beginning)
-	     (region-end))
-	  (let ((sym (thing-at-point 'symbol)))
-	    (when (stringp sym)
-	      (regexp-quote sym))))
-	regexp-history)
+	        (buffer-substring-no-properties
+	         (region-beginning)
+	         (region-end))
+	      (let ((sym (thing-at-point 'symbol)))
+	        (when (stringp sym)
+	          (regexp-quote sym))))
+	    regexp-history)
   (call-interactively 'occur))
 (global-set-key (kbd "M-s o") 'occur-dwim)
 ;; occur 搜索:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*copy file path][copy file path:1]]
-(defun copy-file-name-on-clipboard ()
-  "Put the current file name on the clipboard"
+(defun copy-file-path-on-clipboard ()
+  "Put the current file path on the clipboard"
   (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
+  (let ((filename
+         (cond
+          ((derived-mode-p 'dired-mode) default-directory)
+          ((derived-mode-p 'eaf-mode) eaf--buffer-url)
+          (t buffer-file-name))))
     (when filename
       (with-temp-buffer
         (insert filename)
@@ -914,6 +936,9 @@
    "SPC" 'ivy-switch-buffer
    "/" 'swiper-isearch
    )
+  (general-define-key
+   :keymaps '(general-override-mode-map org-agenda-mode-map)
+   "M-/" 'swiper-isearch)
 
   (defun project-counsel-rg ()
     (interactive)
@@ -930,6 +955,7 @@
     (let* ((org-refile-targets '((org-agenda-files :maxlevel . 2))))
       (org-refile '(4))))
   ;; search-all-tasks ends here
+  
   ;; [[file:~/org/logical/ivy.org::ivy-fly][ivy-fly]]
   ;; @see https://www.reddit.com/r/emacs/comments/b7g1px/withemacs_execute_commands_like_marty_mcfly/
   (defvar my-ivy-fly-commands
@@ -992,18 +1018,21 @@
             (lambda ()
               (remove-hook 'pre-command-hook 'my-ivy-fly-back-to-present t)))
   ;; ivy-fly ends here
+  
   ;; [[file:~/org/logical/ivy.org::counsel-rg-my-vocab][counsel-rg-my-vocab]]
   (defun counsel-rg-my-vocab ()
     (interactive)
     (counsel-rg "" "~/codes/ranger/vocab/" "" "-g *.org ")
     )
   ;; counsel-rg-my-vocab ends here
+  
   (use-package ivy-rich
     :init
     (ivy-rich-mode 1))
   (use-package wgrep)
   )
 ;; # ivy ends here
+
 ;; # [[file:~/org/logical/ivy.org::counsel][counsel]]
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -1020,6 +1049,7 @@
   (global-set-key [remap org-set-tags-command] #'counsel-org-tag)
   )
 ;; # counsel ends here
+
 ;; # [[file:~/org/logical/ivy.org::helpful][helpful]]
 (use-package helpful
   :custom
@@ -1082,6 +1112,7 @@
    "R" 'desktop-read)
   )
 ;; dashboard ends here
+
 (use-package tab-bar
   :ensure nil
   :config
@@ -1089,7 +1120,7 @@
   (tab-bar-mode 1)
   (setq tab-bar-new-button-show nil)
   (setq tab-bar-close-button-show nil)
-  (setq tab-bar-show 1)
+  (setq tab-bar-show 0)
   (setq tab-bar-tab-hints t) ;; show number
   (setq tab-bar-auto-width nil) ;; 取消自动 padding 大小(29.2 引入)
   (setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
@@ -1099,13 +1130,14 @@
                         :inherit 'doom-modeline-panel
                         :foreground 'unspecified
                         :background 'unspecified)
-  
+    
     (set-face-attribute 'tab-bar nil
                         :foreground (face-attribute 'default :foreground)))
   
   (advice-add 'load-theme :after #'my/update-tab-bar-after-theme-change)
   (my/update-tab-bar-after-theme-change)
   ;; tab-utils ends here
+  
   ;; [[file:~/org/logical/window_manager.org::switch-tab-by-name-num][switch-tab-by-name-num]]
   (defun switch-to-tab-by-number (num)
     (let ((current-prefix-arg num)  ;; emulate C-u num
@@ -1128,6 +1160,7 @@
    "M-9" '(lambda () (interactive) (switch-to-tab-by-number 9))
    )
   ;; switch-tab-by-name-num ends here
+  
   ;; [[file:~/org/logical/window_manager.org::quick-switch-back][quick-switch-back]]
   (defvar last-switch-action nil)
   (defun my/tab-switch-advice (&rest _) (setq last-switch-action "tab-switch"))
@@ -1168,8 +1201,9 @@
   (general-define-key
    :keymaps '(general-override-mode-map org-agenda-mode-map eaf-mode-map*)
    :states '(motion normal visual) ;; agenda 下用motion 代替 normal state
-   "gq" 'my/switch-back)
+   "M-TAB" 'my/switch-back)
   ;; quick-switch-back ends here
+  
   ;; [[file:~/org/logical/window_manager.org::confirm-scratch-delete][confirm-scratch-delete]]
   (defun my/confirm-kill-scratch-buffer (orig-fun &rest args)
     "Confirm before killing the *scratch* buffer."
@@ -1182,6 +1216,7 @@
   
   (advice-add 'kill-buffer :around #'my/confirm-kill-scratch-buffer)
   ;; confirm-scratch-delete ends here
+  
   ;; [[file:~/org/logical/window_manager.org::windmove-ibuffer][windmove-ibuffer]]
   (general-define-key
    :keymaps 'general-override-mode-map
@@ -1201,6 +1236,7 @@
      "s," 'ibuffer-toggle-sorting-mode
      "SPC" 'switch-to-buffer))
   ;; windmove-ibuffer ends here
+  
   (use-package popwin
     :config
     (popwin-mode 1))
@@ -1215,11 +1251,12 @@
   (setq tab-line-new-button-show nil)  ;; do not show add-new button
   ;;(setq tab-line-close-button-show nil)  ;; do not show close button
   (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
-                    :background "#135c63" :foreground "white" :box nil)
+                      :background "#135c63" :foreground "white" :box nil)
   (set-face-attribute 'tab-line-tab nil ;; active tab in another window
                       :inherit 'tab-line
                       :background "gray10" :foreground "white"  :box nil))
 ;; tab-line ends here
+
 ;; # tab-bar ends here
 ;; 窗口、 tab 管理:1 ends here
 
@@ -1269,8 +1306,9 @@
 ;; [[file:~/org/logical/input_method.org::pyim-ivy][pyim-ivy]]
 (require 'pyim-cregexp-utils)
 (setq ivy-re-builders-alist
-    '((t . pyim-cregexp-ivy)))
+      '((t . pyim-cregexp-ivy)))
 ;; pyim-ivy ends here
+
 (use-package pyim
   :general
   (:keymaps '(evil-insert-state-map company-active-map)
@@ -1285,30 +1323,32 @@
   ;; [[file:~/org/logical/input_method.org::pyim-delete-chinese-word][pyim-delete-chinese-word]]
   (require 'pyim-cstring-utils) ;;  needed in native-comp
   (defun pyim-delete-backward-word ()
-      (interactive)
+    (interactive)
     (let ((cur (point))
           (char (pyim-char-before-to-string 0))
           )
       (if (pyim-string-match-p " " char)
           (skip-chars-backward " ")
-          (pyim-backward-word)
-      )
+        (pyim-backward-word)
+        )
       (delete-region (point) cur)
+      )
     )
-  )
   ;; pyim-delete-chinese-word ends here
+  
   )
 ;; # pyim-minimum ends here
+
 ;; # [[file:~/org/logical/input_method.org::emacs-rime][emacs-rime]]
 (use-package rime
   :general
-   (:keymaps '(rime-active-mode-map)
-   "M-DEL" 'rime--escape 
-   "C-w" 'rime--escape 
-   )
-   (:keymaps '(evil-insert-state-map minibuffer-local-map ivy-minibuffer-map)
-   "C-\\" 'convert-code-or-disable-rime
-   )
+  (:keymaps '(rime-active-mode-map)
+            "M-DEL" 'rime--escape 
+            "C-w" 'rime--escape 
+            )
+  (:keymaps '(evil-insert-state-map minibuffer-local-map ivy-minibuffer-map)
+            "C-\\" 'convert-code-or-disable-rime
+            )
   :custom
   (default-input-method "rime")
   :config
@@ -1317,10 +1357,11 @@
   (setq rime-show-candidate 'posframe)
   
   (setq rime-posframe-properties
-            (list :background-color "#333333"
-                  :foreground-color "#dcdccc"
-                  :internal-border-width 10))
+        (list :background-color "#333333"
+              :foreground-color "#dcdccc"
+              :internal-border-width 10))
   ;; emacs-rime-posframe ends here
+  
   (setq default-input-method "rime"
         rime-user-data-dir "~/.config/emacs_rime")
   ;; [[file:~/org/logical/input_method.org::rime-switch-manually][rime-switch-manually]]
@@ -1341,7 +1382,7 @@
     (interactive)
     (if (not (featurep 'ecb))
         (require 'pyim)
-        )
+      )
     (let ((str-before-1 (pyim-char-before-to-string 0)))
       (cond ((pyim-string-match-p "[a-z]" str-before-1)
              (+translate-symbol-to-rime))
@@ -1349,6 +1390,7 @@
              (pyim-punctuation-translate-at-point))
             (t (toggle-input-method)))))
   ;; rime-switch-manually ends here
+  
   ;; [[file:~/org/logical/input_method.org::rime-switch-auto][rime-switch-auto]]
   (setq rime-disable-predicates
         '(
@@ -1366,6 +1408,7 @@
           rime-predicate-tex-math-or-command-p 
           ))
   ;; rime-switch-auto ends here
+  
   ;; [[file:~/org/logical/input_method.org::rime-color-change][rime-color-change]]
   (advice-add 'toggle-input-method :after 'change-cursor-color-on-input-method)
   (defvar input-method-cursor-color "white"
@@ -1390,6 +1433,7 @@
   
   (add-hook 'post-command-hook 'change-cursor-color-on-input-method)
   ;; rime-color-change ends here
+  
   (defun sync-ibus-and-emacs-rime-userdb ()
     (interactive)
     (rime-sync)
@@ -1409,7 +1453,7 @@
   :config
   ;;(global-pangu-spacing-mode t)
   (setq pangu-spacing-real-insert-separtor t)
-)
+  )
 ;; 中文与英文之间保持空格:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*常用函数的 hydra 界面][常用函数的 hydra 界面:1]]
@@ -1426,7 +1470,7 @@
   "
     most common used functions
     _f_: counsel-file-jump           _m_: maximize current window
-    _r_: open files in reading dir   _b_: add bookmark and save
+    _r_: open files in reading dir   _b_: open bookmarks
     _w_: save-buffer                 _q_: quickly quitely quit window
     _-_: split-window-below          _\\_: split-window-right
     _h_: winner-undo                 _l_: winner-redo
@@ -1439,8 +1483,7 @@
   ("r" search-books)
   ("p" eaf-open-pdf-from-history)
   ("f" counsel-file-jump)
-  ;; bookmark-set is temporary, you need save
-  ("b" (lambda () (interactive) (bookmark-set) (bookmark-save)))
+  ("b" bookmark-jump)
   ("m" delete-other-windows)
   ("q"  delete-window)
   ("w"  save-buffer)
@@ -1495,7 +1538,7 @@ adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
   (defun open-with-system-app (file &optional dired)
     (let* ((ext (file-name-extension file))
            (app-list (cond ((equal ext "pdf") '("masterpdfeditor5" "xdg-open"))
-                           ((equal ext "epub") '("foliate"))
+                           ((member ext '("mp3" "mp4")) '("vlc"))
                            ((equal ext "md") '("typora"))))
            (app (completing-read
                  "Select Apps: "
@@ -1510,13 +1553,16 @@ adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
 
   (defun open-with-system-app-dwim ()
     (interactive)
-    (if (derived-mode-p 'dired-mode)
-        (open-with-system-app (dired-get-file-for-visit) 't)
-      (open-with-system-app (buffer-file-name))))
+    (cond
+     ((derived-mode-p 'dired-mode)
+      (open-with-system-app (dired-get-file-for-visit) 't))
+     ((derived-mode-p 'eaf-mode)
+      (open-with-system-app eaf--buffer-url))
+     (t (open-with-system-app buffer-file-name))))
   
   (ivy-add-actions
    'counsel-file-jump
-   '(("p" open-with-system-app "open file with system app")))
+   '(("f" open-with-system-app "open file with system app")))
 
   (general-define-key
    :keymaps '(org-mode-map pdf-view-mode-map markdown-mode-map
@@ -1577,13 +1623,13 @@ adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
 ;; tab 冲突处理:3 ends here
 
 ;; [[file:~/org/design/wemacs.org::*tab 冲突处理][tab 冲突处理:4]]
-  (defun yas-expand-only-in-insert-state (orig-fun &rest args)
-    "只在 evil 的 insert 模式下允许 yas-expand."
-    (when (and (bound-and-true-p evil-mode)
-               (eq evil-state 'insert))
-      (apply orig-fun args)))
-  
-  (advice-add 'yas-expand-from-trigger-key :around #'yas-expand-only-in-insert-state)
+(defun yas-expand-only-in-insert-state (orig-fun &rest args)
+  "只在 evil 的 insert 模式下允许 yas-expand."
+  (when (and (bound-and-true-p evil-mode)
+             (eq evil-state 'insert))
+    (apply orig-fun args)))
+
+(advice-add 'yas-expand-from-trigger-key :around #'yas-expand-only-in-insert-state)
 ;; tab 冲突处理:4 ends here
 
 ;; [[file:~/org/design/wemacs.org::*gitgutter 和 git timemachine][gitgutter 和 git timemachine:1]]
@@ -1652,14 +1698,14 @@ FILENAME defaults to current buffer."
 (electric-pair-mode 1)
 
 (add-hook 'org-mode-hook (lambda () 
-            (set (make-local-variable 'electric-pair-pairs) 
-                         '(
-                            (?\( . ?\))
-                            (?\{ . ?\})
-                            ))))
+                           (set (make-local-variable 'electric-pair-pairs) 
+                                '(
+                                  (?\( . ?\))
+                                  (?\{ . ?\})
+                                  ))))
 (setq electric-pair-inhibit-predicate
       `(lambda (c)
-          (if (char-equal c ?\<) t (,electric-pair-inhibit-predicate c))))
+         (if (char-equal c ?\<) t (,electric-pair-inhibit-predicate c))))
 ;; electric 括号的自动补全:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*smartparens 括号的自动补全][smartparens 括号的自动补全:1]]
@@ -1677,39 +1723,39 @@ FILENAME defaults to current buffer."
 ;; [[file:~/org/design/wemacs.org::*abbrev][abbrev:1]]
 (setq abbrev-mode nil) ;;change to t to try abbrev
 (define-abbrev-table 'global-abbrev-table 
- '(("cnfi" "#+begin_src emacs-lisp :results none\n#+end_src"))
- )
+  '(("cnfi" "#+begin_src emacs-lisp :results none\n#+end_src"))
+  )
 ;; abbrev:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*company][company:1]]
 (use-package company
- :config
- (setq company-idle-delay 0) ;;default 0.2
- (setq company-echo-delay 0) ;;default 0.01
- (setq company-show-numbers t) 
- (setq company-minimum-prefix-length 2) ;;default 3
- (setq company-dabbrev-minimum-length 2) ;;default 4
- (setq company-selection-wrap-around t) ;;default nil, next of end is begin
- (setq company-dabbrev-downcase nil)
- (setq company-backends '(company-capf
-                        company-keywords
-                        company-semantic
-                        company-files
-                        company-dabbrev
-                        company-etags
-                        company-clang
-                        company-cmake
-                        company-yasnippet))
- (setq company-require-match nil)
- (global-company-mode)
-
- (use-package company-posframe
-  :after company
-  :hook (company-mode . company-posframe-mode)
   :config
-  (use-package posframe) 
+  (setq company-idle-delay 0) ;;default 0.2
+  (setq company-echo-delay 0) ;;default 0.01
+  (setq company-show-numbers t) 
+  (setq company-minimum-prefix-length 2) ;;default 3
+  (setq company-dabbrev-minimum-length 2) ;;default 4
+  (setq company-selection-wrap-around t) ;;default nil, next of end is begin
+  (setq company-dabbrev-downcase nil)
+  (setq company-backends '(company-capf
+                           company-keywords
+                           company-semantic
+                           company-files
+                           company-dabbrev
+                           company-etags
+                           company-clang
+                           company-cmake
+                           company-yasnippet))
+  (setq company-require-match nil)
+  (global-company-mode)
+
+  (use-package company-posframe
+    :after company
+    :hook (company-mode . company-posframe-mode)
+    :config
+    (use-package posframe) 
+    )
   )
- )
 ;; company:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*与 yasnippet 冲突问题问题][与 yasnippet 冲突问题问题:2]]
@@ -1752,7 +1798,7 @@ FILENAME defaults to current buffer."
             ("=" (org-verbatim :background "black" :foreground "deep slate blue" )) ;; background of text is "snow1" and text is "deep slate blue"
             ("~" (org-code :background "dim gray" :foreground "PaleGreen1" ))
             ("+" (:strike-through t :foreground "dark orange" ))))
-  
+    
     (use-package org-appear
       :after org
       :hook (org-mode . org-appear-mode)
@@ -1760,15 +1806,16 @@ FILENAME defaults to current buffer."
       (setq org-hide-emphasis-markers t)
       (setq org-appear-autolinks t)
       )
-  
+    
     (defun org-mode-visual-fill ()
       (setq visual-fill-column-width 100
             visual-fill-column-center-text t)
       (visual-fill-column-mode 1))
-  
+    
     (use-package visual-fill-column
       :hook (org-mode . org-mode-visual-fill)))
   ;; org-basic-ui ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::narrow-or-widen-dwim][narrow-or-widen-dwim]]
   (defun narrow-or-widen-dwim ()
     "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
@@ -1778,6 +1825,7 @@ FILENAME defaults to current buffer."
           ((equal major-mode 'org-mode) (org-narrow-to-subtree))
           (t (error "Please select a region to narrow to"))))
   ;; narrow-or-widen-dwim ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::org-file-apps][org-file-apps]]
   (setq org-file-apps
         '((auto-mode . emacs)
@@ -1789,6 +1837,7 @@ FILENAME defaults to current buffer."
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . default)))
   ;; org-file-apps ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::read-org-block-by-name][read-org-block-by-name]]
   (defun my/read-org-block-by-name (file block-name)
     "Read the content of a named org-mode block from
@@ -1822,8 +1871,10 @@ FILENAME defaults to current buffer."
           (beginning-of-line))
       (error "Named block not found")))
   ;; read-org-block-by-name ends here
+  
   )
 ;; # org ends here
+
 
 ;; # [[file:~/org/logical/orgmode_workflow.org::org-agenda][org-agenda]]
 (use-package org-agenda
@@ -1867,6 +1918,7 @@ FILENAME defaults to current buffer."
         `((,(substring (get-current-archive-file-location) 0 -2)
            :maxlevel . 1)))
   ;; agenda-archive-gtd-files ends here
+  
   :config
   ;; [[file:~/org/logical/orgmode_workflow.org::todo-list][todo-list]]
   (setq org-todo-keywords
@@ -1886,6 +1938,7 @@ FILENAME defaults to current buffer."
   
   (setq org-tag-alist '( ("noexport" . ?n)))
   ;; todo-list ends here
+  
   
   ;; [[file:~/org/logical/orgmode_workflow.org::main-agenda][main-agenda]]
   (setq org-agenda-block-separator nil)
@@ -1934,6 +1987,7 @@ FILENAME defaults to current buffer."
   
   (add-to-list 'org-agenda-custom-commands `,org-agenda-todo-view)
   ;; main-agenda ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::clocktable-db-block][clocktable-db-block]]
   (defun my/update-clocktable-if-appropriate ()
     "Update clocktable if the point is in a paragraph within a clocktable block."
@@ -1959,6 +2013,7 @@ FILENAME defaults to current buffer."
   
   (add-hook 'org-ctrl-c-ctrl-c-hook 'my/update-clocktable-if-appropriate)
   ;; clocktable-db-block ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::checkbox-statistics][checkbox-statistics]]
   (defun count-statistics ()
     (let (num den end current-level)
@@ -2002,6 +2057,7 @@ FILENAME defaults to current buffer."
   
   (add-hook 'org-checkbox-statistics-hook 'update-statistics)
   ;; checkbox-statistics ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::org-clock-agenda][org-clock-agenda]]
   (use-package org-clock
     :ensure nil
@@ -2018,14 +2074,13 @@ FILENAME defaults to current buffer."
     ;; (org-clock-report-include-clocking-task t)
     (org-show-notification-timeout 10)
     :config
-
     (defun current-node-org-clock-display ()
       "Show work hours statistics graph using Python script."
       (interactive)
       (org-narrow-to-subtree)
       (org-clock-display)
       (widen))
-
+    
     (defun org-clock-out-if-done ()
       "Clock out when the task is marked DONE"
       (when (and (string= org-state "DONE")
@@ -2034,70 +2089,9 @@ FILENAME defaults to current buffer."
                  (> (save-excursion (outline-next-heading) (point))
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
-        (org-clock-out)))
-    
-    (setq my/org-clock-effort 1000)
-    
-    (defun set-org-clock-effort-when-nil ()
-      (setq org-clock-effort my/org-clock-effort)
-      (org-clock-update-mode-line))
-    
-    (add-hook 'org-clock-in-hook #'set-org-clock-effort-when-nil)
-    (add-hook 'org-after-todo-state-change-hook 'org-clock-out-if-done)
-    
-    (defun clock-in-focus-notify ()
-      (let ((current-focus-time
-             (/ (float-time
-                 (time-subtract (current-time) org-clock-start-time))
-                60)))
-        (when (>= current-focus-time my/org-clock-effort)
-          (my/exec-org-shell-block-in-file "timeout" "~/org/historical/projects.gtd"))
-        (org-notify (if (org-clock-is-active)
-                        (string-trim
-                         (substring-no-properties
-                          (org-clock-get-clock-string)))
-                      ""))))
-    
-    (setq my/clock-in-focus-notify-gap 20)
-    
-    (defun clock-in-focus-timer-start ()
-      "设置一个计时器，每 my/clock-in-focus-notify-gap 分钟触发一次 clock-in-focus-notify"
-      (setq clock-in-focus-timer
-            (run-at-time
-             (* 60 my/clock-in-focus-notify-gap)
-             (* 60 my/clock-in-focus-notify-gap)
-             #'clock-in-focus-notify)))
-    
-    (defun clock-in-focus-timer-stop ()
-      (when (boundp 'clock-in-focus-timer)
-        (cancel-timer clock-in-focus-timer)))
-    
-    (add-hook 'org-clock-in-hook #'clock-in-focus-timer-start)
-    (add-hook 'org-clock-out-hook #'clock-in-focus-timer-stop)
-    
-    (setq my/clock-out-idle-notify-gap 10)
-    
-    (defun clock-out-idle-notify ()
-      (setq clock-out-idle-time-duration
-            (+ my/clock-out-idle-notify-gap clock-out-idle-time-duration))
-      (my/exec-org-shell-block-in-file "idle" "~/org/historical/projects.gtd")
-      (org-notify (format "%d minutes idle" clock-out-idle-time-duration)))
-    
-    (defun clock-out-idle-timer-start ()
-      "设置一个计时器，每 my/clock-out-idle-notify-gap 分触发一次 clock-out-idle-notify,
-       用 clock-out-idle-time-duration 全局变量大致记录 timer 已经运行的时间"
-      (let ((gap-secs (* 60 my/clock-out-idle-notify-gap)))
-        (setq clock-out-idle-time-duration 0)
-        (setq clock-out-idle-timer (run-at-time gap-secs gap-secs #'clock-out-idle-notify))))
-    
-    (defun clock-out-idle-timer-stop ()
-      (when (boundp 'clock-out-idle-timer)
-        (cancel-timer clock-out-idle-timer)))
-    
-    (add-hook 'org-clock-out-hook #'clock-out-idle-timer-start)
-    (add-hook 'org-clock-in-hook #'clock-out-idle-timer-stop)
-    )
+        (org-clock-out))))
   ;; org-clock-agenda ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::agenda-keybinding][agenda-keybinding]]
   (defun my/org-agenda-clock-in-and-refresh ()
     (interactive)
@@ -2139,6 +2133,7 @@ FILENAME defaults to current buffer."
    "R" 'org-agenda-clockreport-mode-enhenced
    )
   ;; agenda-keybinding ends here
+  
   ;; [[file:~/org/logical/orgmode_workflow.org::gtd-oriented-tab][gtd-oriented-tab]]
   (setq gtd-window-dynamic-file "~/org/historical/entry.org")
   (defun create-or-switch-to-tab (tab-name)
@@ -2177,7 +2172,7 @@ FILENAME defaults to current buffer."
       ;; 打开 agenda 跳到 clock 上
       (org-agenda "" " ") ;; 打开 agenda
       (org-agenda-clockreport-mode-enhenced)
-      (split-window-vertically 24)  ;; 切分上下窗口, 上方 22 行（屏幕一般总共 40 行）
+      (split-window-vertically)  ;; 切分上下窗口
       (let ((target-file gtd-project-file)) ;; 打开 gtd 文件
         (switch-to-buffer (find-file target-file)))
       (ignore-errors ;; 跳转到最近 clock 的任务
@@ -2203,8 +2198,10 @@ FILENAME defaults to current buffer."
       (setq last-switch-action "tab-switch")))
   (bind-key (kbd "s-<f10>") (lambda () (interactive) (gtd-oriented-tab-switch "gtds")))
   ;; gtd-oriented-tab ends here
+  
   )
 ;; # org-agenda ends here
+
 
 ;; # [[file:~/org/logical/org_babel.org::org-babel][org-babel]]
 (use-package jupyter
@@ -2225,6 +2222,7 @@ FILENAME defaults to current buffer."
           ("v" . "verse"))
         )
   ;; ob-templates ends here
+  
   :general
   (:keymaps 'org-mode-map
             "s-j s-j" 'jupyter-change-session
@@ -2253,6 +2251,7 @@ FILENAME defaults to current buffer."
           (:hlines . "no")
           (:tangle . "no")))
   ;; global ends here
+  
   ;; [[file:~/org/logical/org_babel.org::load-language][load-language]]
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -2269,10 +2268,12 @@ FILENAME defaults to current buffer."
      (jupyter . t) ;; last
      ))
   ;; load-language ends here
+  
   ;; [[file:~/org/logical/org_babel.org::ob-org][ob-org]]
   (setq org-babel-default-header-args:org '((:exports . "none")
                                             (:noweb . "yes")))
   ;; ob-org ends here
+  
   ;; [[file:~/org/logical/org_babel.org::block-fontface][block-fontface]]
   (defun org-fontify-meta-lines-and-blocks-1 (limit)
     "Fontify #+ lines and blocks."
@@ -2422,6 +2423,7 @@ FILENAME defaults to current buffer."
   			                     '(font-lock-fontified t face org-meta-line))
   	        t))))))
   ;; block-fontface ends here
+  
   ;; [[file:~/org/logical/org_babel.org::jupyter-python-args][jupyter-python-args]]
   (setq-default org-babel-default-header-args:jupyter-python
                 '((:kernel . "zshot")
@@ -2432,6 +2434,7 @@ FILENAME defaults to current buffer."
   
   (org-babel-jupyter-override-src-block "python")
   ;; jupyter-python-args ends here
+  
   ;; [[file:~/org/logical/org_babel.org::kernel-name-modeline][kernel-name-modeline]]
   (setq jupyter-current-buffer-kernel "zshot")
   (setq mode-line-misc-info
@@ -2441,6 +2444,7 @@ FILENAME defaults to current buffer."
   
   (make-variable-buffer-local 'org-babel-default-header-args:python)
   ;; kernel-name-modeline ends here
+  
   ;; [[file:~/org/logical/org_babel.org::jupyter-change-session][jupyter-change-session]]
   (defun jupyter-change-session ()
     (interactive)
@@ -2461,6 +2465,7 @@ FILENAME defaults to current buffer."
                     (:kernel . ,kernel)
                     (:session . ,session)))))
   ;; jupyter-change-session ends here
+  
   ;; [[file:~/org/logical/org_babel.org::ob-jupyter-racket][ob-jupyter-racket]]
   (use-package racket-mode
     :config
@@ -2472,6 +2477,7 @@ FILENAME defaults to current buffer."
     (org-babel-jupyter-override-src-block "racket")
     )
   ;; ob-jupyter-racket ends here
+  
   ;; [[file:~/org/logical/org_babel.org::ob-jupyter-deno][ob-jupyter-deno]]
   (use-package typescript-mode
     :config
@@ -2483,6 +2489,7 @@ FILENAME defaults to current buffer."
     (org-babel-jupyter-override-src-block "typescript")
     )
   ;; ob-jupyter-deno ends here
+  
   ;; [[file:~/org/logical/org_babel.org::tangle-block][tangle-block]]
   (defun tangle-current-block()
     (interactive)
@@ -2566,6 +2573,7 @@ FILENAME defaults to current buffer."
      (t
       (message "Not in Org mode or a programming mode."))))
   ;; tangle-block ends here
+  
   ;; [[file:~/org/logical/org_babel.org::babel-results-ansi-color][babel-results-ansi-color]]
   (defun ek/babel-ansi ()
     (when-let ((beg (org-babel-where-is-src-block-result nil nil)))
@@ -2577,11 +2585,12 @@ FILENAME defaults to current buffer."
             (ansi-color-apply-on-region beg end))))))
   (add-hook 'org-babel-after-execute-hook 'ek/babel-ansi)
   ;; babel-results-ansi-color ends here
+  
   )
 ;; # org-babel ends here
 
-;; # [[file:~/org/logical/org_note_taking.org::org-notes][org-notes]]
 
+;; # [[file:~/org/logical/org_note_taking.org::org-notes][org-notes]]
 ;; [[file:~/org/logical/org_note_taking.org::download][download]]
 (use-package org-download
   :after org
@@ -2600,6 +2609,7 @@ FILENAME defaults to current buffer."
   (org-download-enable)
   )
 ;; download ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::org-imagine][org-imagine]]
 (use-package org-imagine
   :load-path "site-lisp/org-imagine/"
@@ -2607,6 +2617,7 @@ FILENAME defaults to current buffer."
   (setq org-imagine-cache-dir "./.org-imagine"
         org-imagine-is-overwrite 1))
 ;; org-imagine ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::org-latex][org-latex]]
 (use-package org
   :ensure nil
@@ -2614,8 +2625,8 @@ FILENAME defaults to current buffer."
   (org-preview-latex-image-directory "/tmp/ltximg/")
   :config
   (setq org-latex-pdf-process '(
-      "xelatex -interaction nonstopmode %f"
-      "xelatex -interaction nonstopmode %f"))
+                                "xelatex -interaction nonstopmode %f"
+                                "xelatex -interaction nonstopmode %f"))
 
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   (setq org-startup-with-latex-preview nil)
@@ -2626,6 +2637,7 @@ FILENAME defaults to current buffer."
   :after org
   :hook (org-mode . org-fragtog-mode))
 ;; org-latex ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::yasnippet-setting][yasnippet-setting]]
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -2650,6 +2662,7 @@ FILENAME defaults to current buffer."
    "s-r s-s" 'yas-insert-snippet)
   )
 ;; yasnippet-setting ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::ass-setting][ass-setting]]
 (use-package aas
   :hook (LaTeX-mode . aas-activate-for-major-mode)
@@ -2694,6 +2707,7 @@ FILENAME defaults to current buffer."
     ",b" (lambda () (interactive) (laas-wrap-previous-object "boldsymbol"))
     ".d" (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 ;; ass-setting ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::org-roam][org-roam]]
 (use-package org-roam
   :init
@@ -2730,8 +2744,9 @@ FILENAME defaults to current buffer."
     (interactive)
     (org-roam-node-insert (lambda (node)
                             (= 0 (org-roam-node-level node))))))
-  
+
 ;; org-roam ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::roam-ui][roam-ui]]
 (use-package org-roam-ui
   :after org-roam
@@ -2747,6 +2762,7 @@ FILENAME defaults to current buffer."
                '(org-roam-ui-follow-mode nil))
   )
 ;; roam-ui ends here
+
 ;; [[file:~/org/logical/org_note_taking.org::org-cite][org-cite]]
 (use-package citar
   :bind (:map org-mode-map
@@ -2815,22 +2831,24 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
 
 (advice-add 'org-open-at-point-global :around #'my/org-open-at-point-advice)
 ;; org-cite ends here
+
 ;; # org-notes ends here
 
-  ;; # [[file:~/org/logical/rss.org::elfeed-org][elfeed-org]]
-  (use-package elfeed
-      :defer t
-    )
-  
-    (use-package elfeed-org ;;after
-      :after elfeed
-      :config
-      (elfeed-org)
-      (setq rmh-elfeed-org-files '("~/org/logical/rss.org"))
-    )
-  
-  (setq elfeed-curl-extra-arguments '("--proxy" "socks5://127.0.0.1:1089"))
-  ;; # elfeed-org ends here
+
+;; # [[file:~/org/logical/rss.org::elfeed-org][elfeed-org]]
+(use-package elfeed
+  :defer t
+  )
+
+(use-package elfeed-org ;;after
+  :after elfeed
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files '("~/org/logical/rss.org"))
+  )
+
+(setq elfeed-curl-extra-arguments '("--proxy" "socks5://127.0.0.1:1089"))
+;; # elfeed-org ends here
 ;; org-mode environment:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*latex 环境][latex 环境:1]]
@@ -2860,14 +2878,15 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
               (add-to-list 'TeX-command-list '("pdfLaTeX" "%`pdflatex --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
               (setq TeX-command-default "XeLaTeX")
 
+
               ;; Update PDF buffers after successful LaTeX runs
               (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
                         #'TeX-revert-document-buffer)
 
-              ;; to use pdfview with auctex
               (add-to-list 'TeX-view-program-list '("eaf" eaf-pdf-synctex-forward-view))
               (add-to-list 'TeX-view-program-selection '(output-pdf "eaf")))))
 ;; # auctex ends here
+
 ;; # [[file:~/org/logical/latex_ecosystem.org::cdlatex][cdlatex]]
 (use-package cdlatex
   :config
@@ -2875,6 +2894,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
   )
 ;; # cdlatex ends here
+
 ;; # [[file:~/org/logical/latex_ecosystem.org::evil-tex][evil-tex]]
 (use-package evil-tex
   :hook evil-tex-mode
@@ -2882,13 +2902,15 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (define-key evil-tex-mode-map (kbd "M-.") #'evil-tex-brace-movement)
   )
 ;; # evil-tex ends here
+
 ;; # [[file:~/org/logical/latex_ecosystem.org::reftex][reftex]]
-  (use-package reftex
-    :ensure nil
-    :defer t
-    :config
-    (setq reftex-cite-prompt-optional-args t)) ; Prompt for empty optional arguments in cite
+(use-package reftex
+  :ensure nil
+  :defer t
+  :config
+  (setq reftex-cite-prompt-optional-args t)) ; Prompt for empty optional arguments in cite
 ;; # reftex ends here
+
 ;; # [[file:~/org/logical/latex_ecosystem.org::phrases][phrases]]
 (use-package academic-phrases
   :commands academic-phrases
@@ -2943,9 +2965,9 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
 
 ;; [[file:~/org/design/wemacs.org::*缩进与空格][缩进与空格:1]]
 (use-package aggressive-indent
-:config
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-)
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  )
 ;; 缩进与空格:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*自动缩进][自动缩进:1]]
@@ -2957,7 +2979,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
 (use-package quickrun
   :bind
   (("<f5>" . quickrun))
-)
+  )
 ;; 快速运行程序:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*shell mode hook][shell mode hook:1]]
@@ -2973,6 +2995,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (setq python-shell-interpreter "python"
         python-shell-interpreter-args "-i")
   ;; python-shell ends here
+  
   ;; [[file:~/org/logical/elpy.org::jupyter-setup][jupyter-setup]]
   (add-hook 'python-shell-first-prompt-hook
             #'jupyter-python-shell-send-setup-code)
@@ -2984,6 +3007,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
         (python-shell-send-string "%load_ext autoreload" process)
         (python-shell-send-string "%autoreload 2" process))))
   ;; jupyter-setup ends here
+  
   (setq python-indent-offset 4
         python-indent 4
         evil-indent-convert-tabs t
@@ -2992,6 +3016,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   :mode ("\\.py\\'" . python-mode)
   )
 ;; # elpy-python-mode ends here
+
 ;; # [[file:~/org/logical/elpy.org::elpy][elpy]]
 (use-package elpy
   :init
@@ -3008,6 +3033,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
         '(elpy-module-sane-defaults elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-highlight-indentation elpy-module-pyvenv elpy-module-yasnippet)
         )
   ;; elpy-modules ends here
+  
   ;; [[file:~/org/logical/elpy.org::folding][folding]]
   (defun cycle-elpy-folding ()
     (interactive)
@@ -3019,6 +3045,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
         (elpy-folding-hide-leafs)
       (hs-show-all)))
   ;; folding ends here
+  
   ;; [[file:~/org/logical/elpy.org::pyvenv][pyvenv]]
   (setenv "WORKON_HOME" "/home/pipz/miniconda3/envs")
   (pyvenv-mode 1)
@@ -3032,14 +3059,17 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-virtualenv-path 'current)
   ;; pyvenv ends here
+  
   ;; [[file:~/org/logical/elpy.org::elpy-checker][elpy-checker]]
   (setq elpy-syntax-check-command "flake8")
   ;; elpy-checker ends here
   
+  
   ;; [[file:~/org/logical/elpy.org::elpy-test][elpy-test]]
-    (setq elpy-test-discover-runner-command '("python3" "-m" "unittest"))
-    (global-set-key (kbd "<f3>") 'recompile)
+  (setq elpy-test-discover-runner-command '("python3" "-m" "unittest"))
+  (global-set-key (kbd "<f3>") 'recompile)
   ;; elpy-test ends here
+  
   ;; [[file:~/org/logical/elpy.org::send-region-or-statement][send-region-or-statement]]
   (defun elpy-shell-send-region-or-statement-and-step (&optional arg)
     "Send the active region or the buffer to the Python shell and step.
@@ -3049,8 +3079,9 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
     (interactive "P")
     (if (use-region-p)
         (elpy-shell-send-region-or-buffer-and-step)
-        (elpy-shell-send-statement-and-step)))
+      (elpy-shell-send-statement-and-step)))
   ;; send-region-or-statement ends here
+  
   ;; [[file:~/org/logical/elpy.org::jupyter-shell][jupyter-shell]]
   (setq python-shell-interpreter "jupyter"
         python-shell-interpreter-args "console --simple-prompt"
@@ -3059,6 +3090,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   ;; (setq python-shell-setup-codes '("\\%load_ext autoreload\n" "%autoreload 2"))
   (setq python-shell-setup-codes 'nil)
   ;; jupyter-shell ends here
+  
   ;; [[file:~/org/logical/elpy.org::shell-send-binding][shell-send-binding]]
   (general-define-key
    :keymaps 'python-mode-map
@@ -3071,6 +3103,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
    "C-j" 'comint-next-input
    "C-k" 'comint-previous-input)
   ;; shell-send-binding ends here
+  
   ;; [[file:~/org/logical/elpy.org::elpy-project-shell][elpy-project-shell]]
   (advice-add 'elpy-shell-switch-to-shell :before (lambda () 
                                                     (elpy-shell-set-local-shell (elpy-project-root))))
@@ -3081,6 +3114,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (setq elpy-shell-display-buffer-after-send t ;;
         elpy-shell-echo-output nil) ;; don't show output in echo
   ;; elpy-project-shell ends here
+  
   ;; [[file:~/org/logical/elpy.org::elpy-reformat][elpy-reformat]]
   (general-define-key
    :keymaps 'python-mode-map
@@ -3088,7 +3122,8 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
    "C-c b" 'elpy-format-code
    )
   ;; elpy-reformat ends here
-)
+  
+  )
 ;; # elpy ends here
 ;; python 编程环境特定配置:1 ends here
 
@@ -3141,6 +3176,10 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   )
 ;; solidity:1 ends here
 
+;; [[file:~/org/design/wemacs.org::*Ocaml][Ocaml:1]]
+(use-package tuareg)
+;; Ocaml:1 ends here
+
 ;; [[file:~/org/design/wemacs.org::*web-mode][web-mode:1]]
 (use-package web-mode
   :mode ("\\.html$" . web-mode)
@@ -3177,143 +3216,80 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
 ;; [[file:~/org/design/wemacs.org::*better term-mode colors][better term-mode colors:1]]
 (use-package eterm-256color
   :hook (term-mode . 'eterm-256color-mode)
-)
+  )
 ;; better term-mode colors:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::init-eaf][init-eaf]]
+;; # [[file:~/org/logical/eaf.org::eaf][eaf]]
 (use-package eaf
-  ;; :load-path "~/.wemacs/site-lisp/eaf"
-  ;;:commands (eaf-open-mindmap eaf-open-pdf-from-history)
   :load-path "site-lisp/emacs-application-framework/"
   :config
-  ;; # [[file:~/org/logical/eaf.org::mindmap][mindmap]]
-  (require 'eaf-mindmap)
-  (require 'eaf-pdf-viewer)
-  (setq eaf-pdf-dark-mode nil)
-  ;; # mindmap ends here
-
+  ;; [[file:~/org/logical/eaf.org::pdf-viewer][pdf-viewer]]
   (setq eaf-find-file-ext-blacklist '("md" "org" "html" "htm")) ;; don't block epub 
   (evil-set-initial-state 'eaf-mode 'emacs)
   (add-to-list 'evil-insert-state-modes 'eaf-edit-mode)
-
-  (defun eaf-insert-or-comma ()
-    (interactive)
-    (if eaf-buffer-input-focus
-        (eaf-py-proxy-insert_or_zoom_in)
-      (main-hydra/body)))
-
-  (defun eaf-insert-or-space ()
-    (interactive)
-    (if eaf-buffer-input-focus
-        (eaf-py-proxy-insert_or_zoom_in)
-      ;; (ivy-switch-buffer-tab-win)
-      (ivy-switch-buffer)))
-
-  (defun eaf-insert-or-q ()
-    (interactive)
-    (if eaf-buffer-input-focus
-        (eaf-py-proxy-insert_or_zoom_in)
-      ;; (switch-back-buffer-or-view)
-      (my/switch-back)))
-
-  ;; browser binding
-  ;; (eaf-bind-key insert_or_scroll_left "l" eaf-browser-keybinding)
-  ;; (eaf-bind-key insert_or_scroll_right "h" eaf-browser-keybinding)
-  ;; (eaf-bind-key clear_focus "<escape>" eaf-browser-keybinding)
-  ;; (eaf-bind-key atomic_edit "M-o" eaf-browser-keybinding)
-  ;; (eaf-bind-key eaf-insert-or-comma "," eaf-browser-keybinding)
-  ;; (eaf-bind-key eaf-insert-or-space "SPC" eaf-browser-keybinding)
-  ;; (eaf-bind-key eaf-insert-or-q "q" eaf-browser-keybinding)
-
-  ;; mindmap binding
-  (eaf-bind-key insert_or_remove_node "x" eaf-mindmap-keybinding)
-  (eaf-bind-key jump_to_keywords "RET" eaf-mindmap-keybinding)
-  (eaf-bind-key jump_to_keywords "M-RET" eaf-mindmap-keybinding)
-  (eaf-bind-key add_brother_node "TAB" eaf-mindmap-keybinding)
-  (eaf-bind-key insert_or_update_node_topic "i" eaf-mindmap-keybinding)
-  (eaf-bind-key insert_or_update_node_topic "a" eaf-mindmap-keybinding)
-  (eaf-bind-key update_node_topic "M-i" eaf-mindmap-keybinding)
-  (eaf-bind-key update_node_topic "M-DEL" eaf-mindmap-keybinding)
-  (eaf-bind-key add_sub_node "o" eaf-mindmap-keybinding)
-  (eaf-bind-key eaf-insert-or-space "SPC" eaf-mindmap-keybinding)
-  (eaf-bind-key eaf-insert-or-comma "," eaf-mindmap-keybinding)
-  (eaf-bind-key eaf-insert-or-q "q" eaf-mindmap-keybinding)
-  (eaf-bind-key insert_or_copy_node_topic "y" eaf-mindmap-keybinding)
-  (eaf-bind-key insert_or_paste_node_topic "p" eaf-mindmap-keybinding)
-  (eaf-bind-key insert_or_save_file "W" eaf-mindmap-keybinding)
-  (eaf-bind-key windmove-down "M-j" eaf-mindmap-keybinding)
-  (eaf-bind-key windmove-up "M-k" eaf-mindmap-keybinding)
-  (eaf-bind-key windmove-left "M-h" eaf-mindmap-keybinding)
-  (eaf-bind-key windmove-right "M-l" eaf-mindmap-keybinding)
-
+  
+  (require 'eaf-pdf-viewer)
+  (setq eaf-pdf-dark-mode nil)
+  
   ;; pdf binding
-  (eaf-bind-key eaf-insert-or-space "SPC" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key eaf-insert-or-comma "," eaf-pdf-viewer-keybinding)
-  (eaf-bind-key eaf-insert-or-q "q" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-down "M-j" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-up "M-k" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-left "M-h" eaf-pdf-viewer-keybinding)
   (eaf-bind-key windmove-right "M-l" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_up "j" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_up_page "d" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_down_page "u" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_up_page "C-d" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_down_page "C-u" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_up_page "C-f" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_down_page "C-b" eaf-pdf-viewer-keybinding)
-  ;;(eaf-bind-key eaf-pdf-outline-edit "E" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key eaf-pdf-outline-edit "O" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up_page "J" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down_page "K" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_up "j" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "k" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-pdf-outline-edit "E" eaf-pdf-viewer-keybinding)
   (eaf-bind-key eaf-pdf-extract-page-text "e" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key jump_to_next_saved_pos "i" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key jump_to_previous_saved_pos "o" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key jump_to_previous_saved_pos "C-o" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key jump_to_previous_saved_pos "C-t" eaf-pdf-viewer-keybinding)
   (eaf-bind-key jump_to_page ":" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key toggle_inverted_mode "R" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "t" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "T" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "g" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key action_quit "<escape>" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_to_begin "gg" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key my/switch-back "gq" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key my/switch-back "M-TAB" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key ivy-switch-buffer "SPC" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key main-hydra/body "," eaf-pdf-viewer-keybinding)
+  (eaf-bind-key eaf-pdf-narrow-search "M-/" eaf-pdf-viewer-keybinding)
   (eaf-bind-key eaf-pdf-narrow-search "/" eaf-pdf-viewer-keybinding)
-
-  (setq display-buffer-alist
-        '(("\\*\\(Outline Edit\\|Page text\\)"
-           (display-buffer-reuse-window)
-           (window-height . 0.35))))
-
+  (eaf-bind-key restore_last_cursor_pos "i" eaf-pdf-viewer-keybinding)
+  (defun eaf-pdf-narrow-search-toc () (interactive) (eaf-pdf-narrow-search "toc"))
+  (eaf-bind-key eaf-pdf-narrow-search-toc "O" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key open-with-system-app-dwim "M-o" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key copy_select "y" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key copy_select "C-c" eaf-pdf-viewer-keybinding)
+  (setq eaf-pdf-show-progress-on-page 22)
+  (setq eaf-pdf-click-to-copy nil)
+  (setq eaf-buffer-background-color "#242730")
+  
+  (defun eaf-restart-process-dev ()
+    (interactive)
+    (eaf-restart-process)
+    (sleep-for 0.5)
+    (switch-to-buffer-other-window "*eaf*"))
+  
   (general-define-key
    :keymaps '(eaf-pdf-outline-mode-map)
    :states '(normal visual)
    "RET" 'eaf-pdf-outline-view
    "o" 'eaf-pdf-outline-jump
    )
-
+  
   (general-define-key
    :keymaps '(eaf-pdf-outline-edit-mode-map)
    :states '(normal)
    [remap org-open-at-point] 'eaf-pdf-outline-edit-jump
    )
-
-  (defun my/open-mindmap ()
-    "Open mindmap in a new window if there is only one window, or in other window if multiple windows are present."
-    (interactive)
-    (let ((current-buffer (current-buffer)))
-      (if (= (length (window-list)) 1)
-          (progn
-            (split-window-right) ;; Split window right and move to new window
-            (other-window 1))
-        (other-window 1))   ;; Just move to other window if more than one window present
-      (set-window-buffer nil current-buffer) ;; Set the buffer of new/other window to current buffer
-      (eaf-open-mindmap buffer-file-name))) ;; Open mindmap of the current buffer
-
-  ;; redefine this function
-  (defun eaf-open-this-buffer ()
-    "Try to open the current buffer using EAF, if possible."
-    (interactive)
-    (cond ((eaf--buffer-file-p)  (eaf-open buffer-file-name))
-          ((or (eq major-mode 'org-mode)
-               (eq major-mode 'markdown-mode))
-           (my/open-mindmap))
-          (t (user-error "[EAF] Current buffer is not supported by EAF!"))))
+  ;; pdf-viewer ends here
+  
   )
-
+;; # eaf ends here
 ;; init-eaf ends here
-(put 'list-timers 'disabled nil)
