@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: ocaml_src
+# key: ,oc
+# group: org block
+# --
+
+#+begin_src ocaml
+$0
+#+end_src
