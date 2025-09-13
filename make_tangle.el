@@ -11,6 +11,7 @@
 (org-babel-do-load-languages
  'org-babel-load-languages '((org . t) (shell . t))
  )
+
 (setq org-babel-default-header-args '((:comments . "noweb")))
 
 ;; org-id-link-to-org-use-id 为 t 会对每个 tangle src block 所在 subtree 生成 id(如果没有）
@@ -53,7 +54,7 @@
 
 (setq file-map '(("init" "~/org/design/wemacs.org" "~/metaesc/.wemacs/init.el")
                  ("xwish" "~/org/design/web/posts/xwish.org")
-                 ("i3" "~/org/logical/i3wm.org")
+                 ("i3" "~/org/design/web/posts/i3wm.org")
                  ("tmux" "~/org/logical/tmux.org")
                  ("vimrc" "~/org/logical/vim.org")
                  ("eaf" "~/org/logical/eaf.org")

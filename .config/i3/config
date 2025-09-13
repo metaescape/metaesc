@@ -1,33 +1,40 @@
-# # [[file:~/org/logical/i3wm.org::*主配置][主配置:1]]
+# # [[file:~/org/design/web/posts/i3wm.org::*主配置][主配置:1]]
 # i3 config file (v4)
-# # [[file:~/org/logical/i3wm.org::set-font-border][set-font-border]]
+# # [[file:~/org/design/web/posts/i3wm.org::set-font-border][set-font-border]]
 font pango:Noto Sans CJK Mono SC 9
 
 for_window [class=".*"] border pixel 2
-gaps inner 4
+gaps inner 5
 # # set-font-border ends here
-# # [[file:~/org/logical/i3wm.org::set-modifier][set-modifier]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::set-modifier][set-modifier]]
 set $super Mod4
 set $alt Mod1
 # # set-modifier ends here
-# # [[file:~/org/logical/i3wm.org::*主配置][switch-window-in-workspace]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::*主配置][switch-window-in-workspace]]
 bindsym $super+Left focus left
 bindsym $super+Down focus down
 bindsym $super+Up focus up
 bindsym $super+Right focus right
 # # switch-window-in-workspace ends here
-# # [[file:~/org/logical/i3wm.org::emacs-popups][emacs-popups]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::emacs-popups][emacs-popups]]
 bindsym F2 --release exec ~/metaesc/lib/i3-emacs-publish.sh
 bindsym F3 --release exec ~/metaesc/lib/i3-emacs-xwish.sh
-bindsym F10 --release exec ~/metaesc/lib/i3-emacs-quicknote.sh
+bindsym F10 --release exec ~/metaesc/lib/backpages.sh show
+bindsym $alt+Control+2 --release exec ~/metaesc/lib/i3-emacs-quicknote.sh
 # # emacs-popups ends here
-# # [[file:~/org/logical/i3wm.org::focus-next-window][focus-next-window]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::focus-next-window][focus-next-window]]
 bindsym Redo exec ~/metaesc/lib/restore_fullscreen.sh && exec ~/metaesc/lib/focus_next_win.sh
 # # focus-next-window ends here
-# # [[file:~/org/logical/i3wm.org::toggle-fullscreen][toggle-fullscreen]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::toggle-fullscreen][toggle-fullscreen]]
 bindsym $super+m fullscreen toggle
 # # toggle-fullscreen ends here
-# # [[file:~/org/logical/i3wm.org::set-workspace-name][set-workspace-name]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::set-workspace-name][set-workspace-name]]
 set $ws1 "1⚓"
 set $ws2 "2⚕"
 set $ws3 "3☯"
@@ -42,7 +49,8 @@ set $wst "t"
 set $wsy "y"
 set $wsu "u"
 # # set-workspace-name ends here
-# # [[file:~/org/logical/i3wm.org::focus-workspace-with-super-number][focus-workspace-with-super-number]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::focus-workspace-with-super-number][focus-workspace-with-super-number]]
 bindsym $super+1 workspace $ws1
 bindsym $super+2 workspace $ws2
 bindsym $super+3 workspace $ws3
@@ -71,12 +79,14 @@ bindsym $super+Shift+t move container to workspace $wst
 bindsym $super+Shift+y move container to workspace $wsy
 bindsym $super+Shift+u move container to workspace $wsu
 # # focus-workspace-with-super-number ends here
-# # [[file:~/org/logical/i3wm.org::switch-to-last-workspace][switch-to-last-workspace]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::switch-to-last-workspace][switch-to-last-workspace]]
 # last activate workspace
 workspace_auto_back_and_forth yes
 bindsym $super+Tab workspace back_and_forth 
 # # switch-to-last-workspace ends here
-# # [[file:~/org/logical/i3wm.org::close-window-mode][close-window-mode]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::close-window-mode][close-window-mode]]
 set $close "Close the window? (y/n)"
 mode $close {
     bindsym y kill, mode default
@@ -87,7 +97,8 @@ mode $close {
 }
 bindsym $super+q mode $close
 # # close-window-mode ends here
-# # [[file:~/org/logical/i3wm.org::window-layout-mode][window-layout-mode]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::window-layout-mode][window-layout-mode]]
 set $splith-note zenity --notification --window-icon="info" --text=" | split" --timeout=1
 set $splitv-note zenity --notification --window-icon="info" --text="-- split" --timeout=1
 
@@ -110,31 +121,37 @@ mode $layout_mode {
   bindsym Return mode "default"
 }
 # # window-layout-mode ends here
-# # [[file:~/org/logical/i3wm.org::open-split-termial][open-split-termial]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::open-split-termial][open-split-termial]]
 bindsym $super+backslash split h; exec urxvt
 bindsym $super+minus split v; exec urxvt
 # # open-split-termial ends here
-# # [[file:~/org/logical/i3wm.org::ibus-rime][ibus-rime]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::ibus-rime][ibus-rime]]
 exec --no-startup-id ibus-daemon --xim -d -r
 bindsym Cancel --release exec exec ~/metaesc/lib/switch_input_method.sh
 # # ibus-rime ends here
 
-# # [[file:~/org/logical/i3wm.org::assign-app-to-workspace][assign-app-to-workspace]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::assign-app-to-workspace][assign-app-to-workspace]]
 assign [class="Wpsoffice"] $ws7
 assign [title="EasyConnect"] $ws10
 assign [class="EasyConnect"] $ws10
 assign [class="Zotero"] $ws10 
 # # assign-app-to-workspace ends here
-# # [[file:~/org/logical/i3wm.org::assign-workspace-to-monitor][assign-workspace-to-monitor]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::assign-workspace-to-monitor][assign-workspace-to-monitor]]
 workspace $ws1 output primary
 workspace $ws2 output primary
 workspace $ws3 output primary
 # workspace $ws4 output VGA-1-1
 # # assign-workspace-to-monitor ends here
-# # [[file:~/org/logical/i3wm.org::switch-to-last-monitor][switch-to-last-monitor]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::switch-to-last-monitor][switch-to-last-monitor]]
 # bindsym $super+Tab focus output right
 # # switch-to-last-monitor ends here
-# # [[file:~/org/logical/i3wm.org::network-manager][network-manager]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::network-manager][network-manager]]
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
@@ -142,16 +159,19 @@ exec --no-startup-id nm-applet
 for_window [workspace=$ws10] layout tabbed
 exec_always --no-startup-id ~/metaesc/lib/cfw.sh
 # # network-manager ends here
-# # [[file:~/org/logical/i3wm.org::set-monitor-and-wallpaper][set-monitor-and-wallpaper]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::set-monitor-and-wallpaper][set-monitor-and-wallpaper]]
 exec ~/metaesc/lib/monitor.sh
 exec_always --no-startup-id compton --conf ~/.config/compton.conf -b
 exec_always --no-startup-id ~/metaesc/lib/wallpaper.sh
 exec_always --no-startup-id ~/metaesc/lib/backpages.sh
 # # set-monitor-and-wallpaper ends here
-# # [[file:~/org/logical/i3wm.org::clock-notify][clock-notify]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::clock-notify][clock-notify]]
 exec --no-startup-id ~/metaesc/lib/clock_notify.sh
 # # clock-notify ends here
-# # [[file:~/org/logical/i3wm.org::set-keymap][set-keymap]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::set-keymap][set-keymap]]
 exec_always --no-startup-id exec ~/metaesc/lib/code01s1.sh
 
 set $keymap-switch-mode "keymap: s(2), metaesc(1), 回到默认(0)"
@@ -164,7 +184,8 @@ mode $keymap-switch-mode {
     bindsym Escape mode default
 }
 # # set-keymap ends here
-# # [[file:~/org/logical/i3wm.org::emacs-chrome-initialize][emacs-chrome-initialize]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::emacs-chrome-initialize][emacs-chrome-initialize]]
 exec --no-startup-id sleep 1; i3-msg "workspace $ws1"; urxvt --title "main-tmux"
 exec --no-startup-id sleep 2; i3-msg "workspace $ws2"; ~/metaesc/lib/open_emacs 'default' 'emacs-jkl'
 exec --no-startup-id sleep 2; google-chrome --new-window \
@@ -175,30 +196,34 @@ exec --no-startup-id sleep 2; google-chrome --new-window \
                                             https://weread.qq.com/web/ \
 # # emacs-chrome-initialize ends here
 
-# # [[file:~/org/logical/i3wm.org::fn-audio-control][fn-audio-control]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::fn-audio-control][fn-audio-control]]
 set $audio_note ~/metaesc/lib/show_audio.sh
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $audio_note
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $audio_note
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $audio_note
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $audio_note
 # # fn-audio-control ends here
-# # [[file:~/org/logical/i3wm.org::fn-bright-control][fn-bright-control]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::fn-bright-control][fn-bright-control]]
 bindsym XF86MonBrightnessUp exec bash ~/metaesc/lib/brightness_code01.sh 20
 bindsym XF86MonBrightnessDown exec bash ~/metaesc/lib/brightness_code01.sh -20
 # # fn-bright-control ends here
 
-# # [[file:~/org/logical/i3wm.org::i3-main-mode][i3-main-mode]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][i3-main-mode]]
 set $main_mode pkill[s-p] logout[s-o] emacs[e] swap/resize[[S]-hjkl,8,9] keymaps[s-k]
 mode "$main_mode" {
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][switch-window-in-workspace]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][switch-window-in-workspace]]
     bindsym $super+Left focus left
     bindsym $super+Down focus down
     bindsym $super+Up focus up
     bindsym $super+Right focus right
     # # switch-window-in-workspace ends here
+    
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][i3-reload-restart-quit]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][i3-reload-restart-quit]]
     # reload the configuration file
     bindsym r reload, mode "default"
     # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -207,22 +232,25 @@ mode "$main_mode" {
     
     bindsym $super+q exec "i3-nagbar -t warning -m 'Exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
     # # i3-reload-restart-quit ends here
+    
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][resize-window-with-hjkl]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][resize-window-with-hjkl]]
     bindsym h resize shrink width 5 px
     bindsym l resize grow width 5 px
     bindsym j resize grow height 5 px
     bindsym k resize shrink height 5 px  
     bindsym 8 resize set 50 ppt 50 ppt
-    bindsym 9 resize set 59 ppt 41 ppt
+    bindsym 9 resize set 62 ppt 38 ppt
     # # resize-window-with-hjkl ends here
+    
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][swap-window-with-shift-hjkl]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][swap-window-with-shift-hjkl]]
     bindsym Shift+h move left
     bindsym Shift+j move down
     bindsym Shift+k move up
     bindsym Shift+l move right
     # # swap-window-with-shift-hjkl ends here
+    
 
     bindsym $super+l mode $layout_mode
     bindsym $super+k mode $keymap-switch-mode
@@ -230,7 +258,7 @@ mode "$main_mode" {
     # 绑定 t 直接跳转到 test
     bindsym t workspace $ws1 exec tmux select-window -t 0:9, mode "default"
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][quick-start-apps]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][quick-start-apps]]
     bindsym Shift+e exec ~/metaesc/lib/open_emacs 'default', mode "default"
     bindsym e exec ~/metaesc/lib/open_emacs "client", mode "default"
     bindsym $super+p exec ~/metaesc/lib/dmkill, mode "default"
@@ -242,11 +270,13 @@ mode "$main_mode" {
     # for desktop
     bindsym $super+d exec "i3-dmenu-desktop", mode "default"
     # # quick-start-apps ends here
+    
 
-    # # [[file:~/org/logical/i3wm.org::i3-main-mode][transset-up-down]]
+    # # [[file:~/org/design/web/posts/i3wm.org::i3-main-mode][transset-up-down]]
     bindsym $super+equal exec /usr/bin/transset --dec 0.1 -a 
     bindsym $super+minus exec /usr/bin/transset --inc 0.1 -a 
     # # transset-up-down ends here
+    
 
     bindsym Escape mode "default"
     bindsym Return mode "default"
@@ -256,7 +286,8 @@ mode "$main_mode" {
 
 bindsym $super+semicolon mode "$main_mode"
 # # i3-main-mode ends here
-# # [[file:~/org/logical/i3wm.org::addy-bar][addy-bar]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::addy-bar][addy-bar]]
 bar {
     id bar-0
     # output primary
@@ -283,10 +314,10 @@ bar {
     # disable sroll wheel
     bindsym button4 nop
     bindsym button5 nop
-    bindsym --release button3 exec ~/metaesc/lib/backpages.sh show
 }
 # # addy-bar ends here
-# # [[file:~/org/logical/i3wm.org::addy-theme][addy-theme]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::addy-theme][addy-theme]]
 # class                 border  backgr. text    indicator child_border
 client.focused          #2f343f #2f343f #d8dee8 #bf616a   #6272A4
 client.focused_inactive #2f343f #2f343f #d8dee8 #2f343f   #2f343f
@@ -295,7 +326,8 @@ client.urgent           #2f343f #2f343f #d8dee8 #2f343f   #2f343f
 client.placeholder      #2f343f #2f343f #d8dee8 #2f343f   #2f343f
 client.background       #2f343f
 # # addy-theme ends here
-# # [[file:~/org/logical/i3wm.org::vertical-monitor-bar][vertical-monitor-bar]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::vertical-monitor-bar][vertical-monitor-bar]]
 bar {
 	id bar-1
 	output VGA-1-1
@@ -308,7 +340,8 @@ bar {
 }
 # # vertical-monitor-bar ends here
 
-# # [[file:~/org/logical/i3wm.org::float-window-setting][float-window-setting]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::float-window-setting][float-window-setting]]
 floating_modifier $super
 # toggle tiling / floating
 bindsym Menu floating toggle
@@ -318,11 +351,13 @@ for_window [title="^ScreenX$"] sticky enable
 floating_maximum_size -1 x -1
 # # float-window-setting ends here
 
-# # [[file:~/org/logical/i3wm.org::screen-capture-like-mac][screen-capture-like-mac]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::screen-capture-like-mac][screen-capture-like-mac]]
 bindsym $alt+Control+4 exec gnome-screenshot -ai
 bindsym $alt+Control+3 --release exec ~/metaesc/lib/screenx.sh
 # # screen-capture-like-mac ends here
-# # [[file:~/org/logical/i3wm.org::copy-paste-with-super-cv][copy-paste-with-super-cv]]
+
+# # [[file:~/org/design/web/posts/i3wm.org::copy-paste-with-super-cv][copy-paste-with-super-cv]]
 bindsym F8 --release exec ~/metaesc/lib/paste.sh c
 bindsym F9 --release exec ~/metaesc/lib/paste.sh v
 # # copy-paste-with-super-cv ends here
