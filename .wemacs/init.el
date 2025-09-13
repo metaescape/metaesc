@@ -477,8 +477,8 @@
 (use-package dired-single
   :config
   (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "l" 'dired-single-buffer
+    "H" 'dired-single-up-directory
+    "L" 'dired-single-buffer
     ;;(kbd "<backspace>") 'dired-single-up-directory
     )
   )
@@ -495,7 +495,7 @@
   :hook (dired-mode . dired-hide-dotfiles-mode)
   :config
   (evil-collection-define-key 'normal 'dired-mode-map
-    "H" 'dired-hide-dotfiles-mode))
+    "T" 'dired-hide-dotfiles-mode))
 ;; dired-hide-dotfiles ends here
 
 ;; # dired-setting ends here
@@ -1146,11 +1146,11 @@
       (if (equal (1+ current-tab-index) num) ;; num start from 1
           (tab-bar-switch-to-recent-tab)
         (call-interactively 'tab-select))))
-  
+
   (general-define-key
    :keymaps 'general-override-mode-map
    "M-1" '(lambda () (interactive) (switch-to-tab-by-number 1))
-   "M-2" '(lambda () (interactive) (switch-to-tab-by-number 2))
+   "M-2" '(lambda () (interactive) (gtd-oriented-tab-switch "gtds"))
    "M-3" '(lambda () (interactive) (switch-to-tab-by-number 3))
    "M-4" '(lambda () (interactive) (switch-to-tab-by-number 4))
    "M-5" '(lambda () (interactive) (switch-to-tab-by-number 5))
@@ -1836,6 +1836,17 @@ FILENAME defaults to current buffer."
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . default)))
+
+  (defun preveiw-current-link (path)
+    "Play the video specified by PATH using an external player."
+    (interactive "sLink path: ") ; Allows manual calling with M-x preveiw-current-link
+    ;; Check if the file exists (optional, but good practice)
+    (if (file-exists-p path)
+        (async-shell-command (concat "preview " path))
+      (error "File not found: %s" path)))
+
+  ;; Register the link type (if you haven't already done so in your Emacs init file)
+  (org-add-link-type "preview" 'preveiw-current-link)
   ;; org-file-apps ends here
   
   ;; [[file:~/org/logical/orgmode_workflow.org::read-org-block-by-name][read-org-block-by-name]]
@@ -2078,8 +2089,10 @@ FILENAME defaults to current buffer."
       "Show work hours statistics graph using Python script."
       (interactive)
       (org-narrow-to-subtree)
-      (org-clock-display)
-      (widen))
+      (let ((current-prefix-arg '(12)))
+        (org-clock-display))
+      (widen)
+      (org-clock-remove-overlays))
     
     (defun org-clock-out-if-done ()
       "Clock out when the task is marked DONE"
@@ -2196,7 +2209,6 @@ FILENAME defaults to current buffer."
         (progn (create-or-switch-to-tab "gtds")
                (gtd-setup-window-layout)))
       (setq last-switch-action "tab-switch")))
-  (bind-key (kbd "s-<f10>") (lambda () (interactive) (gtd-oriented-tab-switch "gtds")))
   ;; gtd-oriented-tab ends here
   
   )

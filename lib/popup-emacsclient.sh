@@ -30,4 +30,4 @@ x_corner=$(($center_x  - ($width * 5)))
 y_corner=$(($center_y  - ($height * 11)))
 # echo $x_corner $y_corner >> /tmp/testout
 # 如果不是 chome ，直接打开 buffer 到最后一行结尾开始记录
-emacsclient "$1" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )"
+emacsclient "$@" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )"
