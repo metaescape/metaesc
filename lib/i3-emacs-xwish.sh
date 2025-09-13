@@ -16,8 +16,14 @@ focus_wid=$(printf 0x%08x $(xdotool getactivewindow))
 
 if [[ $focus_win_name =~ 'Floating' ]]; then
 	# emacsclient --eval "(minibuffer-keyboard-quit)"
-	xdotool key Escape #send ESC to 
-	i3-msg kill
+    if [[ $focus_win_class =~ 'emacs' ]]; then
+	  xdotool key Escape
+      sleep 0.2
+	  xdotool key Escape
+    else
+      # send ESC 
+      xdotool key Escape
+    fi
 else
 	~/metaesc/lib/restore_fullscreen.sh
 

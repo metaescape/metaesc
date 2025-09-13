@@ -1150,7 +1150,7 @@
   (general-define-key
    :keymaps 'general-override-mode-map
    "M-1" '(lambda () (interactive) (switch-to-tab-by-number 1))
-   "M-2" '(lambda () (interactive) (gtd-oriented-tab-switch "gtds"))
+   "M-2" '(lambda () (interactive) (switch-to-tab-by-number 2))
    "M-3" '(lambda () (interactive) (switch-to-tab-by-number 3))
    "M-4" '(lambda () (interactive) (switch-to-tab-by-number 4))
    "M-5" '(lambda () (interactive) (switch-to-tab-by-number 5))
@@ -1478,6 +1478,7 @@
     _d_: org-clock done              _v_: org-imagine-view
     _._: repeat operations           _x_: kill-current-buffer               
     _p_: eaf-open-pdf-from-history   _c_: current-node-org-clock-display
+    _2_: gtd-oriented-tab-switch
     "
   ;;("d" debug-test-hydra/body)
   ("r" search-books)
@@ -1496,6 +1497,7 @@
          (evil-window-mru)))
   ("d" (lambda () (interactive) (org-todo "DONE") (org-agenda "" " ")
          (evil-window-mru)))
+  ("2" (lambda () (interactive) (gtd-oriented-tab-switch 'gtd-setup-window-layout)))
   ("v" org-imagine-view)
   ("," narrow-or-widen-dwim)
   ("c" current-node-org-clock-display)
@@ -2201,13 +2203,13 @@ FILENAME defaults to current buffer."
     (interactive)
     (gtd-3-window-layout))
   
-  (defun gtd-oriented-tab-switch (gtd-tab-name)
+  (defun gtd-oriented-tab-switch (layout-func)
     "if current tab is gtd-tab-name, execute other-window, else goto gtd-tab"
     (let ((current-tab (cdr (assq 'name (tab-bar--current-tab)))))
       (if (equal current-tab "gtds")
-          (tab-bar-switch-to-recent-tab)
+          (gtd-setup-window-layout)
         (progn (create-or-switch-to-tab "gtds")
-               (gtd-setup-window-layout)))
+               (funcall layout-func)))
       (setq last-switch-action "tab-switch")))
   ;; gtd-oriented-tab ends here
   

@@ -15,8 +15,13 @@ comment
 
 focus_win_class=$(xprop -id $(xdotool getactivewindow) | grep WM_CLASS | cut -d'"' -f2)
 focus_win_name=$(xprop -id $(xdotool getactivewindow) | grep WM_NAME\(STRING\) | cut -d'"' -f2)
-if [[ $focus_win_name =~ 'Floating' ]]; then
+if [[ $focus_win_name =~ 'Floating' ]]; then 
+  if [[ $focus_win_class =~ 'emacs' ]]; then
 	i3-msg kill
+  else
+	# send ESC 
+	xdotool key Escape
+  fi
 else
 	sleep 0.01
 	~/metaesc/lib/restore_fullscreen.sh

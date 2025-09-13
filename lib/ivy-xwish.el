@@ -1,6 +1,6 @@
 ;; 会影响 app launcher, 因为会退出一次
-;; (add-hook 'minibuffer-exit-hook 'delete-frame)
-(global-set-key (kbd "<escape>") 'delete-frame)
+(add-hook 'minibuffer-exit-hook 'delete-frame)
+;;(global-set-key (kbd "<escape>") 'delete-frame)
 
 ;; (defun my-minibuffer-setup-hook ()
 ;;   (setq-local keyboard-escape-quit 'delete-frame))
@@ -57,7 +57,6 @@
                         )
               :preselect (car preselect)
               )
-    (delete-frame)
     ))
 
 
