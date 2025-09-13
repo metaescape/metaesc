@@ -20,7 +20,7 @@ while true; do
     minute=$(date +"%M")
     power=$(upower -i $(upower -e | grep BAT) | grep percentage | tr -s " " | cut -f 3 -d" ")
     power_value=$(echo $power | cut -d "%" -f1)
-    if [ $power_value -lt 50 ]; then
+    if [ $power_value -lt 30 ]; then
         notify-send -t 2000 "电量低: $power"
     fi
 
