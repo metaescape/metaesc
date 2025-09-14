@@ -125,7 +125,9 @@ keycode 115 = End NoSymbol End
 keycode 116 = Down NoSymbol Down
 keycode 117 = Next NoSymbol Next
 keycode 118 = Insert NoSymbol Insert
-keycode 119 = Delete NoSymbol Delete
+! change Delete to BackSpace, I never use Delete
+! keycode 119 = Delete NoSymbol Delete
+keycode 119 = BackSpace BackSpace BackSpace BackSpace
 keycode 120 =
 keycode 121 = XF86AudioMute NoSymbol XF86AudioMute
 keycode 122 = XF86AudioLowerVolume NoSymbol XF86AudioLowerVolume
@@ -141,7 +143,9 @@ keycode 131 = Hangul_Hanja NoSymbol Hangul_Hanja
 keycode 132 =
 keycode 133 = Super_L NoSymbol Super_L
 keycode 134 = Super_R NoSymbol Super_R
-keycode 135 = Menu NoSymbol Menu
+!keycode 135 = Menu NoSymbol Menu
+!change Menu to alt_L for small keyboard
+keycode 135 = Alt_L Meta_L Alt_L Meta_L
 keycode 136 = Cancel NoSymbol Cancel
 keycode 137 = Redo NoSymbol Redo
 keycode 138 = SunProps NoSymbol SunProps

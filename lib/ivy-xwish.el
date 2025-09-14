@@ -1,4 +1,5 @@
-;; 会影响 app launcher, 因为会退出一次
+;; 会影响 app launcher, 因为启动 app launcher 的时候会退出一次 minibuffer 再启动，
+;; 但这个功能基本没用过，所以先不管
 (add-hook 'minibuffer-exit-hook 'delete-frame)
 ;;(global-set-key (kbd "<escape>") 'delete-frame)
 
