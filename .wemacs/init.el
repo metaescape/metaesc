@@ -82,11 +82,7 @@
 ;; which-key 和 general:2 ends here
 
 ;; [[file:~/org/design/wemacs.org::*快速插入代码 bootstrap][快速插入代码 bootstrap:1]]
-(use-package org-tempo
-  :ensure nil
-  :config
-  (add-to-list 'org-structure-template-alist '("," . "src emacs-lisp :results none"))
-  (fset 'yes-or-no-p 'y-or-n-p))
+(fset 'yes-or-no-p 'y-or-n-p)
 ;; 快速插入代码 bootstrap:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*包的升级管理方案][包的升级管理方案:1]]
@@ -502,6 +498,8 @@
 ;; dird mode:1 ends here
 
 ;; [[file:~/org/design/wemacs.org::*startup screen][startup screen:1]]
+;; use y/n to yes/no
+(fset 'yes-or-no-p 'y-or-n-p)
 ;; disable startup page, same as (setq inhibit-startup-screen t)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
@@ -903,7 +901,7 @@
 ;; [[file:~/org/design/wemacs.org::*ivy 生态][ivy 生态:1]]
 ;; # [[file:~/org/logical/ivy.org::ivy][ivy]]
 (use-package ivy
-  :defer 1
+  :defer 2
   :diminish
   :general
   (:keymaps '(global-map Info-mode-map bibtex-mode-map markdown-mode-map comint-mode-map)
@@ -915,8 +913,6 @@
          ("s-s T" . search-all-tasks)
          ("s-s g" . counsel-rg)
          ("s-s v" . counsel-rg-my-vocab)
-         :map org-mode-map
-         ("s-r c" . counsel-rg-named-src)
          :map ivy-minibuffer-map ;; bind in minibuufer
          ("C-l" . ivy-alt-done) 
          ("C-j" . ivy-next-line)
@@ -1027,7 +1023,8 @@
   ;; counsel-rg-my-vocab ends here
   
   (use-package ivy-rich
-    :init
+    :after org
+    :config
     (ivy-rich-mode 1))
   (use-package wgrep)
   )
@@ -1392,6 +1389,16 @@
   ;; rime-switch-manually ends here
   
   ;; [[file:~/org/logical/input_method.org::rime-switch-auto][rime-switch-auto]]
+  (defun rime-predicate-punctuation-after-ascii-punctuation-space-p ()
+    "If input a punctuation after a ascii punction charactor with whitespace.
+
+Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
+    (and (> (point) (save-excursion (back-to-indentation) (point)))
+         (rime-predicate-current-input-punctuation-p)
+         (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
+           (string-match-p "[-,)] +$" string))))
+
+
   (setq rime-disable-predicates
         '(
           rime-predicate-after-ascii-char-p 
@@ -1399,6 +1406,7 @@
           rime-predicate-punctuation-after-space-cc-p 
           rime-predicate-punctuation-after-ascii-p 
           rime-predicate-punctuation-line-begin-p 
+          rime-predicate-punctuation-after-ascii-punctuation-space-p
           rime-predicate-org-in-src-block-p
           rime-predicate-prog-in-code-p
           rime-predicate-org-latex-mode-p
@@ -1770,6 +1778,7 @@ FILENAME defaults to current buffer."
 ;; # [[file:~/org/logical/orgmode_workflow.org::org][org]]
 (use-package org
   :ensure nil
+  :load-path "~/.emacs.d/elpa/org-mode/lisp/"
   :init 
   ;; fix bug for expand a heading with tab : Subtree (no children)
   (setq org-fold-core-style 'overlays) 
@@ -2088,7 +2097,7 @@ FILENAME defaults to current buffer."
     (org-show-notification-timeout 10)
     :config
     (defun current-node-org-clock-display ()
-      "Show work hours statistics graph using Python script."
+      "Show work hours statistics in minibuffer"
       (interactive)
       (org-narrow-to-subtree)
       (let ((current-prefix-arg '(12)))
@@ -2105,6 +2114,17 @@ FILENAME defaults to current buffer."
                     org-clock-marker)
                  (not (string= org-last-state org-state)))
         (org-clock-out))))
+
+  (defun my-temporary-clock-behavior (original-function &rest args)
+    "temporary change org-clock-get-clocked-time behavoir when exec ORIGINAL-FUNCTION"
+    (cl-letf (((symbol-function 'org-clock-get-clocked-time)
+               (lambda ()
+                 (floor (org-time-convert-to-integer
+                         (org-time-since org-clock-start-time))
+                        60))))
+      (apply original-function args)))
+
+  (advice-add 'org-clock-update-mode-line :around #'my-temporary-clock-behavior)
   ;; org-clock-agenda ends here
   
   ;; [[file:~/org/logical/orgmode_workflow.org::agenda-keybinding][agenda-keybinding]]
@@ -2638,18 +2658,18 @@ FILENAME defaults to current buffer."
   :custom
   (org-preview-latex-image-directory "/tmp/ltximg/")
   :config
+  ;; Increase preview width
+  (add-hook 'org-mode-hook 'org-latex-preview-mode)
+  (setq org-latex-preview-mode-display-live t)
   (setq org-latex-pdf-process '(
                                 "xelatex -interaction nonstopmode %f"
                                 "xelatex -interaction nonstopmode %f"))
 
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.7))
   (setq org-startup-with-latex-preview nil)
   (define-key org-mode-map (kbd "s-i") 'org-latex-preview) ;default C-c C-x l
   )
 
-(use-package org-fragtog
-  :after org
-  :hook (org-mode . org-fragtog-mode))
 ;; org-latex ends here
 
 ;; [[file:~/org/logical/org_note_taking.org::yasnippet-setting][yasnippet-setting]]
@@ -2686,39 +2706,78 @@ FILENAME defaults to current buffer."
       '(:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                     ("begin" "$1" "$$" "\\(" "\\[")))
 
+(defmacro yas-> (snippet)
+  `(lambda ()
+     (interactive)
+     (yas-expand-snippet ,snippet)))
+
 (use-package laas
   :hook (org-mode . laas-mode)
+  :init 
+  ;; reset auto subscript, disable ii/jj/nn/kk
+  (setq
+   laas-subscript-snippets 
+   `(:cond laas-auto-script-condition
+           ,@(cl-loop for (key exp) in
+                      '(("0"   laas-insert-script)
+                        ("1"   laas-insert-script)
+                        ("2"   laas-insert-script)
+                        ("3"   laas-insert-script)
+                        ("4"   laas-insert-script)
+                        ("5"   laas-insert-script)
+                        ("6"   laas-insert-script)
+                        ("7"   laas-insert-script)
+                        ("8"   laas-insert-script)
+                        ("9"   laas-insert-script))
+                      if (symbolp exp)
+                      collect :expansion-desc
+                      and collect (format "X_%s, or X_{Y%s} if a subscript was typed already"
+                                          (substring key -1) (substring key -1))
+                      collect key collect exp)))
   :config
   ;; 自动插入空格
-  (setq laas-enable-auto-space t)
-
+  (setq laas-enable-auto-space nil)
   (aas-set-snippets
       'laas-mode
     ;; 只在 org latex 片段中展开
     :cond #'org-inside-LaTeX-fragment-p
-    ;; 内积
-    "<>" (lambda () (interactive)
-           (yas-expand-snippet "\\langle $1\\rangle$0"))
     "`s" "^{\\star }"
+    "th;" "\\theta"
+    "theta" "\\theta"
+    "ph;" "\\phi"
+    "phi;" "\\phi"
+    "a;" "\\alpha"
+    "alpha;" "\\alpha"
+    "b;" "\\beta"
+    "be;" "\\beta"
+    "bet;" "\\beta"
+    "beta;" "\\beta"
+    "o;" "\\omega"
+    "O;" "\\Omega"
+    "sec" "\\sec"
+    "par;" "\\partial "
+    "partial;" "\\partial "
     ;; 还可以绑定函数，用 yasnippet 展开
-    "^" (lambda () (interactive)
-          (yas-expand-snippet "^{$1}$0"))
-    "_" (lambda () (interactive)
-          (yas-expand-snippet "_{$1}$0"))
-    "Sum" (lambda () (interactive)
-            (yas-expand-snippet "\\sum_{$1}^{$2}$0"))
-    "Int" (lambda () (interactive)
-            (yas-expand-snippet "\\int_{$1}^{$2}$0"))
-    "Prod" (lambda () (interactive)
-             (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
-    "Sqrt" (lambda () (interactive)
-             (yas-expand-snippet "\\sqrt[]{$1}"))
-    "Gam" (lambda () (interactive)
-            (yas-expand-snippet "\\Gamma($1)$0"))
+    "<>" (yas-> "\\langle $1\\rangle$0")
+    "__" (yas-> "_{$1}^{$2}$0")
+    "sum;" (yas-> "\\sum_{$1}^{$2}$0")
+    "int;" (yas-> "\\int_{$1}^{$2}$0")
+    "iint;" (yas-> "\\iint_{$1}$0")
+    "oint;" (yas-> "\\oint_{$1}$0")
+    "ii;" (yas-> "\\iint_{$1}$0")
+    "iii;" (yas-> "\\iiint_{$1}$0")
+    "inf;" (yas-> "\\infty")
+    "infty;" (yas-> "\\infty")
+    "prod;" (yas-> "\\prod_{$1}^{$2}$0")
+    "rt;" (yas-> "\\sqrt{$1}")
+    "Gam" (yas-> "\\Gamma($1)$0")
     ;; 这是 laas 中定义的用于包裹式 latex 代码的函数，实现 \bm{a}
     :cond #'laas-object-on-left-condition
     "'B" (lambda () (interactive) (laas-wrap-previous-object "mathbb"))
+    "'v" (lambda () (interactive) (laas-wrap-previous-object "vec"))
+    "'h" (lambda () (interactive) (laas-wrap-previous-object "hat"))
     ",b" (lambda () (interactive) (laas-wrap-previous-object "boldsymbol"))
+    "'p" (lambda () (interactive) (laas-wrap-previous-object "partial"))
     ".d" (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 ;; ass-setting ends here
 
@@ -2737,12 +2796,12 @@ FILENAME defaults to current buffer."
   (:keymaps 'normal 
             "s-r s-r" 'org-roam-buffer-toggle
             "s-r f"  'org-roam-find-file
-            "s-r g"  'org-roam-node-find ;; graph node find
+            "s-r n"  'org-roam-node-find ;; graph node find
             )
   (:keymaps 'org-mode-map
             :states 'insert
             "s-r f" 'org-roam-insert-file
-            "s-r g"  'org-roam-node-insert
+            "s-r n"  'org-roam-node-insert
             )
   :config
   (org-roam-db-autosync-mode)
@@ -2796,7 +2855,7 @@ FILENAME defaults to current buffer."
 (use-package embark
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("M-." . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
   :config
   ;; Hide the mode line of the Embark live/completions buffers
@@ -3279,6 +3338,7 @@ If found, copy the citation to a new temporary Org buffer and call `org-cite-fol
   (eaf-bind-key eaf-pdf-narrow-search-toc "O" eaf-pdf-viewer-keybinding)
   (eaf-bind-key open-with-system-app-dwim "M-o" eaf-pdf-viewer-keybinding)
   (eaf-bind-key copy_select "y" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key search_select "s" eaf-pdf-viewer-keybinding)
   (eaf-bind-key copy_select "C-c" eaf-pdf-viewer-keybinding)
   (setq eaf-pdf-show-progress-on-page 22)
   (setq eaf-pdf-click-to-copy nil)

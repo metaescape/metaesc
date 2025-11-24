@@ -189,11 +189,7 @@ mode $keymap-switch-mode {
 exec --no-startup-id sleep 1; i3-msg "workspace $ws1"; urxvt --title "main-tmux"
 exec --no-startup-id sleep 2; i3-msg "workspace $ws2"; ~/metaesc/lib/open_emacs 'default' 'emacs-jkl'
 exec --no-startup-id sleep 2; google-chrome --new-window \
-                                            https://chat.openai.com/ \
                                             https://gemini.google.com/ \
-                                            https://www.chatpdf.com/ \
-                                            https://filehelper.weixin.qq.com/ \
-                                            https://weread.qq.com/web/ \
 # # emacs-chrome-initialize ends here
 
 
