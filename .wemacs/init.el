@@ -30,14 +30,10 @@
 
 ;; [[file:~/org/design/wemacs.org::*用 package 从 melpa 安装 use-package][用 package 从 melpa 安装 use-package:1]]
 (require 'package)
-;; (setq package-archives
-;;       '(("gnu"   . "https://elpa.gnu.org/packages/")
-;;         ("melpa" . "https://melpa.org/packages/")))
 
 (setq package-archives
       '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-
 
 ;; update the package metadata if the local cache is missing
 ;; (unless package-archive-contents (package-refresh-contents))
@@ -124,8 +120,8 @@
   (general-define-key
    :keymaps '(normal visual global)
    [escape] 'keyboard-quit
-   "C-y" 'duplicate-line-and-next)
-  
+   "C-c y" 'duplicate-line-and-next)
+
   (general-define-key
    :keymaps '(minibuffer-local-map
               minibuffer-local-ns-map
@@ -134,20 +130,20 @@
               minibuffer-local-isearch-map)
    [escape] 'minibuffer-keyboard-quit)
   ;; evil-esc ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-undo-fu][evil-undo-fu]]
   (use-package undo-fu
     :config
     (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
     (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
   ;; evil-undo-fu ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-collections][evil-collections]]
   (use-package evil-collection
     :after evil
     :config
     (evil-collection-init))
-  
+
   (use-package evil-org
     :after org
     :hook (org-mode . (lambda () (evil-org-mode +1)))
@@ -170,10 +166,10 @@
       (kbd "<") 'org-promote-subtree
       (kbd ">") 'org-demote-subtree
       ))
-  
+
   (add-hook 'org-log-buffer-setup-hook 'evil-insert-state)
   ;; evil-collections ends here
-  
+
   ;; [[file:~/org/logical/evil.org::expand-region][expand-region]]
   (use-package expand-region
     :general
@@ -182,7 +178,7 @@
     :config
     (setq expand-region-contract-fast-key "z"))
   ;; expand-region ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-surround][evil-surround]]
   (use-package evil-surround
     :config
@@ -231,7 +227,7 @@
      "S" 'my-evil-surround-dwim
      ))
   ;; evil-surround ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-commentary][evil-commentary]]
   (use-package evil-commentary
     ;; :diminish evil-commentary
@@ -239,7 +235,7 @@
     (evil-commentary-mode)
     )
   ;; evil-commentary ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-multiedit][evil-multiedit]]
   (use-package evil-multiedit
     :load-path "site-lisp/evil-multiedit"
@@ -269,11 +265,11 @@
     ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
     (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
   ;; evil-multiedit ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-select-paste][evil-select-paste]]
   (setq-default evil-kill-on-visual-paste nil)
   ;; evil-select-paste ends here
-  
+
   ;; [[file:~/org/logical/evil.org::snipe-pinyin][snipe-pinyin]]
   (use-package evil-snipe
     :defer
@@ -282,7 +278,7 @@
     (evil-snipe-override-mode +1) ;; enable 1 char jump
     (setq evil-snipe-scope 'line) ;; jump in line
     )
-  
+
   (use-package evil-find-char-pinyin
     :config
     (evil-find-char-pinyin-toggle-snipe-integration t)
@@ -290,7 +286,7 @@
     (setq evil-find-char-pinyin-enable-punctuation-translation t) ;;punctuation
     )
   ;; snipe-pinyin ends here
-  
+
   ;; [[file:~/org/logical/evil.org::avy-ace-pinyin][avy-ace-pinyin]]
   (use-package avy
     :bind
@@ -328,13 +324,13 @@
      "C-\\" 'ace-pinyin-goto-char-timer
      ))
   ;; avy-ace-pinyin ends here
-  
+
   ;; [[file:~/org/logical/evil.org::evil-9line][evil-9line]]
   ;; Use visual line motions even outside of visual-line-mode buffers
   ;; deal with wrap
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-  
+
   (evil-define-motion move-9-lines-down () (evil-next-visual-line 9))
   (evil-define-motion move-9-lines-up () (evil-previous-visual-line 9))
   
@@ -488,7 +484,6 @@
 
 ;; [[file:~/org/logical/dired.org::dired-hide-dotfiles][dired-hide-dotfiles]]
 (use-package dired-hide-dotfiles
-  :hook (dired-mode . dired-hide-dotfiles-mode)
   :config
   (evil-collection-define-key 'normal 'dired-mode-map
     "T" 'dired-hide-dotfiles-mode))
@@ -691,7 +686,9 @@
 
 ;; [[file:~/org/design/wemacs.org::*backup files][backup files:1]]
 ;; start server
-(server-start)
+(use-package server
+  :config 
+  (unless (server-running-p) (server-start)))
 
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
@@ -1396,7 +1393,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (and (> (point) (save-excursion (back-to-indentation) (point)))
          (rime-predicate-current-input-punctuation-p)
          (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
-           (string-match-p "[-,)] +$" string))))
+           (string-match-p "[-,):.|[0-9] +$" string))))
 
 
   (setq rime-disable-predicates
@@ -1642,40 +1639,6 @@ adapted from https://github.com/Fuco1/dired-hacks/blob/master/dired-open.el
 (advice-add 'yas-expand-from-trigger-key :around #'yas-expand-only-in-insert-state)
 ;; tab 冲突处理:4 ends here
 
-;; [[file:~/org/design/wemacs.org::*gitgutter 和 git timemachine][gitgutter 和 git timemachine:1]]
-(use-package git-timemachine
-  :defer)
-(use-package git-gutter
-  :bind ("M-g M-g" . hydra-git-gutter/body)
-  :config
-  (global-set-key (kbd "M-g M-g") 'hydra-git-gutter/body)
-  (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
-                                        :hint nil :color blue)
-    "
-Git gutter:
-  _j_: next hunk        _s_tage hunk   _q_uit and deactivate git-gutter
-  _k_: previous hunk    _r_evert hunk    
-  ^ ^                   _p_opup hunk
-  _h_: first hunk       
-  _l_: last hunk        set start _R_evision
-"
-    ("j" git-gutter:next-hunk)
-    ("k" git-gutter:previous-hunk)
-    ("h" (progn (goto-char (point-min))
-                (git-gutter:next-hunk 1)))
-    ("l" (progn (goto-char (point-min))
-                (git-gutter:previous-hunk 1)))
-    ("s" git-gutter:stage-hunk)
-    ("r" git-gutter:revert-hunk)
-    ("p" git-gutter:popup-hunk)
-    ("R" git-gutter:set-start-revision)
-    ("q" (progn (git-gutter-mode -1)
-                ;; git-gutter-fringe doesn't seem to
-                ;; clear the markup right away
-                (sit-for 0.1)
-                (git-gutter:clear)))))
-;; gitgutter 和 git timemachine:1 ends here
-
 ;; [[file:~/org/design/wemacs.org::*makefile 选择菜单][makefile 选择菜单:1]]
 (use-package makefile-executor
   :config
@@ -1747,15 +1710,6 @@ FILENAME defaults to current buffer."
   (setq company-dabbrev-minimum-length 2) ;;default 4
   (setq company-selection-wrap-around t) ;;default nil, next of end is begin
   (setq company-dabbrev-downcase nil)
-  (setq company-backends '(company-capf
-                           company-keywords
-                           company-semantic
-                           company-files
-                           company-dabbrev
-                           company-etags
-                           company-clang
-                           company-cmake
-                           company-yasnippet))
   (setq company-require-match nil)
   (global-company-mode)
 
@@ -2660,6 +2614,8 @@ FILENAME defaults to current buffer."
   :config
   ;; Increase preview width
   (add-hook 'org-mode-hook 'org-latex-preview-mode)
+  (plist-put org-latex-preview-appearance-options
+             :zoom 1.3)
   (setq org-latex-preview-mode-display-live t)
   (setq org-latex-pdf-process '(
                                 "xelatex -interaction nonstopmode %f"
@@ -2715,6 +2671,8 @@ FILENAME defaults to current buffer."
   :hook (org-mode . laas-mode)
   :init 
   ;; reset auto subscript, disable ii/jj/nn/kk
+
+  (setq laas-accent-snippets nil)
   (setq
    laas-subscript-snippets 
    `(:cond laas-auto-script-condition
