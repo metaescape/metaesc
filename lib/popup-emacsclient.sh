@@ -18,7 +18,7 @@ window_y=$(echo "$window_info" | grep Y | cut -d '=' -f 2)
 window_width=$(echo "$window_info" | grep WIDTH | cut -d '=' -f 2)
 window_height=$(echo "$window_info" | grep HEIGHT | cut -d '=' -f 2)
 
-echo $window_width $window_height $window_x $window_y
+# echo $window_width $window_height $window_x $window_y
 # x 是从屏幕左侧开始，y 是从屏幕上边缘开始
 center_x=$(($window_x + ($window_width / 2)))
 center_y=$(($window_y + ($window_height / 2)))

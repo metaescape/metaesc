@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: ,m3
+# name: pmatrix equation (3 x 3)
+# group: math
+# --
+
+\\( \begin{pmatrix}x \\\\ y \\\\ z \end{pmatrix} = \begin{pmatrix}${1:A} & ${2:$1} & ${3:$1} \\\\ ${4:$1} & ${5:$1} & ${6:$1} \\\\ ${7:$1} & ${8:$1} & ${9:$1} \end{pmatrix} \begin{pmatrix} u \\\\ v \\\\ w \end{pmatrix} \\)

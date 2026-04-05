@@ -48,6 +48,6 @@ else
 	x_corner=$(($center_x  - ($width * 5)))
 	y_corner=$(($center_y  - ($height * 5)))
 	# else
-	emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (shell) (end-of-buffer) (evil-insert-state) (comint-send-string nil \"cd ~/codes/hugchangelife\n\")  (comint-send-string nil \"./pub.sh p\n\"))"
+	emacsclient -s server -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" --eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (shell) (end-of-buffer) (evil-insert-state) (comint-send-string nil \"cd ~/codes/hugchangelife\n\")  (comint-send-string nil \"./pub.sh p\n\"))"
 	# fi
 fi

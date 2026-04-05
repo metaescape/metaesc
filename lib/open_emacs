@@ -5,6 +5,7 @@ export PATH=$HOME/miniconda3/envs/usr/bin:$PATH
 version=${version:-30.1}
 em=~/codes/emacs-${version}/src/emacs
 emc=~/codes/emacs-${version}/lib-src/emacsclient
+
 if [ "$1" == 'default' ]; then
     if [ ! -z $2 ]; then
         $em --name "$2"

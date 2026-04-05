@@ -117,6 +117,7 @@ center_y=$(($window_y + ($window_height * 2 /4)))
 # 因为 bash 算不了浮点，有误差，因此这是经验法则，没必要算太细
 x_corner=$(($center_x  - ($width * 5)))
 y_corner=$(($center_y  - ($height * 5)))
-~/metaesc/lib/paste.sh c
-emacsclient -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
---eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time) (insert \"Anki:\") (evil-paste-after 1))"
+# ~/metaesc/lib/paste.sh c
+emacsclient -s server -a "" -c -F "((name . \"Floating\") (height . "$height") (width . "$width") (left . "$x_corner") (top . "$y_corner" ) (user-position . t) (menu-bar-lines . 0) )" \
+	--eval "(progn (set-frame-parameter (selected-frame) 'alpha '(98 . 90)) (find-file (car (sort (directory-files \"~/org/self/journal/\" t \"^j\" t) 'string>))) (end-of-buffer) (evil-insert-state) (my/insert-time) (insert \"$@\"))"
+ # (evil-paste-after 1)

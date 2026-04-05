@@ -24,6 +24,7 @@ bindsym F2 --release exec ~/metaesc/lib/i3-emacs-publish.sh
 bindsym F3 --release exec ~/metaesc/lib/i3-emacs-xwish.sh
 bindsym F10 --release exec ~/metaesc/lib/backpages.sh show
 bindsym $alt+Control+2 --release exec ~/metaesc/lib/i3-emacs-quicknote.sh
+bindsym $super+x move workspace to output next
 # # emacs-popups ends here
 
 # # [[file:~/org/design/web/posts/i3wm.org::focus-next-window][focus-next-window]]
@@ -157,7 +158,7 @@ workspace $ws3 output primary
 exec --no-startup-id nm-applet
 
 for_window [workspace=$ws10] layout tabbed
-exec_always --no-startup-id ~/metaesc/lib/cfw.sh
+exec_always --no-startup-id clash-verge
 # # network-manager ends here
 
 # # [[file:~/org/design/web/posts/i3wm.org::set-monitor-and-wallpaper][set-monitor-and-wallpaper]]
@@ -235,7 +236,8 @@ mode "$main_mode" {
     bindsym l resize grow width 5 px
     bindsym j resize grow height 5 px
     bindsym k resize shrink height 5 px  
-    bindsym 8 resize set 50 ppt 50 ppt
+    bindsym 0 resize set 50 ppt 50 ppt
+    bindsym 8 resize set 53 ppt 47 ppt
     bindsym 9 resize set 62 ppt 38 ppt
     # # resize-window-with-hjkl ends here
     
