@@ -10,8 +10,10 @@
 使用方式举例：
 
 ```bash
-./metaesc.sh --install/-i/install vscode i3
-        安装/更新 vscode 和 i3, 并且把它们的配置文件链接到系统的 ${HOME} 目录下
+./metaesc.sh --install vscode i3
+./metaesc.sh install vscode i3
+./metaesc.sh -i vscode i3
+        以上三条都是安装或更新 vscode 和 i3, 并且把它们的配置文件链接到系统的 ${HOME} 目录下
 ./metaesc.sh  --install/-i/install all
         安装/更新所有软件和配置
 ./metaesc.sh  --install server
@@ -28,11 +30,12 @@
 ```
 
 ## 具体文件
+
 i3 相关文件：
+
 ```bash
 .config/i3/config
 .config/i3status/config
 .config/compton.conf
 .config/dunst/dunstrc
 ```
-
