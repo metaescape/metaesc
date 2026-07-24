@@ -5,6 +5,7 @@ set -ue
 source $(dirname "${BASH_SOURCE[0]:-$0}")/utilfuncs.sh
 
 TAR_NAME=anki-25.02.7-linux-qt6
+TAR_NAME=anki-26.05-linux-x86_64
 
 function install_anki() {
 	local distro
@@ -16,7 +17,8 @@ function install_anki() {
 
         pushd "$INSTALLERS"
         if [ ! -d "$TAR_NAME" ]; then
-            tar xaf "$INSTALLERS/$TAR_NAME.tar.zst"
+            tar xaf "$INSTALLERS/$TAR_NAME.tar.zst" 
+            mv anki-linux $TAR_NAME
         fi
         cd $TAR_NAME
         sudo ./install.sh
